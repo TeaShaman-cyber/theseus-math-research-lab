@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import json,pathlib,py_compile,sys
+import ast,json,pathlib,sys
 ROOT=pathlib.Path(__file__).resolve().parents[2]; errs=[]
 for p in ROOT.rglob('*.json'):
     if '.git' in p.parts: continue
@@ -7,7 +7,7 @@ for p in ROOT.rglob('*.json'):
     except Exception as x: errs.append(f'json:{p.relative_to(ROOT)}:{x}')
 for p in ROOT.rglob('*.py'):
     if '.git' in p.parts: continue
-    try: py_compile.compile(str(p),doraise=True)
+    try: ast.parse(p.read_text(),filename=str(p))
     except Exception as x: errs.append(f'python:{p.relative_to(ROOT)}:{x}')
 reg=json.loads((ROOT/'probes/registry.json').read_text())['probes']
 for pid,rel in reg.items():
