@@ -18,6 +18,7 @@ jobs:
         with:
           python-version: '3.12'
           cache: pip
+          cache-dependency-path: requirements/ci.txt
       - run: python -m pip install --disable-pip-version-check -r requirements/ci.txt
       - run: python tools/research/run_probe.py --probe '${{ inputs.probe }}' --out 'receipts/${{ inputs.probe }}.json'
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
