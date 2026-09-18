@@ -7,7 +7,7 @@ def main():
     if not rel: raise SystemExit(f'unknown registered probe: {a.probe}')
     wl=(ROOT/rel).parent/'wolfram.wl'
     if not wl.is_file(): raise SystemExit(f'no Wolfram witness for {a.probe}')
-    p=subprocess.run([a.mcporter,'call','wolfram.WolframLanguageEvaluator',f'code:{wl.read_text()}','timeConstraint:60'],text=True,capture_output=True)
+    p=subprocess.run([a.mcporter,'call','wolfram.WolframLanguageEvaluator',f'code=@{wl}','timeConstraint=60'],text=True,capture_output=True)
     raw=(p.stdout+'\n'+p.stderr).strip(); payload=None; m=re.search(r'\{\s*".*?\}',raw,re.S)
     if m:
         try: payload=json.loads(m.group(0))
