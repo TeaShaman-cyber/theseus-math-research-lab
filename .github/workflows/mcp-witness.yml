@@ -1,5 +1,6 @@
 name: MCP-backed research witness
 on:
+  pull_request:
   workflow_dispatch:
     inputs:
       provider:
@@ -25,10 +26,10 @@ jobs:
           cache-dependency-path: mcp/package-lock.json
       - run: npm ci --prefix mcp
       - run: ./mcp/node_modules/.bin/mcporter --config mcp/config.ci.json --version
-      - run: ./mcp/node_modules/.bin/mcporter --config mcp/config.ci.json list wolfram --json > receipts/mcp-inventory.json
-      - run: python tools/research/mcp_witness.py --provider '${{ inputs.provider }}' --probe '${{ inputs.probe }}' --mcporter ./mcp/node_modules/.bin/mcporter --config mcp/config.ci.json --out 'receipts/${{ inputs.provider }}-${{ inputs.probe }}.json'
+      - run: mkdir -p receipts && ./mcp/node_modules/.bin/mcporter --config mcp/config.ci.json list wolfram --json > receipts/mcp-inventory.json
+      - run: python tools/research/mcp_witness.py --provider '${{ inputs.provider || 'wolfram' }}' --probe '${{ inputs.probe || 'graph-hodge' }}' --mcporter ./mcp/node_modules/.bin/mcporter --config mcp/config.ci.json --out 'receipts/mcp-witness.json'
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: mcp-witness-${{ inputs.provider }}-${{ inputs.probe }}
+          name: mcp-witness
           path: receipts/
           if-no-files-found: error
