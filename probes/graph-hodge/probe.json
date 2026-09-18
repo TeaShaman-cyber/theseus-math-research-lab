@@ -1,0 +1,1 @@
+{"schema":"theseus.math-research-probe.v1","probe_id":"graph-hodge","research_issue":"#21","entrypoint":"probes/graph-hodge/probe.py","inputs":["probes/graph-hodge/input.json"],"assertions":["cycle_rank_eq_beta1","beta1_eq_hodge_nullity"],"scientific_boundary":"Finite graph/Hodge fixture only; no RH or PDE claim."}

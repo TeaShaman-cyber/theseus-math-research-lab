@@ -1,0 +1,1 @@
+edges={{1,2},{2,3},{3,1},{3,4},{4,1}}; b=ConstantArray[0,{4,5}]; Do[b[[edges[[j,1]],j]]=-1;b[[edges[[j,2]],j]]=1,{j,5}]; p=Length[ConnectedComponents[Graph[UndirectedEdge@@@edges]]]; mu=5-4+p; beta=Length[NullSpace[b]]; h=Length[NullSpace[Transpose[b].b]]; ExportString[<|"cycle_rank"->mu,"beta1"->beta,"hodge_nullity"->h,"pass"->(mu==beta==h)|>,"RawJSON"]

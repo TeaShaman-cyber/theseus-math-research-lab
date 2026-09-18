@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+echo '== repository structure =='
+python3 tools/research/check_repo.py
+echo '== unit tests =='
+python3 -m unittest discover -s tests -v
+echo '== deterministic probes =='
+rm -rf .tmp-receipts && mkdir -p .tmp-receipts
+python3 tools/research/run_probe.py --probe graph-hodge --out .tmp-receipts/graph-hodge.json >/dev/null
+python3 tools/research/run_probe.py --probe filled-cell --out .tmp-receipts/filled-cell.json >/dev/null
+echo '== whitespace =='
+git diff --check
+rm -rf .tmp-receipts
+echo DEV_CHECK_PASS

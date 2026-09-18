@@ -1,0 +1,1 @@
+{"schema":"theseus.math-research-probe.v1","probe_id":"filled-cell","research_issue":"#21","entrypoint":"probes/filled-cell/probe.py","inputs":["probes/filled-cell/input.json"],"assertions":["filled_cell_reduces_beta1","hodge_nullity_eq_beta1"],"scientific_boundary":"Finite cell-complex fixture only; no PDE regularity claim."}
