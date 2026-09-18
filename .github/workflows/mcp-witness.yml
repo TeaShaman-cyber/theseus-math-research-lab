@@ -26,8 +26,11 @@ jobs:
           cache-dependency-path: mcp/package-lock.json
       - run: npm ci --prefix mcp
       - run: ./mcp/node_modules/.bin/mcporter --config mcp/config.ci.json --version
-      - run: mkdir -p receipts && ./mcp/node_modules/.bin/mcporter --config mcp/config.ci.json list wolfram --json > receipts/mcp-inventory.json
-      - run: python tools/research/mcp_witness.py --provider '${{ inputs.provider || 'wolfram' }}' --probe '${{ inputs.probe || 'graph-hodge' }}' --mcporter ./mcp/node_modules/.bin/mcporter --config mcp/config.ci.json --out 'receipts/mcp-witness.json'
+      - name: Inventory Wolfram provider
+        continue-on-error: true
+        run: mkdir -p receipts && ./mcp/node_modules/.bin/mcporter --config mcp/config.ci.json list wolfram --json > receipts/mcp-inventory.json
+      - name: Run witness adapter
+        run: python tools/research/mcp_witness.py --provider '${{ inputs.provider || 'wolfram' }}' --probe '${{ inputs.probe || 'graph-hodge' }}' --mcporter ./mcp/node_modules/.bin/mcporter --config mcp/config.ci.json --out 'receipts/mcp-witness.json'
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
