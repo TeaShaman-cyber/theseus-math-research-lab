@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "wolfram": {
+      "description": "Official free Wolfram Cloud MCP for computation and curated knowledge",
+      "baseUrl": "https://agenttools.wolfram.com/mcp"
+    }
+  }
+}
