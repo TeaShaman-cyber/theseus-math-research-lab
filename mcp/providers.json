@@ -1,0 +1,17 @@
+{
+  "schema": "theseus.math-research-mcp-providers.v1",
+  "providers": {
+    "wolfram": {
+      "status": "CONFIRMED",
+      "transport": "mcporter-http",
+      "base_url": "https://agenttools.wolfram.com/mcp",
+      "ci_eligible": true
+    },
+    "precise-special-functions": {
+      "status": "CHATGPT_VERIFIED_MCP_ENDPOINT_UNKNOWN",
+      "transport": "unknown",
+      "ci_eligible": false,
+      "note": "Direct ChatGPT capability was verified, but no public mcporter endpoint is yet confirmed."
+    }
+  }
+}

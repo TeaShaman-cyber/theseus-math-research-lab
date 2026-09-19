@@ -104,3 +104,15 @@ exact source / formal-corpus search
 ```
 
 Do not measure progress as a scalar percentage toward a grand conjecture.
+
+
+## QA / Research DevOps
+
+Reproducible computations use the lightweight stand in [`QA/README.md`](QA/README.md).
+
+```text
+bounded question -> frozen probe -> tools/dev/check -> hosted scientific baseline
+                -> optional mcporter -> Wolfram independent witness -> receipt -> issue checkpoint
+```
+
+GitHub CI deliberately does **not** install or execute Wolfram. The independent Wolfram route is runtime-scoped: in MarcoPolo, `tools/research/wolfram-witness` calls the existing pinned `mcporter` workbench and official Wolfram MCP. If that external route is unavailable, the state is degraded rather than silently treated as verified.

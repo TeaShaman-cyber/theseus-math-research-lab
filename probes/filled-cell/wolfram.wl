@@ -1,0 +1,1 @@
+b1={{-1,0,1,0,1},{1,-1,0,0,0},{0,1,-1,-1,0},{0,0,0,1,-1}}; b2={{1},{1},{1},{0},{0}}; before=Length[NullSpace[b1]]; after=before-MatrixRank[b2]; h=Length[NullSpace[Transpose[b1].b1+b2.Transpose[b2]]]; ExportString[<|"beta1_before"->before,"beta1_after"->after,"hodge_nullity"->h,"pass"->(before==2&&after==1&&h==1)|>,"RawJSON"]

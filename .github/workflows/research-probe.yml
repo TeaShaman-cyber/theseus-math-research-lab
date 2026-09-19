@@ -1,0 +1,29 @@
+name: Registered research baseline probe
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        required: true
+        type: choice
+        options: [graph-hodge, filled-cell]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements/ci.txt
+      - run: python -m pip install --disable-pip-version-check -r requirements/ci.txt
+      - run: python tools/research/run_probe.py --probe '${{ inputs.probe }}' --out 'receipts/${{ inputs.probe }}.json'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: research-probe-${{ inputs.probe }}
+          path: receipts/${{ inputs.probe }}.json
+          if-no-files-found: error
