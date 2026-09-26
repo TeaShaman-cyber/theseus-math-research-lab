@@ -37,6 +37,27 @@ class WolframAdapterTests(unittest.TestCase):
         self.assertIn('coeffs={1,1,1,0,0}', rendered['code'])
         self.assertNotIn('__FACE_COEFFS__', rendered['code'])
 
+
+    def test_graph_hodge_component_count_includes_declared_isolated_vertices(self):
+        data = {"vertices": [1, 2, 3, 4], "edges": [[1, 2], [2, 3], [3, 1]]}
+        template = (ROOT / 'probes/graph-hodge/wolfram.template.wl').read_text()
+        code = MOD.render_graph_hodge(data, template)
+        self.assertIn('vertices={1,2,3,4}', code)
+        self.assertIn('Graph[vertices,UndirectedEdge@@@edges]', code)
+
+    def test_filled_cell_rejects_noncycle_boundary(self):
+        data = json.loads((ROOT / 'probes/filled-cell/input.json').read_text())
+        data['filled_face_edge_coefficients'] = [1, 0, 0, 0, 0]
+        template = (ROOT / 'probes/filled-cell/wolfram.template.wl').read_text()
+        with self.assertRaisesRegex(ValueError, r'b1\*b2 == 0'):
+            MOD.render_filled_cell(data, template)
+
+    def test_filled_cell_accepts_registered_cycle_boundary(self):
+        data = json.loads((ROOT / 'probes/filled-cell/input.json').read_text())
+        template = (ROOT / 'probes/filled-cell/wolfram.template.wl').read_text()
+        code = MOD.render_filled_cell(data, template)
+        self.assertIn('coeffs={1,1,1,0,0}', code)
+
     def test_invalid_noncontiguous_vertex_labels_fail_closed(self):
         template = (ROOT / 'probes/graph-hodge/wolfram.template.wl').read_text()
         with self.assertRaises(ValueError):
