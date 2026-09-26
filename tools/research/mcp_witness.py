@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
-import argparse, hashlib, json, pathlib, re, subprocess
+import argparse, hashlib, json, pathlib, re, subprocess, sys, tempfile
 ROOT=pathlib.Path(__file__).resolve().parents[2]
+HERE=pathlib.Path(__file__).resolve().parent
+if str(HERE) not in sys.path:
+    sys.path.insert(0,str(HERE))
+from wolfram_adapter import render_wolfram_probe
 
 def parse_wolfram_payload(raw):
     for line in raw.splitlines():
@@ -47,27 +51,30 @@ def run(args):
         raise SystemExit(f'unknown provider: {args.provider}')
     if pmeta.get('status')!='CONFIRMED':
         raise SystemExit(f"provider not CI-ready: {args.provider} ({pmeta.get('status')})")
-    reg=json.loads((ROOT/'probes/registry.json').read_text())['probes']
-    rel=reg.get(args.probe)
-    if not rel:
-        raise SystemExit(f'unknown probe: {args.probe}')
-    wl=(ROOT/rel).parent/'wolfram.wl'
     if args.provider!='wolfram':
         raise SystemExit('no adapter implemented for provider')
-    proc=run_process([args.mcporter,'--config',args.config,'call','wolfram.WolframLanguageEvaluator',f'code=@{wl}','timeConstraint=60'])
+    try:
+        rendered=render_wolfram_probe(ROOT,args.probe)
+    except ValueError as exc:
+        raise SystemExit(str(exc))
+    with tempfile.NamedTemporaryFile('w',suffix='.wl',encoding='utf-8') as handle:
+        handle.write(rendered['code'])
+        handle.flush()
+        proc=run_process([args.mcporter,'--config',args.config,'call','wolfram.WolframLanguageEvaluator',f'code=@{handle.name}','timeConstraint=60'])
     raw=(proc.stdout+'\n'+proc.stderr).strip()
     payload=parse_wolfram_payload(raw)
     result=classify_result(proc.returncode,payload)
     version_proc=run_process([args.mcporter,'--version'])
     version=version_proc.stdout.strip() if version_proc.returncode==0 else 'UNAVAILABLE'
     receipt={
-      'schema':'theseus.math-research-mcp-witness.v1',
+      'schema':'theseus.math-research-mcp-witness.v2',
       'provider':args.provider,
       'probe_id':args.probe,
       'provider_status':pmeta['status'],
       'mcporter_version':version,
       'config_sha256':hashlib.sha256(pathlib.Path(args.config).read_bytes()).hexdigest(),
-      'witness_sha256':hashlib.sha256(wl.read_bytes()).hexdigest(),
+      'witness_sha256':rendered['binding']['rendered_sha256'],
+      'source_binding':rendered['binding'],
       'transport':{'tool':'WolframLanguageEvaluator','command_shape':'code=@file','returncode':proc.returncode},
       'payload':payload,
       'result':result,

@@ -17,6 +17,15 @@ for pid,rel in reg.items():
     for x in [m['entrypoint'],*m['inputs']]:
         if not (ROOT/x).is_file(): errs.append(f'missing:{pid}:{x}')
 
+for pid in ('graph-hodge','filled-cell'):
+    rel=reg.get(pid)
+    if rel is None:
+        errs.append(f'wolfram-probe-unregistered:{pid}')
+        continue
+    probe_dir=(ROOT/rel).parent
+    if not (probe_dir/'wolfram.template.wl').is_file(): errs.append(f'wolfram-template-missing:{pid}')
+    if (probe_dir/'wolfram.wl').exists(): errs.append(f'wolfram-concrete-source-forbidden:{pid}')
+
 calc_path=ROOT/'lean-calculator/registry.json'
 calc=json.loads(calc_path.read_text())
 if calc.get('schema')!='theseus.lean-calculator-registry.v1': errs.append('lean-calculator-schema')
