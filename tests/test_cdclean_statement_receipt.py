@@ -78,5 +78,65 @@ class StatementReceiptTests(unittest.TestCase):
             )
 
 
+
+
+    def test_cmd_run_persists_research_mutant_classification(self):
+        with tempfile.TemporaryDirectory() as td:
+            td = pathlib.Path(td)
+            source_root = td / "source"
+            source_file = source_root / "CDCLean" / "Main.lean"
+            source_file.parent.mkdir(parents=True)
+            source_file.write_text(
+                """theorem cycleDoubleCover_of_bridgeless
+    {V E : Type u} [Fintype V] [Fintype E] [DecidableEq V] [DecidableEq E]
+    (G : FiniteGraph V E) (hb : G.Bridgeless) :
+    Nonempty G.CycleDoubleCover := by
+  sorry
+"""
+            )
+            out = td / "receipt.json"
+            diagnostics = td / "diagnostics.txt"
+            args = type(
+                "Args", (), {
+                    "probe": "cdclean-drop-bridgeless-assumption",
+                    "source_checkout": str(source_root),
+                    "out": str(out),
+                    "diagnostics": str(diagnostics),
+                    "timeout_seconds": 30,
+                    "cache_key": "cache-key",
+                    "cache_hit": "true",
+                }
+            )()
+            observed_source = {
+                "commit": "577e9d9ea326d520f80672ee69b830bf1d513df5",
+                "identity_sha256": "x",
+                "lean_toolchain_sha256": "y",
+                "lake_manifest_sha256": "z",
+                "lean_toolchain": "leanprover/lean4:v4.31.0",
+            }
+            execution = {
+                "observation": "LEAN_REJECTED",
+                "returncode": 1,
+                "diagnostics": "error",
+                "preflight": {"status": "PASS", "returncode": 0},
+                "calibration": {"status": "PASS", "observation": "ELABORATES", "returncode": 0},
+            }
+            with mock.patch.object(
+                MOD, "verify_source", return_value=(source_root, observed_source)
+            ), mock.patch.object(
+                MOD, "execute_lean_probe", return_value=execution
+            ), mock.patch.object(
+                MOD, "version_output", return_value="version"
+            ):
+                rc = MOD.cmd_run(args)
+
+            receipt = json.loads(out.read_text())
+            self.assertEqual(rc, 0)
+            self.assertEqual(receipt["mutation"]["research_mutant"], "M1")
+            self.assertEqual(
+                receipt["mutation"]["research_interpretation"],
+                "KILLED_BY_FORMAL_DERIVATION / ASSUMPTION_OBSERVED",
+            )
+
 if __name__ == "__main__":
     unittest.main()

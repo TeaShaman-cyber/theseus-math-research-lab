@@ -345,6 +345,15 @@ def cmd_run(args):
         statement_observation["status"],
         expected_statement_identity,
     )
+    mutation = {
+        "intent": probe["intent"],
+        "probe_file": probe["probe_file"],
+        "probe_sha256": sha256(probe_path),
+    }
+    for field in ("research_mutant", "research_interpretation"):
+        if field in probe:
+            mutation[field] = probe[field]
+
     receipt = {
         "schema": SCHEMA,
         "probe_id": args.probe,
@@ -355,11 +364,7 @@ def cmd_run(args):
             "lean": version_output(["lake", "env", "lean", "--version"], cwd=source_root),
         },
         "cache": {"key": args.cache_key, "hit": args.cache_hit == "true"},
-        "mutation": {
-            "intent": probe["intent"],
-            "probe_file": probe["probe_file"],
-            "probe_sha256": sha256(probe_path),
-        },
+        "mutation": mutation,
         "oracle": {
             "expected_observation": expected,
             "expected_statement_identity": expected_statement_identity,
