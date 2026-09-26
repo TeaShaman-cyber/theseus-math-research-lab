@@ -12,6 +12,7 @@ on:
           - cdclean-bridgeless-alpha-rename-canary
           - cdclean-replace-conclusion-with-true-canary
           - cdclean-wrong-typed-gamma-bridge-canary
+          - cdclean-drop-bridgeless-assumption
 
 permissions:
   contents: read

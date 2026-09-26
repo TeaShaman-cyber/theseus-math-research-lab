@@ -79,6 +79,20 @@
         "source_declaration": "cycleDoubleCover_of_bridgeless"
       },
       "expected_statement_identity": "SAME"
+    },
+    "cdclean-drop-bridgeless-assumption": {
+      "source": "cdclean",
+      "probe_file": "lean-calculator/probes/cdclean-drop-bridgeless-assumption.lean",
+      "intent": "CHANGE",
+      "expected_observation": "LEAN_REJECTED",
+      "issue": 27,
+      "calibration_probe": "cdclean-bridgeless-alpha-rename-canary",
+      "statement_observer": {
+        "source_declaration": "cycleDoubleCover_of_bridgeless"
+      },
+      "expected_statement_identity": "CHANGED",
+      "research_mutant": "M1",
+      "research_interpretation": "KILLED_BY_FORMAL_DERIVATION / ASSUMPTION_OBSERVED"
     }
   }
 }
