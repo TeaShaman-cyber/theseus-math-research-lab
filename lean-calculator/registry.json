@@ -32,7 +32,8 @@
       "probe_file": "lean-calculator/probes/connf-samespec-drop-reverse.lean",
       "intent": "CHANGE",
       "expected_observation": "LEAN_REJECTED",
-      "issue": 32
+      "issue": 32,
+      "calibration_probe": "connf-samespec-canary"
     }
   }
 }
