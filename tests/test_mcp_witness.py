@@ -45,6 +45,10 @@ class MCPWitnessTests(unittest.TestCase):
             receipt = __import__('json').loads(out.read_text(encoding='utf-8'))
             self.assertEqual('VERIFIED', receipt['status'])
             self.assertTrue(receipt['payload']['pass'])
+            self.assertEqual(receipt['witness_sha256'], receipt['source_binding']['rendered_sha256'])
+            self.assertEqual('probes/graph-hodge/input.json', receipt['source_binding']['inputs'][0]['path'])
+            self.assertEqual('probes/graph-hodge/wolfram.template.wl', receipt['source_binding']['template']['path'])
+            self.assertEqual('tools/research/wolfram_adapter.py', receipt['source_binding']['adapter']['path'])
 
     def test_classifies_valid_false_assertion_separately(self):
         self.assertEqual(MOD.classify_result(0, {'pass': False}), 'FAIL_ASSERTION')
