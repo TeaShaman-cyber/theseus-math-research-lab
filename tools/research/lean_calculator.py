@@ -37,6 +37,54 @@ def safe_rel(value, *, field):
     return p
 
 
+def _normalized_statement_signature(text, *, source_declaration=None):
+    if source_declaration is None:
+        pattern = re.compile(r"\bexample\b(?P<signature>.*?)\s*:=\s*by\b", re.DOTALL)
+    else:
+        pattern = re.compile(
+            rf"\btheorem\s+{re.escape(source_declaration)}\b(?P<signature>.*?)\s*:=\s*by\b",
+            re.DOTALL,
+        )
+    match = pattern.search(text)
+    if match is None:
+        role = "probe example" if source_declaration is None else f"source theorem {source_declaration}"
+        raise ValueError(f"statement observer could not locate {role}")
+    signature = re.sub(r"--[^\n]*", "", match.group("signature"))
+    return re.sub(r"\s+", " ", signature).strip()
+
+
+def compare_statement_identity(source_text, probe_text, *, source_declaration):
+    # Cheap source-bound boundary observer only. SAME means normalized declaration
+    # text matched; it is not a claim of semantic or proof-term equivalence.
+    source_signature = _normalized_statement_signature(
+        source_text, source_declaration=source_declaration
+    )
+    probe_signature = _normalized_statement_signature(probe_text)
+    source_sha256 = hashlib.sha256(source_signature.encode("utf-8")).hexdigest()
+    probe_sha256 = hashlib.sha256(probe_signature.encode("utf-8")).hexdigest()
+    return {
+        "status": "SAME" if source_sha256 == probe_sha256 else "CHANGED",
+        "method": "NORMALIZED_DECLARATION_TEXT",
+        "source_declaration": source_declaration,
+        "source_sha256": source_sha256,
+        "probe_sha256": probe_sha256,
+    }
+
+
+def probe_result_status(
+    observation,
+    expected_observation,
+    statement_status="NOT_CONFIGURED",
+    expected_statement_status=None,
+):
+    observation_ok = observation == expected_observation
+    statement_ok = (
+        expected_statement_status is None
+        or statement_status == expected_statement_status
+    )
+    return "PASS" if observation_ok and statement_ok else "FAIL"
+
+
 def cache_key(reg, source):
     runner = reg["runner"]
     target_hash = hashlib.sha256(source["build_target"].encode("utf-8")).hexdigest()[:16]
@@ -250,6 +298,25 @@ def cmd_run(args):
     diagnostics = pathlib.Path(args.diagnostics).resolve()
     source_root, observed_source = verify_source(checkout, source)
     probe_path = ROOT / safe_rel(probe["probe_file"], field="probe_file")
+    statement_observation = {"status": "NOT_CONFIGURED"}
+    expected_statement_identity = probe.get("expected_statement_identity")
+    statement_observer = probe.get("statement_observer")
+    if statement_observer is not None:
+        if expected_statement_identity not in {"SAME", "CHANGED"}:
+            raise RuntimeError("statement observer requires SAME/CHANGED expected identity")
+        source_declaration = statement_observer.get("source_declaration")
+        if not isinstance(source_declaration, str) or not source_declaration:
+            raise RuntimeError("statement observer source declaration missing")
+        source_statement_path = source_root / safe_rel(
+            source["identity_file"], field="statement_source_file"
+        )
+        statement_observation = compare_statement_identity(
+            source_statement_path.read_text(),
+            probe_path.read_text(),
+            source_declaration=source_declaration,
+        )
+    elif expected_statement_identity is not None:
+        raise RuntimeError("expected statement identity configured without observer")
     materialized = source_root / ".theseus-lean-calculator-probe.lean"
     shutil.copyfile(probe_path, materialized)
     calibration_path = None
@@ -272,7 +339,12 @@ def cmd_run(args):
     diagnostics.parent.mkdir(parents=True, exist_ok=True)
     diagnostics.write_text(diag_text)
     expected = probe["expected_observation"]
-    status = "PASS" if observation == expected else "FAIL"
+    status = probe_result_status(
+        observation,
+        expected,
+        statement_observation["status"],
+        expected_statement_identity,
+    )
     receipt = {
         "schema": SCHEMA,
         "probe_id": args.probe,

@@ -23,6 +23,8 @@ class LeanCalculatorContractTests(unittest.TestCase):
                 "connf-samespec-canary",
                 "connf-samespec-drop-reverse",
                 "cdclean-bridgeless-alpha-rename-canary",
+                "cdclean-replace-conclusion-with-true-canary",
+                "cdclean-wrong-typed-gamma-bridge-canary",
             },
         )
         for pid, probe in reg["probes"].items():

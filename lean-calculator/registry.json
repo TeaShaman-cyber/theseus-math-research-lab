@@ -51,7 +51,34 @@
       "probe_file": "lean-calculator/probes/cdclean-bridgeless-alpha-rename-canary.lean",
       "intent": "PRESERVE",
       "expected_observation": "ELABORATES",
-      "issue": 27
+      "issue": 27,
+      "statement_observer": {
+        "source_declaration": "cycleDoubleCover_of_bridgeless"
+      },
+      "expected_statement_identity": "SAME"
+    },
+    "cdclean-replace-conclusion-with-true-canary": {
+      "source": "cdclean",
+      "probe_file": "lean-calculator/probes/cdclean-replace-conclusion-with-true-canary.lean",
+      "intent": "CHANGE",
+      "expected_observation": "ELABORATES",
+      "issue": 27,
+      "statement_observer": {
+        "source_declaration": "cycleDoubleCover_of_bridgeless"
+      },
+      "expected_statement_identity": "CHANGED"
+    },
+    "cdclean-wrong-typed-gamma-bridge-canary": {
+      "source": "cdclean",
+      "probe_file": "lean-calculator/probes/cdclean-wrong-typed-gamma-bridge-canary.lean",
+      "intent": "INVALID",
+      "expected_observation": "LEAN_REJECTED",
+      "issue": 27,
+      "calibration_probe": "cdclean-bridgeless-alpha-rename-canary",
+      "statement_observer": {
+        "source_declaration": "cycleDoubleCover_of_bridgeless"
+      },
+      "expected_statement_identity": "SAME"
     }
   }
 }
