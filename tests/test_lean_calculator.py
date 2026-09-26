@@ -17,7 +17,14 @@ class LeanCalculatorContractTests(unittest.TestCase):
         reg = json.loads((ROOT / "lean-calculator/registry.json").read_text())
         self.assertEqual(reg["schema"], "theseus.lean-calculator-registry.v1")
         self.assertEqual(reg["runner"]["schema_version"], 3)
-        self.assertEqual(set(reg["probes"]), {"connf-samespec-canary", "connf-samespec-drop-reverse"})
+        self.assertEqual(
+            set(reg["probes"]),
+            {
+                "connf-samespec-canary",
+                "connf-samespec-drop-reverse",
+                "cdclean-bridgeless-alpha-rename-canary",
+            },
+        )
         for pid, probe in reg["probes"].items():
             self.assertIn(probe["source"], reg["sources"])
             path = pathlib.PurePosixPath(probe["probe_file"])
@@ -28,6 +35,26 @@ class LeanCalculatorContractTests(unittest.TestCase):
             self.assertIn(probe["expected_observation"], {"ELABORATES", "LEAN_REJECTED"})
             if probe["expected_observation"] == "LEAN_REJECTED":
                 self.assertIn("calibration_probe", probe, pid)
+
+
+    def test_cdclean_source_identity_is_frozen(self):
+        reg = MOD.load_registry()
+        source = reg["sources"]["cdclean"]
+        self.assertEqual(source["repo"], "openai/cdc-lean")
+        self.assertEqual(source["commit"], "577e9d9ea326d520f80672ee69b830bf1d513df5")
+        self.assertEqual(source["build_target"], "CDCLean")
+        self.assertEqual(source["lean_toolchain"], "leanprover/lean4:v4.31.0")
+        self.assertEqual(
+            source["identity_sha256"],
+            "868348894074fa6d695a4483f600a8b779b478edf49d72b3d75a76f06f319482",
+        )
+
+    def test_cdclean_canary_uses_distinct_source_cache_identity(self):
+        reg = MOD.load_registry()
+        connf = MOD.cache_key(reg, reg["sources"]["connf"])
+        cdclean = MOD.cache_key(reg, reg["sources"]["cdclean"])
+        self.assertNotEqual(connf, cdclean)
+        self.assertIn(reg["sources"]["cdclean"]["commit"], cdclean)
 
     def test_cache_key_is_identity_bound(self):
         reg = MOD.load_registry()

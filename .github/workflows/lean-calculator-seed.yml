@@ -9,6 +9,7 @@ on:
         options:
           - connf-samespec-canary
           - connf-samespec-drop-reverse
+          - cdclean-bridgeless-alpha-rename-canary
 
 permissions:
   contents: read

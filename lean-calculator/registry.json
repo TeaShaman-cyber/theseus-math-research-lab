@@ -17,6 +17,17 @@
       "lean_toolchain": "leanprover/lean4:v4.21.0-rc3",
       "lean_toolchain_sha256": "da0dca5dc6b4769fd938a21a720b4648593d7209929ebd86c4dd0cc1c6dc4dc2",
       "lake_manifest_sha256": "4e4b2c81b3b9b0995570e5479d3ac372652a22dded8aec15c66e71a1d7a3f705"
+    },
+    "cdclean": {
+      "repo": "openai/cdc-lean",
+      "commit": "577e9d9ea326d520f80672ee69b830bf1d513df5",
+      "source_root": ".",
+      "build_target": "CDCLean",
+      "identity_file": "CDCLean/Main.lean",
+      "identity_sha256": "868348894074fa6d695a4483f600a8b779b478edf49d72b3d75a76f06f319482",
+      "lean_toolchain": "leanprover/lean4:v4.31.0",
+      "lean_toolchain_sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+      "lake_manifest_sha256": "017e3d0d83fe1030fba04238d0481c8559316006e6f745c0a99231f0be59ca9b"
     }
   },
   "probes": {
@@ -34,6 +45,13 @@
       "expected_observation": "LEAN_REJECTED",
       "issue": 32,
       "calibration_probe": "connf-samespec-canary"
+    },
+    "cdclean-bridgeless-alpha-rename-canary": {
+      "source": "cdclean",
+      "probe_file": "lean-calculator/probes/cdclean-bridgeless-alpha-rename-canary.lean",
+      "intent": "PRESERVE",
+      "expected_observation": "ELABORATES",
+      "issue": 27
     }
   }
 }
