@@ -14,6 +14,7 @@ class LeanCalculatorContractTests(unittest.TestCase):
     def test_registered_probes_are_bounded(self):
         reg = json.loads((ROOT / "lean-calculator/registry.json").read_text())
         self.assertEqual(reg["schema"], "theseus.lean-calculator-registry.v1")
+        self.assertEqual(reg["runner"]["schema_version"], 2)
         self.assertEqual(set(reg["probes"]), {"connf-samespec-canary", "connf-samespec-drop-reverse"})
         for pid, probe in reg["probes"].items():
             self.assertIn(probe["source"], reg["sources"])
@@ -31,6 +32,24 @@ class LeanCalculatorContractTests(unittest.TestCase):
         self.assertIn(source["commit"], key)
         self.assertIn(source["lean_toolchain_sha256"][:16], key)
         self.assertIn(source["lake_manifest_sha256"][:16], key)
+
+
+    def test_cache_metadata_binds_registered_identity(self):
+        reg = MOD.load_registry()
+        source = reg["sources"]["connf"]
+        metadata = MOD.cache_metadata(reg, source)
+        self.assertEqual(metadata["cache_key"], MOD.cache_key(reg, source))
+        self.assertEqual(metadata["source"]["commit"], source["commit"])
+        self.assertEqual(metadata["runner"]["schema_version"], 2)
+        self.assertEqual(MOD.verify_cache_metadata_payload(metadata, reg, source), metadata)
+
+    def test_cache_metadata_rejects_single_binding_mutation(self):
+        reg = MOD.load_registry()
+        source = reg["sources"]["connf"]
+        metadata = MOD.cache_metadata(reg, source)
+        metadata["source"]["lake_manifest_sha256"] = "0" * 64
+        with self.assertRaises(RuntimeError):
+            MOD.verify_cache_metadata_payload(metadata, reg, source)
 
     def test_cache_miss_receipt_is_not_success(self):
         class Args:

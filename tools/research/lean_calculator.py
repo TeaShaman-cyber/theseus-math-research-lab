@@ -117,9 +117,9 @@ def cmd_verify(args):
     print(json.dumps(observed, sort_keys=True))
 
 
-def version_output(argv):
+def version_output(argv, *, cwd=None):
     try:
-        p = subprocess.run(argv, capture_output=True, text=True, timeout=30)
+        p = subprocess.run(argv, cwd=cwd, capture_output=True, text=True, timeout=30)
     except Exception as exc:
         return f"UNAVAILABLE:{type(exc).__name__}:{exc}"
     text = (p.stdout or p.stderr).strip().replace("\n", " ")
@@ -161,8 +161,8 @@ def cmd_run(args):
         "issue": probe["issue"],
         "source": {"repo": source["repo"], **observed_source},
         "toolchain": {
-            "lake": version_output(["lake", "--version"]),
-            "lean": version_output(["lake", "env", "lean", "--version"]),
+            "lake": version_output(["lake", "--version"], cwd=source_root),
+            "lean": version_output(["lake", "env", "lean", "--version"], cwd=source_root),
         },
         "cache": {"key": args.cache_key, "hit": args.cache_hit == "true"},
         "mutation": {
@@ -201,19 +201,69 @@ def cmd_cache_miss(args):
     print(json.dumps(receipt, sort_keys=True))
 
 
+def cache_metadata(reg, source):
+    return {
+        "schema": "theseus.lean-calculator-cache.v1",
+        "cache_key": cache_key(reg, source),
+        "source": {
+            "repo": source["repo"],
+            "commit": source["commit"],
+            "source_root": source["source_root"],
+            "identity_sha256": source["identity_sha256"],
+            "lean_toolchain": source["lean_toolchain"],
+            "lean_toolchain_sha256": source["lean_toolchain_sha256"],
+            "lake_manifest_sha256": source["lake_manifest_sha256"],
+        },
+        "runner": {
+            "schema_version": reg["runner"]["schema_version"],
+            "runner_image": reg["runner"]["runner_image"],
+            "elan_version": reg["runner"]["elan_version"],
+            "elan_sha256": reg["runner"]["elan_sha256"],
+        },
+    }
+
+
+def verify_cache_metadata_payload(payload, reg, source):
+    expected = cache_metadata(reg, source)
+    if payload != expected:
+        raise RuntimeError("cache metadata does not match registered source/runtime identity")
+    return payload
+
+
+def cmd_write_cache_metadata(args):
+    reg, _, source = probe_config(args.probe)
+    path = pathlib.Path(args.out).resolve()
+    write_receipt(path, cache_metadata(reg, source))
+    print(json.dumps(cache_metadata(reg, source), sort_keys=True))
+
+
+def cmd_verify_cache_metadata(args):
+    reg, _, source = probe_config(args.probe)
+    path = pathlib.Path(args.path).resolve()
+    if not path.is_file():
+        raise SystemExit("exact cache metadata missing")
+    try:
+        payload = json.loads(path.read_text())
+        verify_cache_metadata_payload(payload, reg, source)
+    except Exception as exc:
+        raise SystemExit(f"invalid exact cache metadata: {exc}")
+    print(json.dumps(payload, sort_keys=True))
+
+
 def cmd_seed_receipt(args):
     reg, probe, source = probe_config(args.probe)
     checkout = pathlib.Path(args.source_checkout).resolve()
-    _, observed_source = verify_source(checkout, source)
+    source_root, observed_source = verify_source(checkout, source)
     receipt = {
         "schema": "theseus.lean-calculator-seed.v1",
         "probe_id": args.probe,
         "source": {"repo": source["repo"], **observed_source},
         "cache": {"key": cache_key(reg, source), "seeded": args.seeded == "true"},
         "toolchain": {
-            "lake": version_output(["lake", "--version"]),
-            "lean": version_output(["lake", "env", "lean", "--version"]),
+            "lake": version_output(["lake", "--version"], cwd=source_root),
+            "lean": version_output(["lake", "env", "lean", "--version"], cwd=source_root),
         },
+        "cache_metadata": cache_metadata(reg, source),
         "result": "PASS",
         "authority": "NON_SCIENTIFIC_EXECUTION_WITNESS",
     }
@@ -245,6 +295,14 @@ def build_parser():
     miss.add_argument("--probe", required=True)
     miss.add_argument("--out", required=True)
     miss.set_defaults(func=cmd_cache_miss)
+    meta_write = sub.add_parser("write-cache-metadata")
+    meta_write.add_argument("--probe", required=True)
+    meta_write.add_argument("--out", required=True)
+    meta_write.set_defaults(func=cmd_write_cache_metadata)
+    meta_verify = sub.add_parser("verify-cache-metadata")
+    meta_verify.add_argument("--probe", required=True)
+    meta_verify.add_argument("--path", required=True)
+    meta_verify.set_defaults(func=cmd_verify_cache_metadata)
     seed = sub.add_parser("seed-receipt")
     seed.add_argument("--probe", required=True)
     seed.add_argument("--source-checkout", required=True)
