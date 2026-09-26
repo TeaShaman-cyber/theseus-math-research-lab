@@ -93,6 +93,19 @@
       "expected_statement_identity": "CHANGED",
       "research_mutant": "M1",
       "research_interpretation": "KILLED_BY_FORMAL_DERIVATION / ASSUMPTION_OBSERVED"
+    },
+    "cdclean-explicit-gamma-premise": {
+      "source": "cdclean",
+      "probe_file": "lean-calculator/probes/cdclean-explicit-gamma-premise.lean",
+      "intent": "CHANGE",
+      "expected_observation": "ELABORATES",
+      "issue": 27,
+      "statement_observer": {
+        "source_declaration": "cycleDoubleCover_of_bridgeless"
+      },
+      "expected_statement_identity": "CHANGED",
+      "research_mutant": "M2",
+      "research_interpretation": "KILLED / BRIDGE_SEGMENT_REMOVED"
     }
   }
 }

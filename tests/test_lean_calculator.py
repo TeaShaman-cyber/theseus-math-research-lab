@@ -26,6 +26,7 @@ class LeanCalculatorContractTests(unittest.TestCase):
                 "cdclean-replace-conclusion-with-true-canary",
                 "cdclean-wrong-typed-gamma-bridge-canary",
                 "cdclean-drop-bridgeless-assumption",
+                "cdclean-explicit-gamma-premise",
             },
         )
         for pid, probe in reg["probes"].items():
