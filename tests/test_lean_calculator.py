@@ -28,6 +28,7 @@ class LeanCalculatorContractTests(unittest.TestCase):
                 "cdclean-drop-bridgeless-assumption",
                 "cdclean-explicit-gamma-premise",
                 "cdclean-seymour-six-flow-premise",
+                "cdclean-inline-gamma-flow-to-cover",
             },
         )
         for pid, probe in reg["probes"].items():
