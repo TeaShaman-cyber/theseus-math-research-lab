@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 import pathlib
+import re
 import shutil
 import subprocess
 import sys
@@ -127,6 +128,121 @@ def version_output(argv, *, cwd=None):
     return text if p.returncode == 0 else f"UNAVAILABLE:rc={p.returncode}:{text}"
 
 
+def _runtime_failure_diagnostic(text):
+    low = text.lower()
+    markers = (
+        "segmentation fault",
+        "stack overflow",
+        "uncaught exception",
+        "fatal runtime error",
+        "panic at",
+        "internal error",
+    )
+    return any(marker in low for marker in markers)
+
+
+def _has_source_error_diagnostic(text, path):
+    # Lean 4.21 rc3 emits compiler/elaborator errors as source-bound lines such as:
+    #   Foo.lean:7:30-7:33: error: type mismatch
+    # Infrastructure/runtime failures must not be inferred as semantic rejection
+    # merely from a nonzero exit code.
+    name = re.escape(path.name)
+    pattern = re.compile(
+        rf"(?m)^(?:.*[/\\])?{name}:\d+:\d+(?:-\d+:\d+)?: error:"
+    )
+    return pattern.search(text) is not None
+
+
+def _run_lean_file(source_root, path, timeout_seconds):
+    argv = ["lake", "env", "lean", path.name]
+    try:
+        proc = subprocess.run(
+            argv,
+            cwd=source_root,
+            capture_output=True,
+            text=True,
+            timeout=timeout_seconds,
+        )
+    except (FileNotFoundError, PermissionError, OSError, subprocess.TimeoutExpired) as exc:
+        return {
+            "kind": "RUNNER_FAILED",
+            "returncode": None,
+            "diagnostics": f"probe exception: {type(exc).__name__}: {exc}\n",
+        }
+    text = (proc.stdout or "") + (proc.stderr or "")
+    if proc.returncode == 0:
+        kind = "ELABORATES"
+    elif proc.returncode < 0 or proc.returncode >= 128 or _runtime_failure_diagnostic(text):
+        kind = "RUNNER_FAILED"
+    elif _has_source_error_diagnostic(text, path):
+        kind = "LEAN_REJECTED"
+    else:
+        kind = "RUNNER_FAILED"
+    return {"kind": kind, "returncode": proc.returncode, "diagnostics": text}
+
+
+def execute_lean_probe(source_root, materialized, timeout_seconds, calibration=None):
+    preflight_argv = ["lake", "env", "lean", "--version"]
+    try:
+        preflight = subprocess.run(
+            preflight_argv,
+            cwd=source_root,
+            capture_output=True,
+            text=True,
+            timeout=min(timeout_seconds, 60),
+        )
+    except (FileNotFoundError, PermissionError, OSError, subprocess.TimeoutExpired) as exc:
+        return {
+            "observation": "RUNNER_FAILED",
+            "returncode": None,
+            "diagnostics": f"preflight exception: {type(exc).__name__}: {exc}\n",
+            "preflight": {"status": "FAILED", "returncode": None},
+            "calibration": {"status": "NOT_RUN"},
+        }
+    preflight_text = (preflight.stdout or "") + (preflight.stderr or "")
+    if preflight.returncode != 0:
+        return {
+            "observation": "RUNNER_FAILED",
+            "returncode": preflight.returncode,
+            "diagnostics": "preflight failed:\n" + preflight_text,
+            "preflight": {"status": "FAILED", "returncode": preflight.returncode},
+            "calibration": {"status": "NOT_RUN"},
+        }
+
+    calibration_status = {"status": "NOT_REQUIRED"}
+    diagnostics = preflight_text
+    if calibration is not None:
+        cal = _run_lean_file(source_root, calibration, timeout_seconds)
+        diagnostics += cal["diagnostics"]
+        if cal["kind"] != "ELABORATES":
+            return {
+                "observation": "RUNNER_FAILED",
+                "returncode": cal["returncode"],
+                "diagnostics": diagnostics,
+                "preflight": {"status": "PASS", "returncode": 0},
+                "calibration": {
+                    "status": "FAILED",
+                    "observation": cal["kind"],
+                    "returncode": cal["returncode"],
+                },
+            }
+        calibration_status = {
+            "status": "PASS",
+            "observation": "ELABORATES",
+            "returncode": 0,
+        }
+
+    probe_run = _run_lean_file(source_root, materialized, timeout_seconds)
+    diagnostics += probe_run["diagnostics"]
+    return {
+        "observation": probe_run["kind"],
+        "returncode": probe_run["returncode"],
+        "diagnostics": diagnostics,
+        "preflight": {"status": "PASS", "returncode": 0},
+        "calibration": calibration_status,
+    }
+
+
 def cmd_run(args):
     reg, probe, source = probe_config(args.probe)
     checkout = pathlib.Path(args.source_checkout).resolve()
@@ -136,22 +252,23 @@ def cmd_run(args):
     probe_path = ROOT / safe_rel(probe["probe_file"], field="probe_file")
     materialized = source_root / ".theseus-lean-calculator-probe.lean"
     shutil.copyfile(probe_path, materialized)
-    argv = ["lake", "env", "lean", materialized.name]
-    try:
-        proc = subprocess.run(
-            argv,
-            cwd=source_root,
-            capture_output=True,
-            text=True,
-            timeout=args.timeout_seconds,
+    calibration_path = None
+    calibration_id = probe.get("calibration_probe")
+    if calibration_id is not None:
+        calibration_probe = reg["probes"].get(calibration_id)
+        if calibration_probe is None or calibration_probe.get("source") != probe.get("source"):
+            raise RuntimeError(f"invalid calibration probe binding: {calibration_id}")
+        registered_calibration = ROOT / safe_rel(
+            calibration_probe["probe_file"], field="calibration_probe_file"
         )
-        diag_text = (proc.stdout or "") + (proc.stderr or "")
-        observation = "ELABORATES" if proc.returncode == 0 else "LEAN_REJECTED"
-        returncode = proc.returncode
-    except Exception as exc:
-        diag_text = f"runner exception: {type(exc).__name__}: {exc}\n"
-        observation = "RUNNER_FAILED"
-        returncode = None
+        calibration_path = source_root / ".theseus-lean-calculator-calibration.lean"
+        shutil.copyfile(registered_calibration, calibration_path)
+    execution = execute_lean_probe(
+        source_root, materialized, args.timeout_seconds, calibration=calibration_path
+    )
+    diag_text = execution["diagnostics"]
+    observation = execution["observation"]
+    returncode = execution["returncode"]
     diagnostics.parent.mkdir(parents=True, exist_ok=True)
     diagnostics.write_text(diag_text)
     expected = probe["expected_observation"]
@@ -175,6 +292,8 @@ def cmd_run(args):
         "observations": {
             "elaboration": observation,
             "returncode": returncode,
+            "preflight": execution["preflight"],
+            "calibration": execution["calibration"],
             "diagnostic_sha256": sha256(diagnostics),
         },
         "result": status,

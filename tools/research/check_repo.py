@@ -40,5 +40,13 @@ for pid,probe in calc.get('probes',{}).items():
     elif not (ROOT/rel).is_file(): errs.append(f'lean-probe-missing:{pid}')
     if probe.get('intent') not in {'PRESERVE','CHANGE','INVALID'}: errs.append(f'lean-probe-intent:{pid}')
     if probe.get('expected_observation') not in {'ELABORATES','LEAN_REJECTED'}: errs.append(f'lean-probe-observation:{pid}')
+    calibration=probe.get('calibration_probe')
+    if probe.get('expected_observation')=='LEAN_REJECTED' and calibration is None:
+        errs.append(f'lean-probe-calibration-required:{pid}')
+    if calibration is not None:
+        target=calc.get('probes',{}).get(calibration)
+        if target is None: errs.append(f'lean-probe-calibration:{pid}')
+        elif target.get('source')!=probe.get('source'): errs.append(f'lean-probe-calibration-source:{pid}')
+        elif target.get('intent')!='PRESERVE' or target.get('expected_observation')!='ELABORATES': errs.append(f'lean-probe-calibration-contract:{pid}')
 if errs: print('\n'.join(errs),file=sys.stderr); raise SystemExit(1)
 print('REPO_STRUCTURE_PASS')
