@@ -36,7 +36,7 @@ The GitHub Project is **Theseus Mathematics Research** (Project #6).
 | Riemann spectral/operator | #3 | In Progress |
 | Riemann zero dynamics / phase transition | #4 | Todo |
 | Graph-zeta / Selberg / trace formula | #5 | Todo |
-| Hodge / topology / flow | #6 | Todo |
+| Hodge / topology / flow | #6 | In Progress |
 | Smaller-problem discovery | #7 | Todo |
 | Evidence-graph methodology | #8 | Todo |
 | Research tooling / receipts | #9 | Todo |
@@ -68,7 +68,9 @@ Other routes:
 - #17 — mine bounded formal problems from exact Hodge/flow bridge objects;
 - #18 — first non-RH smaller-problem mining pass over accepted formal corpora;
 - #19 — preserve and extend the negative-control bridge-classifier experiment;
-- #20 — define reusable live-research smoke receipts.
+- #20 — define reusable live-research smoke receipts;
+- #23 — calibrate scale-local dissipation/intermittency observables against explicit flow geometry;
+- #24 — test semantic mutation as a bounded search instrument for missing bridge assumptions / verifier blind spots.
 
 ## Preserved boundaries from the historical thread
 
@@ -104,6 +106,10 @@ exact source / formal-corpus search
 ```
 
 Do not measure progress as a scalar percentage toward a grand conjecture.
+
+### Semantic-mutation research witness
+
+Issue #24 treats mutation as a search instrument, not a score or theorem authority. The first fixture mutates the accepted finite filled-cell Hodge bridge and records a versioned `theseus.math-semantic-mutation.v1` payload inside the normal research receipt. Geometry-changing mutations must be detected, representation-preserving mutations may survive only with explicit classification, and invalid chain-complex candidates are rejected before being interpreted as mathematical signal.
 
 
 ## QA / Research DevOps

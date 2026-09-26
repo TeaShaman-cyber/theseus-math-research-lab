@@ -1,1 +1,1 @@
-{"schema":"theseus.math-research-probe-registry.v1","probes":{"graph-hodge":"probes/graph-hodge/probe.json","filled-cell":"probes/filled-cell/probe.json"}}
+{"schema":"theseus.math-research-probe-registry.v1","probes":{"graph-hodge":"probes/graph-hodge/probe.json","filled-cell":"probes/filled-cell/probe.json","semantic-mutation-filled-cell":"probes/semantic-mutation-filled-cell/probe.json"}}

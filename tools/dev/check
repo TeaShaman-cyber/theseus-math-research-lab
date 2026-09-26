@@ -9,6 +9,7 @@ python3 -m unittest discover -s tests -v
 echo '== deterministic probes =='
 rm -rf .tmp-receipts && mkdir -p .tmp-receipts
 python3 tools/research/run_probe.py --probe graph-hodge --out .tmp-receipts/graph-hodge.json >/dev/null
+python3 tools/research/run_probe.py --probe semantic-mutation-filled-cell --out .tmp-receipts/semantic-mutation-filled-cell.json >/dev/null
 python3 tools/research/run_probe.py --probe filled-cell --out .tmp-receipts/filled-cell.json >/dev/null
 echo '== whitespace =='
 git diff --check

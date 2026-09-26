@@ -15,7 +15,7 @@ class ProbeContractTests(unittest.TestCase):
 
     def test_registry_and_boundaries(self):
         reg=json.loads((ROOT/'probes/registry.json').read_text())['probes']
-        self.assertEqual(set(reg),{'graph-hodge','filled-cell'})
+        self.assertEqual(set(reg),{'graph-hodge','filled-cell','semantic-mutation-filled-cell'})
         for pid,rel in reg.items():
             m=json.loads((ROOT/rel).read_text())
             self.assertEqual(m['probe_id'],pid)

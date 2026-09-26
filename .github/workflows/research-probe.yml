@@ -5,7 +5,7 @@ on:
       probe:
         required: true
         type: choice
-        options: [graph-hodge, filled-cell]
+        options: [graph-hodge, filled-cell, semantic-mutation-filled-cell]
 permissions:
   contents: read
 jobs:
