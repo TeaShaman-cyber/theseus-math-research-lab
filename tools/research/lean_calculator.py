@@ -360,9 +360,13 @@ def cmd_run(args):
             "probe_file": probe["probe_file"],
             "probe_sha256": sha256(probe_path),
         },
-        "oracle": {"expected_observation": expected},
+        "oracle": {
+            "expected_observation": expected,
+            "expected_statement_identity": expected_statement_identity,
+        },
         "observations": {
             "elaboration": observation,
+            "statement_identity": statement_observation,
             "returncode": returncode,
             "preflight": execution["preflight"],
             "calibration": execution["calibration"],
