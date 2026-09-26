@@ -111,6 +111,8 @@ Do not measure progress as a scalar percentage toward a grand conjecture.
 
 Issue #24 treats mutation as a search instrument, not a score or theorem authority. The first fixture mutates the accepted finite filled-cell Hodge bridge and records a versioned `theseus.math-semantic-mutation.v1` payload inside the normal research receipt. Geometry-changing mutations must be detected, representation-preserving mutations may survive only with explicit classification, and invalid chain-complex candidates are rejected before being interpreted as mathematical signal.
 
+**Before trusting a zero, verify the zero detector.** A `NO_COUNTEREXAMPLE_FOUND` result is interpretable only after calibration canaries establish that the active verifier stack can distinguish known `PRESERVE`, `CHANGE`, and `INVALID` cases on the same specimen; otherwise the run is `VERIFIER_CALIBRATION_FAILED`, not negative mathematical evidence.
+
 
 ## QA / Research DevOps
 
