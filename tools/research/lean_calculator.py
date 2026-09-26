@@ -38,10 +38,11 @@ def safe_rel(value, *, field):
 
 def cache_key(reg, source):
     runner = reg["runner"]
+    target_hash = hashlib.sha256(source["build_target"].encode("utf-8")).hexdigest()[:16]
     return (
         f"lean-calculator-v{runner['schema_version']}-{runner['runner_image']}-"
         f"{source['commit']}-{source['lean_toolchain_sha256'][:16]}-"
-        f"{source['lake_manifest_sha256'][:16]}"
+        f"{source['lake_manifest_sha256'][:16]}-{target_hash}"
     )
 
 
@@ -209,6 +210,7 @@ def cache_metadata(reg, source):
             "repo": source["repo"],
             "commit": source["commit"],
             "source_root": source["source_root"],
+            "build_target": source["build_target"],
             "identity_sha256": source["identity_sha256"],
             "lean_toolchain": source["lean_toolchain"],
             "lean_toolchain_sha256": source["lean_toolchain_sha256"],
