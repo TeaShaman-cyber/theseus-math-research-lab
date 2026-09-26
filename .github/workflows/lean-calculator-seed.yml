@@ -77,9 +77,20 @@ jobs:
           path: |
             _lean_calc/source/.lake/packages
             _lean_calc/source/.lake/build
+            _lean_calc/cache-meta/seed.json
             ~/.cache/mathlib
+            ~/.elan/toolchains
           key: ${{ steps.resolve.outputs.cache_key }}
           fail-on-cache-miss: false
+
+      - name: Verify restored cache metadata
+        if: ${{ steps.cache.outputs.cache-hit == 'true' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/research/lean_calculator.py verify-cache-metadata \
+            --probe '${{ inputs.probe }}' \
+            --path _lean_calc/cache-meta/seed.json
 
       - name: Seed dependencies and build source target
         if: ${{ steps.cache.outputs.cache-hit != 'true' }}
@@ -106,6 +117,16 @@ jobs:
           cleanup
           trap - EXIT INT TERM
 
+      - name: Write exact cache metadata
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p _lean_calc/cache-meta
+          python3 tools/research/lean_calculator.py write-cache-metadata \
+            --probe '${{ inputs.probe }}' \
+            --out _lean_calc/cache-meta/seed.json
+
       - name: Write seed receipt
         shell: bash
         run: |
@@ -126,7 +147,9 @@ jobs:
           path: |
             _lean_calc/source/.lake/packages
             _lean_calc/source/.lake/build
+            _lean_calc/cache-meta/seed.json
             ~/.cache/mathlib
+            ~/.elan/toolchains
           key: ${{ steps.resolve.outputs.cache_key }}
 
       - name: Upload seed receipt

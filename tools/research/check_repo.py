@@ -20,7 +20,7 @@ for pid,rel in reg.items():
 calc_path=ROOT/'lean-calculator/registry.json'
 calc=json.loads(calc_path.read_text())
 if calc.get('schema')!='theseus.lean-calculator-registry.v1': errs.append('lean-calculator-schema')
-if calc.get('runner',{}).get('schema_version')!=1: errs.append('lean-calculator-runner-version')
+if calc.get('runner',{}).get('schema_version')!=2: errs.append('lean-calculator-runner-version')
 hexchars=set('0123456789abcdef')
 def is_hex(value,n): return isinstance(value,str) and len(value)==n and set(value)<=hexchars
 def safe_rel(value,prefix=None):

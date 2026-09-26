@@ -77,9 +77,20 @@ jobs:
           path: |
             _lean_calc/source/.lake/packages
             _lean_calc/source/.lake/build
+            _lean_calc/cache-meta/seed.json
             ~/.cache/mathlib
+            ~/.elan/toolchains
           key: ${{ steps.resolve.outputs.cache_key }}
           fail-on-cache-miss: false
+
+      - name: Verify restored cache metadata
+        if: ${{ steps.cache.outputs.cache-hit == 'true' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/research/lean_calculator.py verify-cache-metadata \
+            --probe '${{ inputs.probe }}' \
+            --path _lean_calc/cache-meta/seed.json
 
       - name: Record exact cache miss without hidden cold build
         if: ${{ steps.cache.outputs.cache-hit != 'true' }}
