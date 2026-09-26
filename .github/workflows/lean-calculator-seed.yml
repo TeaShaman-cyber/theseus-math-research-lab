@@ -1,0 +1,139 @@
+name: Seed Lean calculator cache
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        required: true
+        type: choice
+        options:
+          - connf-samespec-canary
+          - connf-samespec-drop-reverse
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: lean-calculator-seed-${{ inputs.probe }}
+  cancel-in-progress: false
+
+jobs:
+  seed:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Checkout math lab
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Resolve registered calculator probe
+        id: resolve
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/research/lean_calculator.py resolve \
+            --probe '${{ inputs.probe }}' \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Checkout exact formal source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: ${{ steps.resolve.outputs.source_repo }}
+          ref: ${{ steps.resolve.outputs.source_commit }}
+          path: _lean_calc/source
+          persist-credentials: false
+
+      - name: Verify exact source identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/research/lean_calculator.py verify \
+            --probe '${{ inputs.probe }}' \
+            --source-checkout _lean_calc/source
+
+      - name: Install pinned elan
+        shell: bash
+        env:
+          ELAN_VERSION: ${{ steps.resolve.outputs.elan_version }}
+          ELAN_SHA256: ${{ steps.resolve.outputs.elan_sha256 }}
+        run: |
+          set -euo pipefail
+          curl --fail --location --proto '=https' --tlsv1.2 \
+            --output "$RUNNER_TEMP/elan.tar.gz" \
+            "https://github.com/leanprover/elan/releases/download/${ELAN_VERSION}/elan-x86_64-unknown-linux-gnu.tar.gz"
+          echo "${ELAN_SHA256}  $RUNNER_TEMP/elan.tar.gz" | sha256sum --check
+          mkdir -p "$RUNNER_TEMP/elan"
+          tar -xzf "$RUNNER_TEMP/elan.tar.gz" -C "$RUNNER_TEMP/elan"
+          "$RUNNER_TEMP/elan/elan-init" -y --no-modify-path --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Restore exact calculator cache
+        id: cache
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: |
+            _lean_calc/source/.lake/packages
+            _lean_calc/source/.lake/build
+            ~/.cache/mathlib
+          key: ${{ steps.resolve.outputs.cache_key }}
+          fail-on-cache-miss: false
+
+      - name: Seed dependencies and build source target
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "_lean_calc/source/${{ steps.resolve.outputs.source_root }}"
+          lake exe cache get
+          started="$(date +%s)"
+          (
+            while true; do
+              sleep 60
+              now="$(date +%s)"
+              printf 'lean_seed_heartbeat elapsed_seconds=%s mem_available_kib=%s root_free_kib=%s\n' \
+                "$((now-started))" \
+                "$(awk '/MemAvailable:/ {print $2}' /proc/meminfo)" \
+                "$(df -Pk / | awk 'NR==2 {print $4}')"
+            done
+          ) &
+          heartbeat_pid=$!
+          cleanup() { kill "$heartbeat_pid" 2>/dev/null || true; wait "$heartbeat_pid" 2>/dev/null || true; }
+          trap cleanup EXIT INT TERM
+          lake build '${{ steps.resolve.outputs.build_target }}'
+          cleanup
+          trap - EXIT INT TERM
+
+      - name: Write seed receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p receipts
+          seeded=false
+          if [ '${{ steps.cache.outputs.cache-hit }}' != 'true' ]; then seeded=true; fi
+          python3 tools/research/lean_calculator.py seed-receipt \
+            --probe '${{ inputs.probe }}' \
+            --source-checkout _lean_calc/source \
+            --seeded "$seeded" \
+            --out receipts/lean-calculator-seed.json
+
+      - name: Save exact calculator cache
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: |
+            _lean_calc/source/.lake/packages
+            _lean_calc/source/.lake/build
+            ~/.cache/mathlib
+          key: ${{ steps.resolve.outputs.cache_key }}
+
+      - name: Upload seed receipt
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: lean-calculator-seed-${{ inputs.probe }}
+          path: receipts
+          if-no-files-found: warn
+          retention-days: 30

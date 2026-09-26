@@ -1,0 +1,38 @@
+{
+  "schema": "theseus.lean-calculator-registry.v1",
+  "runner": {
+    "schema_version": 1,
+    "elan_version": "v4.2.3",
+    "elan_sha256": "df0b2b3a439961ffcbb3985214365ffe40f49bc871df04dff268c7d8e21ca8b2",
+    "runner_image": "ubuntu-24.04"
+  },
+  "sources": {
+    "connf": {
+      "repo": "leanprover-community/con-nf",
+      "commit": "55b939a3acf947793e252ff330800bfe968cc172",
+      "source_root": ".",
+      "build_target": "ConNF",
+      "identity_file": "ConNF/Strong/Spec.lean",
+      "identity_sha256": "778a9c9b443632c103dfd713675b980c6a4080da6d516c78ff6ab5302d11fb3f",
+      "lean_toolchain": "leanprover/lean4:v4.21.0-rc3",
+      "lean_toolchain_sha256": "da0dca5dc6b4769fd938a21a720b4648593d7209929ebd86c4dd0cc1c6dc4dc2",
+      "lake_manifest_sha256": "4e4b2c81b3b9b0995570e5479d3ac372652a22dded8aec15c66e71a1d7a3f705"
+    }
+  },
+  "probes": {
+    "connf-samespec-canary": {
+      "source": "connf",
+      "probe_file": "lean-calculator/probes/connf-samespec-canary.lean",
+      "intent": "PRESERVE",
+      "expected_observation": "ELABORATES",
+      "issue": 32
+    },
+    "connf-samespec-drop-reverse": {
+      "source": "connf",
+      "probe_file": "lean-calculator/probes/connf-samespec-drop-reverse.lean",
+      "intent": "CHANGE",
+      "expected_observation": "LEAN_REJECTED",
+      "issue": 32
+    }
+  }
+}
