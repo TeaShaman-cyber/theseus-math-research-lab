@@ -35,6 +35,53 @@ def _observables(s1, s2):
     }
 
 
+def _differences(oracle, observed):
+    return {
+        key: {"oracle": oracle[key], "observed": observed[key]}
+        for key in oracle
+        if observed.get(key) != oracle[key]
+    }
+
+
+def _classify_mutation(*, mutation_id, surface, expected_effect, reason, oracle, observed):
+    if not observed.get("chain_valid", False):
+        return {
+            "id": mutation_id,
+            "surface": surface,
+            "expected_effect": expected_effect,
+            "outcome": "REJECTED",
+            "classification": "OUTSIDE_CLAIM_SCOPE",
+            "reason": reason,
+            "observed": observed,
+            "detected_differences": _differences(oracle, observed),
+        }
+
+    differences = _differences(oracle, observed)
+    outcome = "KILLED" if differences else "SURVIVED"
+    if outcome == "SURVIVED":
+        classification = (
+            "SEMANTICALLY_EQUIVALENT"
+            if expected_effect == "PRESERVE"
+            else "REAL_BRIDGE_GAP_CANDIDATE"
+        )
+    else:
+        classification = (
+            "DETECTED_SEMANTIC_CHANGE"
+            if expected_effect == "CHANGE"
+            else "MUTATION_CONTRACT_VIOLATION"
+        )
+    return {
+        "id": mutation_id,
+        "surface": surface,
+        "expected_effect": expected_effect,
+        "outcome": outcome,
+        "classification": classification,
+        "reason": reason,
+        "observed": observed,
+        "detected_differences": differences,
+    }
+
+
 def run():
     data = json.loads((ROOT / "probes/filled-cell/input.json").read_text())
     s1, s2 = _boundary_matrices(data)
@@ -49,74 +96,68 @@ def run():
 
     mutations = []
 
-    # Geometry-changing mutation: pretend the 2-cell contributes no homology relation.
     drop_beta = dict(oracle)
     drop_beta["rank_B2"] = 0
     drop_beta["beta1_after"] = drop_beta["beta1_before"]
-    mutations.append({
-        "id": "drop_2cell_from_beta1",
-        "surface": "homology_relation",
-        "outcome": "KILLED",
-        "classification": "DETECTED_SEMANTIC_CHANGE",
-        "reason": "The mutated bridge no longer detects that filling the face reduces beta1.",
-        "observed": drop_beta,
-    })
+    mutations.append(_classify_mutation(
+        mutation_id="drop_2cell_from_beta1",
+        surface="homology_relation",
+        expected_effect="CHANGE",
+        reason="The mutated bridge no longer detects that filling the face reduces beta1.",
+        oracle=oracle,
+        observed=drop_beta,
+    ))
 
-    # Geometry-changing mutation: compute graph-only Hodge Laplacian after adding a 2-cell.
     graph_only = s1.T * s1
-    graph_only_h = graph_only.shape[1] - graph_only.rank()
-    mutations.append({
-        "id": "drop_2cell_from_laplacian",
-        "surface": "hodge_operator",
-        "outcome": "KILLED",
-        "classification": "VERIFIER_DISTINGUISHES_GEOMETRY",
-        "reason": "Omitting B2*B2^T leaves graph harmonic dimension 2 instead of the filled-complex value 1.",
-        "observed": {"hodge_nullity": graph_only_h},
-    })
+    graph_only_obs = dict(oracle)
+    graph_only_obs["hodge_nullity"] = graph_only.shape[1] - graph_only.rank()
+    mutations.append(_classify_mutation(
+        mutation_id="drop_2cell_from_laplacian",
+        surface="hodge_operator",
+        expected_effect="CHANGE",
+        reason="Omitting B2*B2^T leaves graph harmonic dimension 2 instead of the filled-complex value 1.",
+        oracle=oracle,
+        observed=graph_only_obs,
+    ))
 
-    # Representation-preserving mutation: reverse the chosen orientation of the face.
-    reversed_face = _observables(s1, -s2)
-    mutations.append({
-        "id": "reverse_face_orientation",
-        "surface": "orientation",
-        "outcome": "SURVIVED",
-        "classification": "SEMANTICALLY_EQUIVALENT",
-        "reason": "Changing orientation changes signs but preserves rank and B2*B2^T.",
-        "observed": reversed_face,
-    })
+    mutations.append(_classify_mutation(
+        mutation_id="reverse_face_orientation",
+        surface="orientation",
+        expected_effect="PRESERVE",
+        reason="Changing orientation changes signs but preserves rank and B2*B2^T.",
+        oracle=oracle,
+        observed=_observables(s1, -s2),
+    ))
 
-    # Representation-preserving over the real/rational linear-algebra contract used here.
-    scaled_face = _observables(s1, -2 * s2)
-    mutations.append({
-        "id": "scale_face_boundary_by_minus_2",
-        "surface": "basis_scaling",
-        "outcome": "SURVIVED",
-        "classification": "SEMANTICALLY_EQUIVALENT",
-        "reason": "Nonzero scalar rescaling preserves the image/kernel dimensions used by this fixture.",
-        "observed": scaled_face,
-    })
+    mutations.append(_classify_mutation(
+        mutation_id="scale_face_boundary_by_minus_2",
+        surface="basis_scaling",
+        expected_effect="PRESERVE",
+        reason="Nonzero scalar rescaling preserves the image/kernel dimensions used by this fixture.",
+        oracle=oracle,
+        observed=_observables(s1, -2 * s2),
+    ))
 
-    # Invalid semantic candidate: a 2-cell boundary must itself be a 1-cycle (d1 d2 = 0).
     noncycle = Matrix([1, 0, 0, 0, 0])
-    noncycle_obs = _observables(s1, noncycle)
-    mutations.append({
-        "id": "replace_face_with_noncycle",
-        "surface": "chain_complex_precondition",
-        "outcome": "REJECTED",
-        "classification": "OUTSIDE_CLAIM_SCOPE",
-        "reason": "Candidate violates d1*d2=0 and is not a valid 2-cell boundary in this chain complex.",
-        "observed": noncycle_obs,
-    })
+    mutations.append(_classify_mutation(
+        mutation_id="replace_face_with_noncycle",
+        surface="chain_complex_precondition",
+        expected_effect="INVALID",
+        reason="Candidate violates d1*d2=0 and is not a valid 2-cell boundary in this chain complex.",
+        oracle=oracle,
+        observed=_observables(s1, noncycle),
+    ))
 
     by_id = {m["id"]: m for m in mutations}
-    geometry_ok = (
-        by_id["drop_2cell_from_beta1"]["outcome"] == "KILLED"
-        and by_id["drop_2cell_from_laplacian"]["outcome"] == "KILLED"
+    geometry_ok = all(
+        by_id[mid]["outcome"] == "KILLED"
+        and bool(by_id[mid]["detected_differences"])
+        for mid in ("drop_2cell_from_beta1", "drop_2cell_from_laplacian")
     )
     representation_ok = all(
         by_id[mid]["outcome"] == "SURVIVED"
         and by_id[mid]["classification"] == "SEMANTICALLY_EQUIVALENT"
-        and by_id[mid]["observed"] == oracle
+        and not by_id[mid]["detected_differences"]
         for mid in ("reverse_face_orientation", "scale_face_boundary_by_minus_2")
     )
     invalid_ok = (
