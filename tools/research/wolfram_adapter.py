@@ -70,6 +70,15 @@ def _wl_list(value) -> str:
     raise ValueError(f"unsupported Wolfram fixture value: {type(value).__name__}")
 
 
+def _validate_face_boundary(vertices: list[int], edges: list[list[int]], coeffs: list[int]) -> None:
+    boundary = {vertex: 0 for vertex in vertices}
+    for coeff, (source, target) in zip(coeffs, edges):
+        boundary[source] -= coeff
+        boundary[target] += coeff
+    if any(value != 0 for value in boundary.values()):
+        raise ValueError("filled_face_edge_coefficients must define a cycle (b1*b2 == 0)")
+
+
 def _render_template(template: str, replacements: dict[str, str]) -> str:
     code = template
     for marker, value in replacements.items():
@@ -101,6 +110,7 @@ def render_filled_cell(data: dict, template: str) -> str:
         or any(isinstance(v, bool) or not isinstance(v, int) for v in coeffs)
     ):
         raise ValueError("filled_face_edge_coefficients must be one integer per edge")
+    _validate_face_boundary(vertices, edges, coeffs)
     return _render_template(
         template,
         {
