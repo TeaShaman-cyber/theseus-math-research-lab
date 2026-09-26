@@ -15,6 +15,7 @@ on:
           - cdclean-drop-bridgeless-assumption
           - cdclean-explicit-gamma-premise
           - cdclean-seymour-six-flow-premise
+          - cdclean-inline-gamma-flow-to-cover
 
 permissions:
   contents: read

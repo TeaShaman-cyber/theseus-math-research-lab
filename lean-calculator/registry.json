@@ -119,6 +119,19 @@
       "expected_statement_identity": "CHANGED",
       "research_mutant": "M3",
       "research_interpretation": "KILLED / ALTERNATE_PREMISE_ROUTE"
+    },
+    "cdclean-inline-gamma-flow-to-cover": {
+      "source": "cdclean",
+      "probe_file": "lean-calculator/probes/cdclean-inline-gamma-flow-to-cover.lean",
+      "intent": "PRESERVE",
+      "expected_observation": "ELABORATES",
+      "issue": 27,
+      "statement_observer": {
+        "source_declaration": "cycleDoubleCover_of_bridgeless"
+      },
+      "expected_statement_identity": "SAME",
+      "research_mutant": "M4",
+      "research_interpretation": "SURVIVED / SEMANTICALLY_EQUIVALENT / GRAPH_TOPOLOGY_CHANGED"
     }
   }
 }
