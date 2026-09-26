@@ -14,6 +14,7 @@ on:
           - cdclean-wrong-typed-gamma-bridge-canary
           - cdclean-drop-bridgeless-assumption
           - cdclean-explicit-gamma-premise
+          - cdclean-seymour-six-flow-premise
 
 permissions:
   contents: read
