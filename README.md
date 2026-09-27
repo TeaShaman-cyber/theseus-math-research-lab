@@ -113,6 +113,45 @@ Issue #24 treats mutation as a search instrument, not a score or theorem authori
 
 **Before trusting a zero, verify the zero detector.** A `NO_COUNTEREXAMPLE_FOUND` result is interpretable only after calibration canaries establish that the active verifier stack can distinguish known `PRESERVE`, `CHANGE`, and `INVALID` cases on the same specimen; otherwise the run is `VERIFIER_CALIBRATION_FAILED`, not negative mathematical evidence.
 
+### Honesty-preserving simplification
+
+Reducing research complexity is itself a positive methodological result when the simplification preserves the same epistemic boundary.
+
+A cheaper route is acceptable only when it preserves the properties relevant to the claim being made: falsifiability, exact specimen/provenance, raw observations, calibration where the verifier changes, and independent verification before a result is promoted beyond the scope established by the cheap witness. Fewer tools or steps must never silently mean weaker evidence presented as if it were unchanged.
+
+Prefer lazy escalation:
+
+```text
+freeze question + mutation semantics
+        |
+        v
+cheap deterministic falsifier
+        |
+        +--> KILLED / INVALID
+        |      preserve smallest witness -> stop
+        |
+        +--> SURVIVES / UNKNOWN
+                 |
+                 v
+          independent witness
+                 |
+                 v
+          exact missing lemma
+                 |
+                 v
+          formal / literature escalation only when needed
+```
+
+Operational consequences:
+
+- do not spend independent or formal verification budget on a mutant already killed by a trustworthy cheaper witness;
+- calibrate a verifier/representation when it is introduced or materially changed, rather than ritualistically rebuilding the whole calibration stack for every adjacent mutant;
+- keep the hunting loop small (`KILLED`, `SURVIVES`, `INVALID`, `UNKNOWN`) and move richer interpretation into the terminal receipt;
+- switch from **hunt mode** (fast falsification and counterexample search) to **proof mode** only when surviving evidence has exposed a precise universal lemma or proof obligation;
+- treat any simplification that lowers compute, tooling, context, or human-attention cost without weakening the honesty contract as a methodological win worth preserving.
+
+The optimization target is therefore not mutation score or verifier count. It is **information gained per unit of complexity while keeping the evidence class honest**.
+
 
 ## QA / Research DevOps
 
