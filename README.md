@@ -146,7 +146,7 @@ Operational consequences:
 
 - do not spend independent or formal verification budget on a mutant already killed by a trustworthy cheaper witness;
 - calibrate a verifier/representation when it is introduced or materially changed, rather than ritualistically rebuilding the whole calibration stack for every adjacent mutant;
-- keep the hunting loop small (`KILLED`, `SURVIVES`, `INVALID`, `UNKNOWN`) and move richer interpretation into the terminal receipt;
+- keep the hunting loop conceptually small (`KILLED`, `SURVIVES`, `INVALID`, `UNKNOWN`) and move richer interpretation into the terminal receipt; when serialized to the current semantic-mutation receipt, use the implemented vocabulary: `KILLED` or `SURVIVED` for observed mutation outcomes, `REJECTED` for an invalid candidate, and `INVALID` only as the mutation's `expected_effect`; `UNKNOWN` remains an evidence/execution state rather than a mutation outcome;
 - switch from **hunt mode** (fast falsification and counterexample search) to **proof mode** only when surviving evidence has exposed a precise universal lemma or proof obligation;
 - treat any simplification that lowers compute, tooling, context, or human-attention cost without weakening the honesty contract as a methodological win worth preserving.
 
