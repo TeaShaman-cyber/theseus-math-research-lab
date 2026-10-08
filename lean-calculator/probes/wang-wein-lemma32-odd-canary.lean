@@ -53,4 +53,59 @@ example :
     h2c - h2b ≥ 2 * (h1cp - h1bp) := by
   norm_num
 
+-- The even-r case of Lemma 3.2 swaps E1/E2 and h1/h2, preserving
+-- the same two E3 inequalities. This proves the symmetric amplification.
+theorem lemma32_even_algebraic_core
+    (h1a h1b h1c h1d h2a h2b h2c h2d h2bp h2cp : ℤ)
+    (e2_abp : h2a < h2bp)
+    (e2_cpb : h2cp < h2b)
+    (e2_cbp : h2c < h2bp)
+    (e2_cpd : h2cp < h2d)
+    (e3_ba : h1b + h2b < h1a + h2a)
+    (e3_dc : h1d + h2d < h1c + h2c)
+    (e1_ad : h1a < h1d) :
+    h1c - h1b ≥ 2 * (h2cp - h2bp) := by
+  omega
+
+-- Retain all three topological orderings explicitly: E1 is constraining
+-- h1, E2 constrains h2, and E3 constrains h3=h1+h2.
+-- This is the exact bounded odd step, not the full graph-level theorem.
+theorem lemma32_odd_explicit_triangle
+    (h1a h1b h1c h1d h1bp h1cp h2a h2b h2c h2d
+     h3a h3b h3c h3d : ℤ)
+    (add_a : h3a = h1a + h2a)
+    (add_b : h3b = h1b + h2b)
+    (add_c : h3c = h1c + h2c)
+    (add_d : h3d = h1d + h2d)
+    (e1_abp : h1a < h1bp)
+    (e1_cpb : h1cp < h1b)
+    (e1_cbp : h1c < h1bp)
+    (e1_cpd : h1cp < h1d)
+    (e3_ba : h3b < h3a)
+    (e3_dc : h3d < h3c)
+    (e2_ad : h2a < h2d) :
+    h2c - h2b ≥ 2 * (h1cp - h1bp) := by
+  omega
+
+-- Negative control: preserving E1 and E2 alone does NOT enforce the
+-- gap-doubling conclusion. The two E3/additive comparisons carry real work.
+theorem lemma32_without_e3_counterexample :
+    let h1a : ℤ := 0
+    let h1b : ℤ := 3
+    let h1c : ℤ := 0
+    let h1d : ℤ := 3
+    let h1bp : ℤ := 1
+    let h1cp : ℤ := 2
+    let h2a : ℤ := 0
+    let h2b : ℤ := 0
+    let h2c : ℤ := 0
+    let h2d : ℤ := 1
+    h1a < h1bp ∧
+    h1cp < h1b ∧
+    h1c < h1bp ∧
+    h1cp < h1d ∧
+    h2a < h2d ∧
+    h2c - h2b < 2 * (h1cp - h1bp) := by
+  norm_num
+
 end Theseus.WangWein
