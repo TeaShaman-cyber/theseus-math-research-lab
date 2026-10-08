@@ -12,3 +12,13 @@ class WangWeinCanaryTests(unittest.TestCase):
         self.assertIn('theorem lemma32_without_e3_counterexample', source)
         self.assertNotIn('sorry', source)
         self.assertNotIn('admit', source)
+
+    def test_lemma32_uses_real_unit_gap_topological_orders(self):
+        source = PROBE.read_text()
+        self.assertIn(': ℝ)', source)
+        self.assertIn('h1a + 1 ≤ h1bp', source)
+        self.assertIn('h1cp + 1 ≤ h1b', source)
+        self.assertIn('h3b + 1 ≤ h3a', source)
+        self.assertIn('linarith', source)
+        self.assertNotIn(': ℤ)', source)
+        self.assertNotIn('  omega', source)
