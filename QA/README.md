@@ -2,6 +2,19 @@
 
 Research mechanics are infrastructure. CI checks reproducibility, exact inputs, and declared invariants; it does not judge theorem truth.
 
+## Finite discovery campaigns
+
+The first non-RH pass is governed by the versioned
+[`campaigns/first-non-rh-pass-v0.json`](campaigns/first-non-rh-pass-v0.json).
+The native `./tools/dev/check` protects its exit criteria and independent seam
+ownership via `tests/test_campaign_lifecycle.py`. This is a **structural QA
+contract**, not a task scheduler or an automatic GitHub issue-closing robot.
+
+Scientific completion is established by an actual bounded research receipt and
+handoff/disposition in the owning issue. Negative results and declared corpus
+boundaries are valid; solving all discovered mathematics or closing offspring
+issues is not a prerequisite to finishing a finite discovery campaign.
+
 ## Lanes
 
 1. `./tools/dev/check` — blocking deterministic scientific baseline.

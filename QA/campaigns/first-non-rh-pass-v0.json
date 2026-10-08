@@ -1,0 +1,21 @@
+{
+  "schema": "theseus.math-bounded-campaign.v1",
+  "campaign_id": "first-non-rh-pass-v0",
+  "issue": "TeaShaman-cyber/theseus-math-research-lab#18",
+  "scope": "FIRST_NON_RH_ACCEPTED_CORPUS_PASS",
+  "terminal_outcomes": [
+    "FOUND_CANDIDATE",
+    "NO_SIGNAL",
+    "STILL_CORPUS_BOUNDARY",
+    "DEGRADED"
+  ],
+  "exit_criteria": [
+    "bounded_pass_receipt_with_exact_source_tool_and_artifact",
+    "outcome_and_unresolved_boundaries_recorded",
+    "surviving_seams_handed_off_to_independent_issues_or_parked"
+  ],
+  "completion_requires_solving_seams": false,
+  "completion_requires_children_closed": false,
+  "scope_expansion_in_place": false,
+  "independent_seam_example": "TeaShaman-cyber/theseus-math-research-lab#56"
+}

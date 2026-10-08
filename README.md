@@ -66,7 +66,7 @@ Other routes:
 - #15 — compare de Bruijn-Newman and Lee-Yang/RG generators;
 - #16 — identify a global Ihara/Selberg/Scaling-Site transfer object after prime-by-prime matching failed;
 - #17 — mine bounded formal problems from exact Hodge/flow bridge objects;
-- #18 — first non-RH smaller-problem mining pass over accepted formal corpora;
+- #18 — first **bounded** non-RH smaller-problem mining pass; lifecycle contract: [`QA/campaigns/first-non-rh-pass-v0.json`](QA/campaigns/first-non-rh-pass-v0.json);
 - #19 — preserve and extend the negative-control bridge-classifier experiment;
 - #20 — define reusable live-research smoke receipts;
 - #23 — calibrate scale-local dissipation/intermittency observables against explicit flow geometry;
@@ -104,6 +104,12 @@ exact source / formal-corpus search
         |
         +--> smaller problem  -> create an independent issue under #7
 ```
+
+### Bounded discovery campaign exit
+
+The first non-RH campaign (#18) is a **finite pass**, not an umbrella issue for every subsequent mathematical investigation. The versioned [`QA/campaigns/first-non-rh-pass-v0.json`](QA/campaigns/first-non-rh-pass-v0.json) is checked by `tools/dev/check`.
+
+It can be concluded after one bounded, provenance-bearing pass, an explicit result or limitation (`FOUND_CANDIDATE`, `NO_SIGNAL`, `STILL_CORPUS_BOUNDARY`, or explained `DEGRADED`), and a recorded disposition of surviving seams. A new seam has its **own issue**: Marton formalization is #56, historically discovered under #18, but #56's future proof progress and closure do **not** gate closing #18. Further discovery campaigns must be separately bounded rather than silently expanding #18. This does **not** automatically close #18, prove a theorem, or block research-smoke QA when nothing is found.
 
 Do not measure progress as a scalar percentage toward a grand conjecture.
 
