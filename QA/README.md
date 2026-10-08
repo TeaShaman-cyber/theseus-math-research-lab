@@ -10,6 +10,10 @@ The native `./tools/dev/check` protects its exit criteria and independent seam
 ownership via `tests/test_campaign_lifecycle.py`. This is a **structural QA
 contract**, not a task scheduler or an automatic GitHub issue-closing robot.
 
+The first pass freezes the accepted FLT regular release identity and the existing
+`flt-bridge-v0` research smoke: one receipt at most, not a moving corpus set.
+Later corpus additions require a new bounded pass, not enlargement of #18.
+
 Scientific completion is established by an actual bounded research receipt and
 handoff/disposition in the owning issue. Negative results and declared corpus
 boundaries are valid; solving all discovered mathematics or closing offspring

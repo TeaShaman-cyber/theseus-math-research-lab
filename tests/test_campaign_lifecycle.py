@@ -25,6 +25,20 @@ class BoundedDiscoveryCampaignTest(unittest.TestCase):
                 "surviving_seams_handed_off_to_independent_issues_or_parked",
             ],
         )
+        self.assertEqual(
+            campaign["frozen_corpus"],
+            [
+                {
+                    "source_repo": "leanprover-community/flt-regular",
+                    "source_commit": "faae830a27a7b39748b61487a9f2aa81a6d14450",
+                    "accepted_artifact_identity": "41bfa1d236ee59a856a93288d997b6cf19b7f42f2c7dd630fb2ce2482f9b3844",
+                    "accepted_release_tag": "accepted-artifact/flt-regular/41bfa1d236ee59a8",
+                }
+            ],
+        )
+        self.assertEqual(campaign["smoke_scenario"], "qa/research-smoke/flt-bridge-v0.json")
+        self.assertEqual(campaign["max_research_smoke_receipts"], 1)
+        self.assertEqual(campaign["further_corpus_additions"], "OUT_OF_SCOPE_REQUIRE_NEW_PASS")
         self.assertFalse(campaign["completion_requires_solving_seams"])
         self.assertFalse(campaign["completion_requires_children_closed"])
         self.assertFalse(campaign["scope_expansion_in_place"])
