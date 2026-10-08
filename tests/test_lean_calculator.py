@@ -30,6 +30,7 @@ class LeanCalculatorContractTests(unittest.TestCase):
                 "cdclean-seymour-six-flow-premise",
                 "cdclean-inline-gamma-flow-to-cover",
                 "cdclean-drop-decidable-eq-edge-assumption",
+                "wang-wein-lemma32-odd-canary",
             },
         )
         for pid, probe in reg["probes"].items():

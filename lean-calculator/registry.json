@@ -146,6 +146,13 @@
       "expected_statement_identity": "CHANGED",
       "research_mutant": "M5",
       "research_interpretation": "KILLED_BY_FORMAL_DERIVATION / DECIDABLE_EQ_E_OBSERVED"
+    },
+    "wang-wein-lemma32-odd-canary": {
+      "source": "cdclean",
+      "probe_file": "lean-calculator/probes/wang-wein-lemma32-odd-canary.lean",
+      "intent": "PRESERVE",
+      "expected_observation": "ELABORATES",
+      "issue": 18
     }
   }
 }
