@@ -89,6 +89,91 @@ theorem tail_first_poly_pos (t : ℝ) (ht : 6 ≤ t) :
     · linarith
   nlinarith
 
+/-! The logical bracket step is now kernel-checkable using the
+pinned Zeta23 monotonicity, WITHOUT assuming the numeric endpoint
+signs have themselves been proved in Lean. -/
+
+/-- If a nonnegative zero of mu lies between opposite-sign endpoints,
+    it lies strictly inside the y corridor after dividing tau by 2.
+    The hypotheses hlo and hhi are the *unproved numeric sign gates*. -/
+theorem nonnegative_mu_zero_in_corridor (tau : ℝ)
+    (htau : 0 ≤ tau) (hzero : Zeta23.mu tau = 0)
+    (hlo : Zeta23.mu (157 / 25 : ℝ) < 0)
+    (hhi : 0 < Zeta23.mu (63 / 10 : ℝ)) :
+    (157 / 50 : ℝ) < tau / 2 ∧ tau / 2 < (63 / 20 : ℝ) := by
+  have hmono := Zeta23.MuFields.mu_monotoneOn
+  have hlow : (157 / 25 : ℝ) < tau := by
+    by_contra hn
+    have hle : tau ≤ (157 / 25 : ℝ) := le_of_not_gt hn
+    have hm := hmono (Set.mem_Ici.mpr htau)
+      (Set.mem_Ici.mpr (by norm_num : (0 : ℝ) ≤ 157 / 25)) hle
+    rw [hzero] at hm
+    linarith
+  have hhigh : tau < (63 / 10 : ℝ) := by
+    by_contra hn
+    have hle : (63 / 10 : ℝ) ≤ tau := le_of_not_gt hn
+    have hm := hmono
+      (Set.mem_Ici.mpr (by norm_num : (0 : ℝ) ≤ 63 / 10))
+      (Set.mem_Ici.mpr htau) hle
+    rw [hzero] at hm
+    linarith
+  constructor <;> linarith
+
+/-! Formal connection between the source digamma endpoint signs and
+the already source-pinned mu-monotonicity bracket. -/
+
+/-- The canonical mu function at twice the ordinate is exactly the
+    real digamma difference, divided by a positive 2*pi. -/
+theorem mu_twice_ordinate_identity (y : ℝ) :
+    (2 * Real.pi) * Zeta23.mu (2 * y) =
+      (Complex.digamma (((1 / 4 : ℝ) : ℂ) +
+        Complex.I * (y : ℂ))).re - Real.log Real.pi := by
+  rw [Zeta23.MuFields.mu_eq]
+  have hy : (2 * y) / 2 = y := by ring
+  rw [hy]
+  have hpi : Real.pi ≠ 0 := ne_of_gt Real.pi_pos
+  field_simp [hpi]
+  ring
+
+/-- Deduce the strict y corridor from strict endpoint signs of the
+    *canonical* digamma formula, assuming tau is a nonnegative mu-zero.
+    The endpoint signs themselves are still numeric certificate gates. -/
+theorem nonnegative_mu_zero_in_corridor_of_digamma_signs (tau : ℝ)
+    (htau : 0 ≤ tau) (hzero : Zeta23.mu tau = 0)
+    (hlo : (Complex.digamma (((1 / 4 : ℝ) : ℂ) +
+      Complex.I * ((157 / 50 : ℝ) : ℂ))).re < Real.log Real.pi)
+    (hhi : Real.log Real.pi <
+      (Complex.digamma (((1 / 4 : ℝ) : ℂ) +
+      Complex.I * ((63 / 20 : ℝ) : ℂ))).re) :
+    (157 / 50 : ℝ) < tau / 2 ∧ tau / 2 < (63 / 20 : ℝ) := by
+  have hleft : (2 * Real.pi) * Zeta23.mu (157 / 25 : ℝ) =
+      (Complex.digamma (((1 / 4 : ℝ) : ℂ) +
+      Complex.I * ((157 / 50 : ℝ) : ℂ))).re - Real.log Real.pi := by
+    convert mu_twice_ordinate_identity (157 / 50 : ℝ) using 1 <;> norm_num
+  have hright : (2 * Real.pi) * Zeta23.mu (63 / 10 : ℝ) =
+      (Complex.digamma (((1 / 4 : ℝ) : ℂ) +
+      Complex.I * ((63 / 20 : ℝ) : ℂ))).re - Real.log Real.pi := by
+    convert mu_twice_ordinate_identity (63 / 20 : ℝ) using 1 <;> norm_num
+  have hmu_left : Zeta23.mu (157 / 25 : ℝ) < 0 := by
+    have hprod : (2 * Real.pi) * Zeta23.mu (157 / 25 : ℝ) < 0 := by
+      rw [hleft]
+      linarith
+    by_contra hn
+    have hnonneg : 0 ≤ Zeta23.mu (157 / 25 : ℝ) := le_of_not_gt hn
+    have : 0 ≤ (2 * Real.pi) * Zeta23.mu (157 / 25 : ℝ) :=
+      mul_nonneg (by positivity) hnonneg
+    linarith
+  have hmu_right : 0 < Zeta23.mu (63 / 10 : ℝ) := by
+    have hprod : 0 < (2 * Real.pi) * Zeta23.mu (63 / 10 : ℝ) := by
+      rw [hright]
+      linarith
+    by_contra hn
+    have hnonpos : Zeta23.mu (63 / 10 : ℝ) ≤ 0 := le_of_not_gt hn
+    have : 0 ≤ (2 * Real.pi) * (-Zeta23.mu (63 / 10 : ℝ)) :=
+      mul_nonneg (by positivity) (by linarith)
+    nlinarith
+  exact nonnegative_mu_zero_in_corridor tau htau hzero hmu_left hmu_right
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -98,3 +183,13 @@ end H50
 #print axioms H50.small_second_poly_pos
 #print axioms H50.middle_first_poly_neg
 #print axioms H50.tail_first_poly_pos
+
+
+#print axioms H50.nonnegative_mu_zero_in_corridor
+#check Real.eulerMascheroniSeq_lt_eulerMascheroniConstant
+#check Real.eulerMascheroniConstant_lt_eulerMascheroniSeq'
+#check Real.pi_gt_d20
+#check Real.pi_lt_d20
+
+#print axioms H50.mu_twice_ordinate_identity
+#print axioms H50.nonnegative_mu_zero_in_corridor_of_digamma_signs
