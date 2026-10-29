@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.2, 2026-10-29.**
+**WORKING MATHEMATICAL DRAFT — v0.3, 2026-10-29.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -20,8 +20,9 @@ convexity: a uniformly twice-differentiable digamma series, a rational
 bracket for the distinguished ordinate, and a positive finite-head
 plus analytic-tail lower bound. The rational lower bound is now shown positive throughout the ordinate corridor by a short Lipschitz argument (§5.1). The original exact-rational certificates are preserved with this draft
 and were independently rerun with byte-identical JSON in Python/SymPy.
-One pointwise endpoint inequality is now independently checked in Lean;
-the complete digamma inequality and its novelty remain unverified.
+The exact rational endpoint margin and four bounded polynomial sign
+sublemmas have now been independently checked in Lean; the full
+digamma inequality and its scientific novelty remain unverified.
 This draft distinguishes an ordinary-analysis proof argument from
 a kernel-checked formal proof and leaves the exact prior-art novelty
 assessment **UNKNOWN**. No assertion about the Riemann hypothesis follows.
@@ -64,6 +65,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Uniform finite-head/tail comparison and L(y)>0 throughout the corridor | §§5.0a and 5.1 analytic proofs, with [archived certificates](evidence/README.md) | **ANALYTIC_HEAD_TAIL_AND_POSITIVITY**; combined Lean proof remains **UNVERIFIED** |
 | Exact rational endpoint L(63/20)>0 | [Source-bound Lean certificate](evidence/lean-h50-endpoint-40889555940.json) and [raw axiom diagnostics](evidence/lean-h50-endpoint-40889555940.txt) | **LEAN_ELABORATES / PINNED_SOURCE / ENDPOINT_ONLY** |
 | Exact endpoint exceeds the corridor Lipschitz budget | [Verified Lean margin receipt](evidence/lean-h50-lipschitz-margin-40903574213.json) | **LEAN_ACCEPTED_ENDPOINT_MARGIN**; global MVT proof ordinary analysis |
+| Four interval polynomial sign sublemmas | [Pinned Lean proof receipt](evidence/lean-h50-head-tail-polynomial-40907184557.json) and [axiom trace](evidence/lean-h50-head-tail-polynomial-40907184557.txt) | **LEAN_ACCEPTED_FINITE_SIGNS**; continuous derivatives/composition ordinary analysis |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -271,8 +273,11 @@ pinned digamma-series identity.
 concavity, monotonicity, integral comparison,
 and infinite sum composition have not yet been
 formalized into one Lean theorem. The existing
-Lean receipt checks only rational endpoint
-arithmetic. The y-star enclosure is a separate
+Lean receipts now check the rational endpoint margin
+and four finite polynomial sign lemmas; see
+[raw H50-P3 result](evidence/lean-h50-head-tail-polynomial-40907184557.json)
+and [axiom diagnostics](evidence/lean-h50-head-tail-polynomial-40907184557.txt).
+The y-star enclosure is a separate
 certificate obligation; no proof of the entire
 digamma inequality has been accepted in Lean.
 
@@ -417,9 +422,9 @@ have not yet been discharged in the same accepted proof context.
 
 1. Lean/kernel acceptance of the analytic derivative/concavity,
    finite-head, integral-tail, and full comparison proof.
-   Only the earlier exact rational endpoint and margin are currently
-   verified in Lean. Four additional finite-polynomial sign lemmas
-   are proposed in the same pinned probe; their Lean receipt is pending.
+   The exact rational endpoint margin and four finite-polynomial
+   sign lemmas are accepted by Lean 4.33.0-rc2; this remains
+   strictly weaker than Lean acceptance of the functional comparison.
 2. A source-bound proof of the ordinate enclosure, including the
    named constants/series remainder and the zero identity.
 3. A targeted prior-art check for the precise special-function
@@ -442,12 +447,13 @@ verification and retrieval tools, not separate scientific study arms.
 
 The existing math lab
 [Lean calculator](https://github.com/TeaShaman-cyber/theseus-math-research-lab/blob/main/.github/workflows/lean-calculator.yml)
-now has a pinned Zeta23 source and one actually executed **pointwise**
-arithmetic theorem (hosted run 40889555940). This verifies the exact
-upper-endpoint rational formula, not the remaining functional,
-uniform-convergence, global-positivity, or original H50 conclusions.
-The proof code, output JSON and axiom diagnostics are source-bound and
-retained in the evidence inventory.
+now has pinned Zeta23 source checks and independently executed
+Lean proofs for the rational endpoint, the endpoint loss budget, and
+four polynomial sign conditions (latest run
+[40907184557](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40907184557)).
+The proof code, raw JSON and axiom diagnostics are source-bound in
+[evidence](evidence/README.md). These proofs do **not** establish
+the analytic differentiation or infinite-tail comparison inside Lean.
 
 ## References and raw materials
 
