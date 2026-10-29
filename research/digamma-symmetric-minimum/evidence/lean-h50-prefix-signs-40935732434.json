@@ -1,0 +1,48 @@
+{
+  "authority": "NON_SCIENTIFIC_EXECUTION_WITNESS",
+  "cache": {
+    "hit": true,
+    "key": "lean-calculator-v3-ubuntu-24.04-fbdc36bbf17d20af3fd0447c6d1a8a02773c9844-0d3c76ccd8772d8b-1847b362e15efd92-fc5b4b4e01d24341"
+  },
+  "issue": 50,
+  "mutation": {
+    "intent": "PRESERVE",
+    "probe_file": "lean-calculator/probes/zeta23-h50-curvature-endpoint.lean",
+    "probe_sha256": "b1947632e3470eb7f361bba78df264de2e8446977aebbbb196eaf177637e201c"
+  },
+  "non_claim": "A rejected probe shows only that this exact formal candidate failed in this exact environment; it does not prove mathematical impossibility.",
+  "observations": {
+    "calibration": {
+      "status": "NOT_REQUIRED"
+    },
+    "diagnostic_sha256": "4cc28bc2babd58689ed59aba3184ae9fa570fb4f8ccf7a3827d462728ce628ae",
+    "elaboration": "ELABORATES",
+    "preflight": {
+      "returncode": 0,
+      "status": "PASS"
+    },
+    "returncode": 0,
+    "statement_identity": {
+      "status": "NOT_CONFIGURED"
+    }
+  },
+  "oracle": {
+    "expected_observation": "ELABORATES",
+    "expected_statement_identity": null
+  },
+  "probe_id": "zeta23-h50-curvature-endpoint",
+  "result": "PASS",
+  "schema": "theseus.lean-calculator.v1",
+  "source": {
+    "commit": "fbdc36bbf17d20af3fd0447c6d1a8a02773c9844",
+    "identity_sha256": "71e4d99a73604b9e09009d897a0bbbaf5d3a950a470758f07738ccc67a171c97",
+    "lake_manifest_sha256": "1847b362e15efd927e75aa8b5442e491f998e4a3f730f9dcaca9841f2957c448",
+    "lean_toolchain": "leanprover/lean4:v4.33.0-rc2",
+    "lean_toolchain_sha256": "0d3c76ccd8772d8bcbe207241421a760312b71a6aa82f84194391fdf5cb026d6",
+    "repo": "anthropics/formal-math"
+  },
+  "toolchain": {
+    "lake": "Lake version 5.0.0-src+d8b1897 (Lean version 4.33.0-rc2)",
+    "lean": "Lean (version 4.33.0-rc2, x86_64-unknown-linux-gnu, commit d8b18978322de05a8f3dba51ef03cf5461676c17, Release)"
+  }
+}

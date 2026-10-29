@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.7, 2026-10-29.**
+**WORKING MATHEMATICAL DRAFT — v0.8, 2026-10-29.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -61,7 +61,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Real digamma vertical series and height monotonicity | [Zeta23 `Mu.lean` at exact commit](https://github.com/anthropics/formal-math/blob/fbdc36bbf17d20af3fd0447c6d1a8a02773c9844/zeta23/Zeta23/GammaFacts/Mu.lean): `re_digamma_vertical`, `re_digamma_mono` | **FORMAL_SOURCE**; file blob `744e30031e69bfe25e10559ca71b12a53ccc1c14` |
 | No counterexamples for `H-H(1/4)`, `H'` and `H''` on 4,009 frozen points | [preregistered H50-1 and receipt](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50#issuecomment-5858605700) | **FINITE_SLICE_ONLY**; not continuous-domain proof |
 | Uniform second-derivative series representation | [bounded analytic argument in #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50#issuecomment-6497800372); §3 below | **ANALYTIC_ARGUMENT**; not formalized in Lean |
-| Rational ordinate bracket `157/50 < y_* < 63/20` | [archived exact-rational script and certificate](evidence/README.md) | **EXACT_RATIONAL_CERTIFICATE_REPRODUCED**; external assumptions and Lean composition not yet checked |
+| Rational ordinate bracket `157/50 < y_* < 63/20` | [archived exact-rational script and certificate](evidence/README.md) | **TWO_EXACT_INTERVAL_CERTIFICATES_REPRODUCED**; source-to-sign composition accepted in Lean P8, numerical premises pending |
 | Uniform finite-head/tail comparison and L(y)>0 throughout the corridor | §§5.0a and 5.1 analytic proofs, with [archived certificates](evidence/README.md) | **ANALYTIC_HEAD_TAIL_AND_POSITIVITY**; combined Lean proof remains **UNVERIFIED** |
 | Exact rational endpoint L(63/20)>0 | [Source-bound Lean certificate](evidence/lean-h50-endpoint-40889555940.json) and [raw axiom diagnostics](evidence/lean-h50-endpoint-40889555940.txt) | **LEAN_ELABORATES / PINNED_SOURCE / ENDPOINT_ONLY** |
 | Exact endpoint exceeds the corridor Lipschitz budget | [Verified Lean margin receipt](evidence/lean-h50-lipschitz-margin-40903574213.json) | **LEAN_ACCEPTED_ENDPOINT_MARGIN**; global MVT proof ordinary analysis |
@@ -69,6 +69,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Source digamma summand positivity and majorant | [Pinned Lean P5 receipt](evidence/lean-h50-term-majorant-40926036033.json) | **LEAN_ACCEPTED_SOURCE_TERM_BOUND**; full infinite digamma sum now verified separately in P7 |
 | Uniform finite partial-sum bound for digamma tail | [Lean H50-P6 proof](evidence/lean-h50-finite-tail-40929929018.json) | **LEAN_ACCEPTED_ALL_FINITE_CUTOFFS**; full infinite tsum bound separately verified in P7 |
 | Complete source digamma infinite tail summability and bound | [Lean H50-P7 receipt](evidence/lean-h50-infinite-tail-40932637198.json) | **LEAN_ACCEPTED_INFINITE_DIGAMMA_TSUM**; finite endpoint signs still externally certified |
+| Source digamma exact 1000-term split and conditional endpoint signs | [Lean H50-P8 receipt](evidence/lean-h50-prefix-signs-40935732434.json) | **LEAN_ACCEPTED_CONDITIONAL_SIGNS**; four finite/constant interval certificates not kernel-checked |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -185,6 +186,30 @@ tsum (fun n => s_(1001+n)(y)) <= 1/4000 + y²/2000000.
 ```
 
 [Hosted kernel run 40932637198](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40932637198) returned `PASS/ELABORATES/exit 0`; [raw JSON](evidence/lean-h50-infinite-tail-40932637198.json) and [axioms](evidence/lean-h50-infinite-tail-40932637198.txt) are preserved. This removes the **infinite source-digamma tail** from the outstanding Lean obligations. The distinct `q_y` curvature-series tail in Section 5 and the 1000 finite rational terms plus elementary transcendental constant bounds **remain separate**. Full endpoint signs and H50 are **not yet Lean-proved**.
+
+### 4.5 Lean-checked source-prefix decomposition and conditional signs (H50-P8)
+
+[Lean run 40935732434](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40935732434) verified that the *canonical* Zeta23 `re_digamma_vertical` function equals `-γ + B(y) + T(y)`, where `B(y)` consists of `-(1/4)/((1/4)^2+y²)` and the first 1000 exact source summands, while `T(y)` is the **previously kernel-bounded infinite** source digamma tail. The same Lean run accepted strict endpoint signs **assuming only the exact finite-prefix and constant intervals** below (all numbers scaled by `10^12`):
+
+```text
+576716080366 <= 10^12 γ <= 577715582178
+1144729885838 <= 10^12 log(π) <= 1144729885940
+1720122437232 <= 10^12 B(157/50) <= 1720122438233
+1723308817013 <= 10^12 B(63/20) <= 1723308818014
+```
+
+The two source-prefix intervals were independently recovered from the frozen [outward-integer certificate](evidence/ordinate-interval-v2.json) rather than chosen to make the Lean result work. The accepted reasoning yields the strict inequalities:
+
+```text
+10^12 F(157/50) <= -576716080366 + 1720122438233
+                   + 254929800 - 1144729885838
+                 = -1068598171 < 0,
+10^12 F(63/20) >= -577715582178 + 1723308817013
+                   - 1144729885940
+                 = 863348895 > 0.
+```
+
+The kernel accepted the **correct source splitting and conditional arithmetic implication**, with [raw receipt](evidence/lean-h50-prefix-signs-40935732434.json) and [axiom trace](evidence/lean-h50-prefix-signs-40935732434.txt) containing no `sorryAx`. The independent certificates still need **Lean verification of the actual finite 1000-term rational sums and the gamma/log-pi numerical intervals**. Thus unconditional endpoint signs, full ordinate enclosure in Lean, and H50 itself are **not** yet kernel-checked.
 
 ## 5. Finite head and analytic tail
 
