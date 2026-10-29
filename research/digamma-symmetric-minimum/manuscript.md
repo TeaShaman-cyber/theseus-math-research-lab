@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.15, 2026-10-29.**
+**WORKING MATHEMATICAL DRAFT — v0.16, 2026-10-29.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -61,7 +61,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Real digamma vertical series and height monotonicity | [Zeta23 `Mu.lean` at exact commit](https://github.com/anthropics/formal-math/blob/fbdc36bbf17d20af3fd0447c6d1a8a02773c9844/zeta23/Zeta23/GammaFacts/Mu.lean): `re_digamma_vertical`, `re_digamma_mono` | **FORMAL_SOURCE**; file blob `744e30031e69bfe25e10559ca71b12a53ccc1c14` |
 | No counterexamples for `H-H(1/4)`, `H'` and `H''` on 4,009 frozen points | [preregistered H50-1 and receipt](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50#issuecomment-5858605700) | **FINITE_SLICE_ONLY**; not continuous-domain proof |
 | Uniform second-derivative series representation | [bounded analytic argument in #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50#issuecomment-6497800372); §3 below | **ANALYTIC_ARGUMENT**; not formalized in Lean |
-| Rational ordinate bracket `157/50 < y_* < 63/20` | [archived exact-rational script and certificate](evidence/README.md) | **LEAN_ACCEPTED_UNCONDITIONAL_SOURCE_ENDPOINT_SIGNS** (P15); any nonnegative mu-zero enclosed via accepted bridge |
+| Rational ordinate bracket `157/50 < y_* < 63/20` | [archived exact-rational script and certificate](evidence/README.md) | **LEAN_ACCEPTED_DIRECT_NONNEGATIVE_MU_ZERO_CORRIDOR** (P16); mu-zero existence not claimed |
 | Uniform finite-head/tail comparison and L(y)>0 throughout the corridor | §§5.0a and 5.1 analytic proofs, with [archived certificates](evidence/README.md) | **ANALYTIC_HEAD_TAIL_AND_POSITIVITY**; combined Lean proof remains **UNVERIFIED** |
 | Exact rational endpoint L(63/20)>0 | [Source-bound Lean certificate](evidence/lean-h50-endpoint-40889555940.json) and [raw axiom diagnostics](evidence/lean-h50-endpoint-40889555940.txt) | **LEAN_ELABORATES / PINNED_SOURCE / ENDPOINT_ONLY** |
 | Exact endpoint exceeds the corridor Lipschitz budget | [Verified Lean margin receipt](evidence/lean-h50-lipschitz-margin-40903574213.json) | **LEAN_ACCEPTED_ENDPOINT_MARGIN**; global MVT proof ordinary analysis |
@@ -77,6 +77,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Original source digamma exact 64-term split, two-sided infinite tail and conditional strict endpoint signs | [Lean H50-P13 proof](evidence/lean-h50-tail64-40951061773.json) | **LEAN_ACCEPTED_64_TERM_SOURCE_SIGNS_OF_CONSTANT_BOUNDS**; no 936-term expansion needed; gamma/logpi constants pending |
 | Strict `log pi` interval and both gamma-only source-digamma endpoint sign implications | [Lean H50-P14 receipt](evidence/lean-h50-logpi-short-40956565512.json) | **LEAN_ACCEPTED_LOGPI_AND_GAMMA_ONLY_SIGNS**; gamma numerical interval still pending |
 | Exact H1024 rational witness, Euler gamma interval, and source-exact unconditional ordinate endpoint signs | [Lean H50-P15 receipt](evidence/lean-h50-gamma1024-40959547396.json) | **LEAN_ACCEPTED_GAMMA_AND_UNCONDITIONAL_ENDPOINT_SIGNS**; full functional curvature/H50 pending |
+| Directly composed nonnegative `Zeta23.mu` zero corridor (157/50 < tau/2 < 63/20) | [Lean H50-P16 receipt](evidence/lean-h50-corridor-40963278783.json) | **LEAN_ACCEPTED_DIRECT_CORRIDOR**; assumes tau >= 0 and mu(tau) = 0; does not prove zero existence or full H50 |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -316,6 +317,19 @@ F(63/20)  = Re ψ(1/4+i*63/20)  - log π > 0.
 ```
 
 The source-signed root bridge proved in H50-P3 can now conclude `157/50 < tau/2 < 63/20` for **any nonnegative** `tau` satisfying `Zeta23.mu tau = 0`. The explicit source-to-root theorem remains separate and assumes existence of that zero; H50's *global functional convexity and symmetric-minimum statement* remains a distinct unformalized obligation. [Raw accepted receipt](evidence/lean-h50-gamma1024-40959547396.json) and [axiom trace](evidence/lean-h50-gamma1024-40959547396.txt) contain no `sorryAx` and match the exact source hash. The historical N=1000 and log-atanh computations remain archived as external reproducibility records rather than outstanding proof steps.
+
+### 4.13 Directly composed nonnegative mu-zero corridor (H50-P16)
+
+The pinned [Lean 4.33.0-rc2 run 40963278783](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40963278783) accepted the final source-exact composition `H50.nonnegative_mu_zero_in_corridor_unconditional`:
+
+```text
+for any tau : ℝ,  0 <= tau  and  Zeta23.mu tau = 0
+    ==>  157/50 < tau/2  and  tau/2 < 63/20.
+```
+
+This is a **single kernel-accepted theorem** derived from the already proved digamma endpoint signs and the canonical source's mu-to-digamma identity and monotonicity bridge. No numerical interval assumptions remain. The [raw receipt](evidence/lean-h50-corridor-40963278783.json) and [axiom diagnostics](evidence/lean-h50-corridor-40963278783.txt) match the source SHA-256 and have no `sorryAx`.
+
+**Boundary:** the theorem does not construct a nonnegative mu-zero; `Zeta23.mu tau = 0` remains a hypothesis. The real analytic curvature-series, head/integral-tail inequality and global symmetric-minimum H50 statement are **not yet verified as a Lean theorem**. Novelty remains unknown.
 
 ## 5. Finite head and analytic tail
 
@@ -557,9 +571,9 @@ The proof uses no assumption about the sign of `Λ'` and does not
 depend on the historic degree-62 polynomial computation. Together
 with the analytic head/tail comparison in §5.0a, it now proves
 `H_y''(x)>0` on the entire rectangle in ordinary analysis.
-**The full combined inequality is not yet Lean-formalized, and
-the independent y-star corridor certificate still requires
-formal acceptance.**
+**The full combined inequality is not yet Lean-formalized.** The y-star corridor
+for any assumed nonnegative canonical mu-zero is now verified in one source-bound
+Lean theorem (H50-P16, §4.13).
 
 
 The script's correctness and the preservation of its assumptions
@@ -602,11 +616,10 @@ assembled into one kernel-checked proof.
    The exact rational endpoint margin and four finite-polynomial
    sign lemmas are accepted by Lean 4.33.0-rc2; this remains
    strictly weaker than Lean acceptance of the functional comparison.
-2. A directly composed source-bound theorem instantiating the existing
-   mu-zero corridor bridge with P15's unconditional strict signs, if required
-   by downstream formalization; the inputs and implication are separately
-   kernel-accepted. Existence of the designated mu-zero remains a distinct
-   source theorem/assumption to cite explicitly.
+2. For downstream specialization to a designated ordinate, identify the
+   exact theorem or retained hypothesis establishing existence of its
+   nonnegative canonical mu-zero. The **direct source-bound corridor
+   implication is already kernel-accepted** (H50-P16), not outstanding.
 3. A targeted prior-art check for the precise special-function
    statement, before any claim of scientific novelty.
 

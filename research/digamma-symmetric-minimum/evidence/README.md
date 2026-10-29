@@ -348,3 +348,22 @@ Unlike the historical external 1000-term and log-atanh certificates, the strict 
 - `PASS/ELABORATES/exit0`; each of seven new theorem axiom lists contains only `[propext, Classical.choice, Quot.sound]`, **no sorryAx**.
 
 **Remaining proof boundary:** both digamma ordinate endpoint signs are accepted in Lean without external numerical premises. The independent real analytic second-derivative/curvature comparison and complete symmetric minimum H50 are **not** accepted as a unified Lean proof. Scientific novelty and publication-level claims remain `UNKNOWN`.
+
+## H50-P16: unconditional mu-zero ordinate corridor — Lean 40963278783
+
+The pinned [Lean run 40963278783](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40963278783) kernel-accepted `H50.nonnegative_mu_zero_in_corridor_unconditional`, the exact source-bound composition of the earlier `nonnegative_mu_zero_in_corridor_of_digamma_signs` theorem with H50-P15's two **unconditional** digamma endpoint signs.
+
+Precisely, for **any real `tau`** with `0 <= tau` and `Zeta23.mu tau = 0`, the kernel proves the strict ordinate corridor
+
+```
+157/50 < tau/2  AND  tau/2 < 63/20.
+```
+
+There are **no auxiliary numerical premises** on `γ`, `log pi`, a finite source sum, or the infinite source tail. Those were all proved in earlier exact-source Lean runs and reused here. The premises `0 <= tau` and `Zeta23.mu tau = 0` are explicitly retained: this theorem does **not** assert existence of any zero. It also does not formalize the global H50 curvature or symmetric-minimum inequality.
+
+- [Raw Lean calculator JSON](lean-h50-corridor-40963278783.json), SHA-256 `b1ce4675e6a95abc987d24fbb05927a42a79be744426d71bafee2470d9ad3115`.
+- [Raw compiler and axiom diagnostics](lean-h50-corridor-40963278783.txt), SHA-256 `383153ef92be3c6466b87066bc213d28cc9e495bacf42ab24e501c10d29d6088`.
+- Exact accepted proof source SHA-256 `2b858369ba9db04bbfb022ca021cd3e106a05b26335362414d12b6a772b057b7`, accepted main `61beee1f40f53c915d9915887ea4aa123dcf15e5`.
+- `PASS / ELABORATES / returncode 0`; the new theorem has only `[propext, Classical.choice, Quot.sound]` in its axiom list, **no sorryAx**.
+
+**Next independent gate:** formalize the real/complex second derivative of the symmetric digamma function and the uniform curvature series representation, then the head/integral-tail positivity argument. P16 only finishes the **ordinate-enclosure component**; `H50_NOT_YET_LEAN_PROVED / NOVELTY_UNKNOWN` remains unchanged.
