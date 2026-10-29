@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.8, 2026-10-29.**
+**WORKING MATHEMATICAL DRAFT — v0.9, 2026-10-29.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -70,6 +70,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Uniform finite partial-sum bound for digamma tail | [Lean H50-P6 proof](evidence/lean-h50-finite-tail-40929929018.json) | **LEAN_ACCEPTED_ALL_FINITE_CUTOFFS**; full infinite tsum bound separately verified in P7 |
 | Complete source digamma infinite tail summability and bound | [Lean H50-P7 receipt](evidence/lean-h50-infinite-tail-40932637198.json) | **LEAN_ACCEPTED_INFINITE_DIGAMMA_TSUM**; finite endpoint signs still externally certified |
 | Source digamma exact 1000-term split and conditional endpoint signs | [Lean H50-P8 receipt](evidence/lean-h50-prefix-signs-40935732434.json) | **LEAN_ACCEPTED_CONDITIONAL_SIGNS**; four finite/constant interval certificates not kernel-checked |
+| Exact arithmetic of first 8 original digamma-prefix terms at both ordinates | [Lean H50-P9 receipt](evidence/lean-h50-eight-prefix-40937693278.json) | **LEAN_ACCEPTED_EIGHT_OF_1000**; remaining 992 terms plus constants pending |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -210,6 +211,12 @@ The two source-prefix intervals were independently recovered from the frozen [ou
 ```
 
 The kernel accepted the **correct source splitting and conditional arithmetic implication**, with [raw receipt](evidence/lean-h50-prefix-signs-40935732434.json) and [axiom trace](evidence/lean-h50-prefix-signs-40935732434.txt) containing no `sorryAx`. The independent certificates still need **Lean verification of the actual finite 1000-term rational sums and the gamma/log-pi numerical intervals**. Thus unconditional endpoint signs, full ordinate enclosure in Lean, and H50 itself are **not** yet kernel-checked.
+
+### 4.6 Kernel-checked first finite arithmetic block (H50-P9)
+
+The pinned [Lean run 40937693278](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40937693278) verifies **strict 12-decimal rational bounds for the base term and first 8 original digamma summands**, at *both* `y=157/50` and `y=63/20`. The interval values are `1.631025035773..1.631025035774` and `1.633848555154..1.633848555155`, respectively. [Raw JSON](evidence/lean-h50-eight-prefix-40937693278.json) and [axiom trace](evidence/lean-h50-eight-prefix-40937693278.txt) match the accepted source hash, with no `sorryAx`. The arithmetic values were independently checked with exact Python `Fraction` before proving them in Lean.
+
+This is deliberately **8 of the required 1000 terms**, not a final certificate. The remaining 992 terms and the gamma/logpi interval bounds remain unverified by Lean. The next arithmetic proof should reuse exact blocks, rather than expanding one enormous rational expression.
 
 ## 5. Finite head and analytic tail
 
