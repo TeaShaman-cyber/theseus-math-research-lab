@@ -369,6 +369,86 @@ theorem digamma_source_infinite_tail_bound (y : ℝ) :
   · intro k
     exact digamma_source_finite_tail_bound k y
 
+/-! H50-P8: connect the pinned source digamma series to finite-endpoint
+numeric interval premises. These premises are NOT kernel certificates yet. -/
+
+private def sourcePrefix (y : ℝ) : ℝ :=
+  -(1 / 4 : ℝ) / ((1 / 4 : ℝ) ^ 2 + y ^ 2) +
+    ∑ n ∈ Finset.range 1000,
+      digammaTerm ((n : ℝ) + 1) (1 / 4) (y ^ 2)
+
+private def sourceTail (y : ℝ) : ℝ :=
+  ∑' n : ℕ, digammaTerm ((n : ℝ) + 1001) (1 / 4) (y ^ 2)
+
+/-- Exact finite/infinite source digamma decomposition at a=1/4. -/
+theorem digamma_source_prefix_tail_split (y : ℝ) :
+    (Complex.digamma (((1 / 4 : ℝ) : ℂ) + Complex.I * (y : ℂ))).re =
+       -Real.eulerMascheroniConstant + sourcePrefix y + sourceTail y := by
+  have hsource := Zeta23.MuFields.re_digamma_vertical
+    (a := (1 / 4 : ℝ)) (by norm_num) (by norm_num) y
+  have hs : Summable (fun n : ℕ =>
+      digammaTerm ((n : ℝ) + 1) (1 / 4) (y ^ 2)) := by
+    simpa only [digammaTerm] using
+      (Zeta23.MuFields.summable_re_terms
+        (a := (1 / 4 : ℝ)) (by norm_num) (by norm_num) y)
+  have hsplit := hs.sum_add_tsum_nat_add 1000
+  have hshift : (fun n : ℕ =>
+      digammaTerm (((n + 1000 : ℕ) : ℝ) + 1) (1 / 4) (y ^ 2)) =
+      (fun n : ℕ =>
+        digammaTerm ((n : ℝ) + 1001) (1 / 4) (y ^ 2)) := by
+    funext n
+    congr 1
+    push_cast
+    ring
+  rw [hshift] at hsplit
+  rw [hsource]
+  simp only [digammaTerm] at hsplit
+  simp only [sourcePrefix, sourceTail, digammaTerm]
+  rw [hsplit]
+  ring
+
+/-- Strict negative left sign, assuming only the still-unproved
+finite rational prefix and standard constant bounds. The infinite
+source digamma tail is controlled by the accepted H50-P7 theorem. -/
+theorem digamma_left_sign_of_finite_bounds
+    (hgamma : (576716080366 / 1000000000000 : ℝ) ≤
+      Real.eulerMascheroniConstant)
+    (hlog : (1144729885838 / 1000000000000 : ℝ) ≤
+      Real.log Real.pi)
+    (hprefix : sourcePrefix (157 / 50 : ℝ) ≤
+      (1720122438233 / 1000000000000 : ℝ)) :
+    (Complex.digamma (((1 / 4 : ℝ) : ℂ) +
+      Complex.I * ((157 / 50 : ℝ) : ℂ))).re < Real.log Real.pi := by
+  have hsplit := digamma_source_prefix_tail_split (157 / 50 : ℝ)
+  have htail : sourceTail (157 / 50 : ℝ) ≤
+      (254929800 / 1000000000000 : ℝ) := by
+    have ht := digamma_source_infinite_tail_bound (157 / 50 : ℝ)
+    change sourceTail (157 / 50 : ℝ) ≤
+      (1 / 4 : ℝ) / 1000 + (157 / 50 : ℝ) ^ 2 / (2 * 1000 ^ 2) at ht
+    convert ht using 1 <;> norm_num
+  linarith
+
+/-- Strict positive right sign from the finite rational prefix and
+constant bounds, using nonnegativity of the source digamma tsum. -/
+theorem digamma_right_sign_of_finite_bounds
+    (hgamma : Real.eulerMascheroniConstant ≤
+      (577715582178 / 1000000000000 : ℝ))
+    (hlog : Real.log Real.pi ≤
+      (1144729885940 / 1000000000000 : ℝ))
+    (hprefix : (1723308817013 / 1000000000000 : ℝ) ≤
+      sourcePrefix (63 / 20 : ℝ)) :
+    Real.log Real.pi <
+      (Complex.digamma (((1 / 4 : ℝ) : ℂ) +
+        Complex.I * ((63 / 20 : ℝ) : ℂ))).re := by
+  have hsplit := digamma_source_prefix_tail_split (63 / 20 : ℝ)
+  have htail : 0 ≤ sourceTail (63 / 20 : ℝ) := by
+    unfold sourceTail
+    apply tsum_nonneg
+    intro n
+    exact digamma_term_nonneg _ _ _ (by positivity) (by norm_num)
+      (sq_nonneg _)
+  linarith
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -403,3 +483,7 @@ end H50
 
 #print axioms H50.digamma_source_tail_summable
 #print axioms H50.digamma_source_infinite_tail_bound
+
+#print axioms H50.digamma_source_prefix_tail_split
+#print axioms H50.digamma_left_sign_of_finite_bounds
+#print axioms H50.digamma_right_sign_of_finite_bounds
