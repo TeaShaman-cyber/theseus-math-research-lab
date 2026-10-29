@@ -252,3 +252,31 @@ The full 32-term exact fraction and the individual 8-term blocks were independen
 - `PASS/ELABORATES/exit 0`, only axioms `[propext, Classical.choice, Quot.sound]` for all seven; **no sorryAx**.
 
 **Boundary:** 32 of the required 1000 original source-prefix summands are kernel checked. The other **968**, the Euler constant and log-pi enclosures, and the complete H50 theorem remain separate, unproved-in-Lean obligations. Novelty unknown.
+
+## H50-P12: exact source-digamma prefix through 64 terms — Lean 40946098199
+
+[Source-pinned Lean calculator run 40946098199](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40946098199) kernel-accepted **eleven new theorems**: eight exact interval certificates for original source summands 33–40, 41–48, 49–56 and 57–64 at y=157/50 and y=63/20; `source_prefix_split_thirtytwo_four_eights`; and two conservative composed sixty-four-term prefix bounds. Previously accepted source-range split and prefix32 theorems were reused.
+
+All values below are *strict* and scaled by 10^12:
+
+```
+3123416667 < block(33..40, 157/50)*10^12 < 3123416668;
+3133639979 < block(33..40, 63/20)*10^12  < 3133639980;
+1902035592 < block(41..48, 157/50)*10^12 < 1902035593;
+1907682841 < block(41..48, 63/20)*10^12  < 1907682842;
+1267877890 < block(49..56, 157/50)*10^12 < 1267877891;
+1271320343 < block(49..56, 63/20)*10^12  < 1271320344;
+ 900379864 < block(57..64, 157/50)*10^12 <  900379865;
+ 902631309 < block(57..64, 63/20)*10^12  <  902631310;
+1715334410487 < prefix64(157/50)*10^12 < 1715334410495;
+1718513338407 < prefix64(63/20)*10^12  < 1718513338415.
+```
+
+The source-exact 64-term fraction and independent block fractions were reproduced using Python `Fraction` tests before kernel validation. The final conservative intervals accumulate the individually proved block widths; they are not sampled floating point values.
+
+- [Raw receipt JSON](lean-h50-block64-40946098199.json), SHA-256 `cb554fdfd3ca9cf891e2ef8a26737feb7874fce6556adbe145fb44d2cf25bcfd`.
+- [Raw axiom diagnostics](lean-h50-block64-40946098199.txt), SHA-256 `d8940abeaa3f05fe8d7951eea951b76e8e445c20b4f2e61edf4df594388288ad`.
+- Exact accepted proof SHA-256 `1201feadfbe7ab2a5d386ff1e6a057db9077f29416c498c0facbe833c7b1286f`, main `3e01cfe0f7a0c40da3badecedbcb9744b369413a`.
+- `PASS / ELABORATES / exit 0`; each of eleven new theorems has only axioms `[propext, Classical.choice, Quot.sound]`; no `sorryAx`.
+
+**Scientific boundary:** the first **64 of 1000** original source terms are kernel checked. The remaining **936**, the Euler constant and log-pi interval proofs, and final unconditional H50 theorem remain open. Do not equate rational finite-prefix progress with an RH result or established novelty.
