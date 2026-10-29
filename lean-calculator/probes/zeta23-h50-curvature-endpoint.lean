@@ -173,6 +173,73 @@ theorem nonnegative_mu_zero_in_corridor_of_digamma_signs (tau : ℝ)
     nlinarith
   exact nonnegative_mu_zero_in_corridor tau htau hzero hmu_left hmu_right
 
+/-! ### One digamma-series term: exact rational decomposition and bounds -/
+
+/-- The real summand in Zeta23.MuFields.re_digamma_vertical, with z=y². -/
+private def digammaTerm (m a z : ℝ) : ℝ :=
+  1 / m - (m + a) / ((m + a) ^ 2 + z)
+
+/-- Exact partial fraction decomposition, without assumptions about y. -/
+theorem digamma_term_decompose (m a z : ℝ)
+    (hm : 0 < m) (ha : 0 ≤ a) (hz : 0 ≤ z) :
+    digammaTerm m a z =
+      a / (m * (m + a)) + z / ((m + a) * ((m + a) ^ 2 + z)) := by
+  unfold digammaTerm
+  have hu : 0 < m + a := by linarith
+  have hd : 0 < (m + a) ^ 2 + z := by positivity
+  field_simp [ne_of_gt hm, ne_of_gt hu, ne_of_gt hd]
+  all_goals ring
+
+/-- Every source digamma series term is nonnegative for real y. -/
+theorem digamma_term_nonneg (m a z : ℝ)
+    (hm : 0 < m) (ha : 0 ≤ a) (hz : 0 ≤ z) :
+    0 ≤ digammaTerm m a z := by
+  rw [digamma_term_decompose m a z hm ha hz]
+  have hu : 0 < m + a := by linarith
+  positivity
+
+/-- Termwise bound used to certify the positive digamma tail. -/
+theorem digamma_term_le_majorant (m a z : ℝ)
+    (hm : 0 < m) (ha : 0 ≤ a) (hz : 0 ≤ z) :
+    digammaTerm m a z ≤ a / m ^ 2 + z / m ^ 3 := by
+  rw [digamma_term_decompose m a z hm ha hz]
+  have hu : m ≤ m + a := by linarith
+  have hupos : 0 < m + a := by linarith
+  have hsq : m ^ 2 ≤ (m + a) ^ 2 := by
+    nlinarith [mul_nonneg ha (show 0 ≤ 2 * m + a by linarith)]
+  have hden1 : m ^ 2 ≤ m * (m + a) := by
+    nlinarith [mul_nonneg hm.le ha]
+  have hden2 : m ^ 3 ≤ (m + a) * ((m + a) ^ 2 + z) := by
+    calc
+      m ^ 3 = m * m ^ 2 := by ring
+      _ ≤ (m + a) * m ^ 2 := mul_le_mul_of_nonneg_right hu (sq_nonneg m)
+      _ ≤ (m + a) * ((m + a) ^ 2 + z) :=
+        mul_le_mul_of_nonneg_left (by linarith) hupos.le
+  have h1 : a / (m * (m + a)) ≤ a / m ^ 2 :=
+    div_le_div_of_nonneg_left ha (pow_pos hm 2) hden1
+  have h2 : z / ((m + a) * ((m + a) ^ 2 + z)) ≤ z / m ^ 3 :=
+    div_le_div_of_nonneg_left hz (pow_pos hm 3) hden2
+  exact add_le_add h1 h2
+
+/-- Exact nonnegativity of the term in the pinned Zeta23 digamma series. -/
+theorem digamma_source_term_nonneg (n : ℕ) (y : ℝ) :
+    0 ≤ 1 / ((n : ℝ) + 1) -
+      ((n : ℝ) + 1 + 1 / 4) /
+        (((n : ℝ) + 1 + 1 / 4) ^ 2 + y ^ 2) := by
+  change 0 ≤ digammaTerm ((n : ℝ) + 1) (1 / 4) (y ^ 2)
+  exact digamma_term_nonneg _ _ _ (by positivity) (by norm_num) (sq_nonneg y)
+
+/-- The exact summand in re_digamma_vertical has a uniform y²/m³ tail. -/
+theorem digamma_source_term_le_majorant (n : ℕ) (y : ℝ) :
+    1 / ((n : ℝ) + 1) -
+      ((n : ℝ) + 1 + 1 / 4) /
+        (((n : ℝ) + 1 + 1 / 4) ^ 2 + y ^ 2) ≤
+      (1 / 4 : ℝ) / ((n : ℝ) + 1) ^ 2 +
+        y ^ 2 / ((n : ℝ) + 1) ^ 3 := by
+  change digammaTerm ((n : ℝ) + 1) (1 / 4) (y ^ 2) ≤
+    (1 / 4 : ℝ) / ((n : ℝ) + 1) ^ 2 + y ^ 2 / ((n : ℝ) + 1) ^ 3
+  exact digamma_term_le_majorant _ _ _ (by positivity) (by norm_num) (sq_nonneg y)
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -192,3 +259,10 @@ end H50
 
 #print axioms H50.mu_twice_ordinate_identity
 #print axioms H50.nonnegative_mu_zero_in_corridor_of_digamma_signs
+
+#print axioms H50.digamma_term_decompose
+#print axioms H50.digamma_term_nonneg
+#print axioms H50.digamma_term_le_majorant
+
+#print axioms H50.digamma_source_term_nonneg
+#print axioms H50.digamma_source_term_le_majorant
