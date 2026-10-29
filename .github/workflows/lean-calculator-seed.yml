@@ -18,6 +18,7 @@ on:
           - cdclean-inline-gamma-flow-to-cover
           - cdclean-drop-decidable-eq-edge-assumption
           - wang-wein-lemma32-odd-canary
+          - zeta23-h50-curvature-endpoint
 
 permissions:
   contents: read
@@ -85,7 +86,9 @@ jobs:
         with:
           path: |
             _lean_calc/source/.lake/packages
+            _lean_calc/source/zeta23/.lake/packages
             _lean_calc/source/.lake/build
+            _lean_calc/source/zeta23/.lake/build
             _lean_calc/cache-meta/seed.json
             ~/.cache/mathlib
             ~/.elan/toolchains
@@ -155,7 +158,9 @@ jobs:
         with:
           path: |
             _lean_calc/source/.lake/packages
+            _lean_calc/source/zeta23/.lake/packages
             _lean_calc/source/.lake/build
+            _lean_calc/source/zeta23/.lake/build
             _lean_calc/cache-meta/seed.json
             ~/.cache/mathlib
             ~/.elan/toolchains
