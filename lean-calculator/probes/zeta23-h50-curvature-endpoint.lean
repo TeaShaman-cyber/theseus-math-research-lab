@@ -133,7 +133,6 @@ theorem mu_twice_ordinate_identity (y : ℝ) :
   rw [hy]
   have hpi : Real.pi ≠ 0 := ne_of_gt Real.pi_pos
   field_simp [hpi]
-  ring
 
 /-- Deduce the strict y corridor from strict endpoint signs of the
     *canonical* digamma formula, assuming tau is a nonnegative mu-zero.
