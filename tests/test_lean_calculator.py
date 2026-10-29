@@ -31,6 +31,7 @@ class LeanCalculatorContractTests(unittest.TestCase):
                 "cdclean-inline-gamma-flow-to-cover",
                 "cdclean-drop-decidable-eq-edge-assumption",
                 "wang-wein-lemma32-odd-canary",
+                "zeta23-h50-curvature-endpoint",
             },
         )
         for pid, probe in reg["probes"].items():
@@ -44,6 +45,23 @@ class LeanCalculatorContractTests(unittest.TestCase):
             if probe["expected_observation"] == "LEAN_REJECTED":
                 self.assertIn("calibration_probe", probe, pid)
 
+
+    def test_zeta23_h50_endpoint_identity_and_workflow_are_source_bound(self):
+        reg = MOD.load_registry()
+        src = reg["sources"]["zeta23"]
+        probe = reg["probes"]["zeta23-h50-curvature-endpoint"]
+        self.assertEqual(src["repo"], "anthropics/formal-math")
+        self.assertEqual(src["commit"], "fbdc36bbf17d20af3fd0447c6d1a8a02773c9844")
+        self.assertEqual(src["source_root"], "zeta23")
+        self.assertEqual(src["build_target"], "Zeta23.GammaFacts.Mu")
+        self.assertEqual(src["identity_file"], "Zeta23/GammaFacts/Mu.lean")
+        self.assertEqual(src["identity_sha256"], "71e4d99a73604b9e09009d897a0bbbaf5d3a950a470758f07738ccc67a171c97")
+        self.assertEqual(src["lean_toolchain"], "leanprover/lean4:v4.33.0-rc2")
+        self.assertEqual(probe["issue"], 50)
+        self.assertEqual(probe["expected_observation"], "ELABORATES")
+        for name in ("lean-calculator.yml", "lean-calculator-seed.yml"):
+            workflow = (ROOT / ".github/workflows" / name).read_text()
+            self.assertIn("- zeta23-h50-curvature-endpoint", workflow)
 
     def test_cdclean_source_identity_is_frozen(self):
         reg = MOD.load_registry()

@@ -18,6 +18,7 @@ on:
           - cdclean-inline-gamma-flow-to-cover
           - cdclean-drop-decidable-eq-edge-assumption
           - wang-wein-lemma32-odd-canary
+          - zeta23-h50-curvature-endpoint
 
 permissions:
   contents: read

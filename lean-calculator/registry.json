@@ -28,6 +28,17 @@
       "lean_toolchain": "leanprover/lean4:v4.31.0",
       "lean_toolchain_sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
       "lake_manifest_sha256": "017e3d0d83fe1030fba04238d0481c8559316006e6f745c0a99231f0be59ca9b"
+    },
+    "zeta23": {
+      "repo": "anthropics/formal-math",
+      "commit": "fbdc36bbf17d20af3fd0447c6d1a8a02773c9844",
+      "source_root": "zeta23",
+      "build_target": "Zeta23.GammaFacts.Mu",
+      "identity_file": "Zeta23/GammaFacts/Mu.lean",
+      "identity_sha256": "71e4d99a73604b9e09009d897a0bbbaf5d3a950a470758f07738ccc67a171c97",
+      "lean_toolchain": "leanprover/lean4:v4.33.0-rc2",
+      "lean_toolchain_sha256": "0d3c76ccd8772d8bcbe207241421a760312b71a6aa82f84194391fdf5cb026d6",
+      "lake_manifest_sha256": "1847b362e15efd927e75aa8b5442e491f998e4a3f730f9dcaca9841f2957c448"
     }
   },
   "probes": {
@@ -153,6 +164,13 @@
       "intent": "PRESERVE",
       "expected_observation": "ELABORATES",
       "issue": 18
+    },
+    "zeta23-h50-curvature-endpoint": {
+      "source": "zeta23",
+      "probe_file": "lean-calculator/probes/zeta23-h50-curvature-endpoint.lean",
+      "intent": "PRESERVE",
+      "expected_observation": "ELABORATES",
+      "issue": 50
     }
   }
 }
