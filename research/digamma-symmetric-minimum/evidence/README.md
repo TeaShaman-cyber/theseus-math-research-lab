@@ -206,3 +206,25 @@ The source-pinned [Lean run](https://github.com/TeaShaman-cyber/theseus-math-res
 - `PASS / ELABORATES / exit 0`; only `propext`, `Classical.choice`, `Quot.sound`. No `sorryAx` or compiler errors.
 
 **Scope:** this is a first exact arithmetic block **only 8 of the target 1000 rational terms**, independently backed by Python `Fraction` tests. No claim about the remaining 992, the final finite 1000-term prefix, gamma/logpi bounds, or unconditional H50 theorem.
+
+## H50-P10: reusable exact source-prefix blocks — Lean 40939988550
+
+[Pinned Zeta23 Lean run](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40939988550) accepted six theorems: `source_finite_block_split`, `finite_source_second_eight_left/right`, `source_prefix_split_eight_eight`, and `finite_source_prefix_sixteen_left/right`. For any natural `start`, `first`, and `second`, the source-exact sum over `first+second` terms is the sum of the corresponding two consecutive source blocks. This is a **generic finite decomposition**, not special-cased to eight terms.
+
+New exact bounds, scaled by 10^12, are:
+
+```
+57064141199 < block(9..16, 157/50) * 10^12 < 57064141200;
+57318842891 < block(9..16, 63/20)  * 10^12 < 57318842892;
+1688089176972 < prefix16(157/50) * 10^12 < 1688089176974;
+1691167398045 < prefix16(63/20)  * 10^12 < 1691167398047.
+```
+
+The sixteen-term intervals are conservatively assembled from two individually certified eight-term intervals. Independent exact `Fraction` tests computed both eight-term blocks and verified sixteen-term identities before Lean proof development.
+
+- [Raw JSON](lean-h50-block16-40939988550.json), SHA-256 `f7b8154ba4f77657135a04526e7cdb06695d2fb765282377a2ec1f9e66475aa0`.
+- [Raw diagnostics](lean-h50-block16-40939988550.txt), SHA-256 `1dc163808bf86c23a6b0a335eb563454a8985959d134b9421f26f03a0d99a51a`.
+- Exact probe SHA-256 `37dae15569a667cd76a3bbd9c335b144ea725446320c0898e4733b84ca49d1c1`; main `af155e8896acc8c0eaf688a881030c82359addc6`.
+- `PASS/ELABORATES/returncode0`, six axiom lists `[propext, Classical.choice, Quot.sound]`; no `sorryAx`.
+
+**Scope:** 16 of 1000 finite source-prefix terms are now kernel checked. The remaining 984 terms and gamma/log-pi numerical bounds remain separate. No complete endpoint sign or full H50 Lean claim.
