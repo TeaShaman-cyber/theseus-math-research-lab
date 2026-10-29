@@ -272,7 +272,7 @@ theorem recip_cube_le_telescoping (m : ℝ) (hm : 2 ≤ m) :
 
 /-- The potential telescopes to the two analytic tail terms. -/
 private def digammaTailPotential (m a z : ℝ) : ℝ :=
-  a / m + z / (2 * m ^ 2)
+  a / m + (z / 2) * (1 / m ^ 2)
 
 theorem digamma_term_le_telescoping (m a z : ℝ)
     (hm : 2 ≤ m) (ha : 0 ≤ a) (hz : 0 ≤ z) :
@@ -286,7 +286,8 @@ theorem digamma_term_le_telescoping (m a z : ℝ)
       digamma_term_le_majorant m a z hm0 ha hz
     _ ≤ a * (1 / (m - 1) - 1 / m) +
           z * ((1 / 2 : ℝ) * (1 / (m - 1) ^ 2 - 1 / m ^ 2)) := by
-      nlinarith [hs, hc]
+      have h := add_le_add hs hc
+      convert h using 1 <;> ring
     _ = digammaTailPotential (m - 1) a z -
           digammaTailPotential m a z := by
       unfold digammaTailPotential
@@ -322,15 +323,22 @@ theorem digamma_source_finite_tail_bound (k : ℕ) (y : ℝ) :
       rw [Finset.sum_range_succ]
       have hstep : digammaTerm ((j : ℝ) + 1001) (1 / 4) (y ^ 2) ≤
           pot j - pot (j + 1) := by
-        simpa [pot, Nat.cast_add, Nat.cast_one] using digamma_source_tail_step j y
+        change digammaTerm ((j : ℝ) + 1001) (1 / 4) (y ^ 2) ≤
+          digammaTailPotential ((j : ℝ) + 1000) (1 / 4) (y ^ 2) -
+          digammaTailPotential (((j + 1 : ℕ) : ℝ) + 1000) (1 / 4) (y ^ 2)
+        have hcast : (((j + 1 : ℕ) : ℝ) + 1000) = (j : ℝ) + 1001 := by
+          push_cast
+          ring
+        rw [hcast]
+        exact digamma_source_tail_step j y
       linarith
   have hpot : 0 ≤ pot k := by
     dsimp [pot, digammaTailPotential]
     positivity
-  have h := hstrong k
-  dsimp [pot, digammaTailPotential] at h
-  norm_num at h
-  linarith
+  have hsum : (∑ n ∈ Finset.range k,
+      digammaTerm ((n : ℝ) + 1001) (1 / 4) (y ^ 2)) ≤ pot 0 := by
+    linarith [hstrong k]
+  simpa [pot, digammaTailPotential] using hsum
 
 end H50
 
