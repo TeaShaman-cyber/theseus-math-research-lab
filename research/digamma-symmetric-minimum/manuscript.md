@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.4, 2026-10-29.**
+**WORKING MATHEMATICAL DRAFT — v0.5, 2026-10-29.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -66,6 +66,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Exact rational endpoint L(63/20)>0 | [Source-bound Lean certificate](evidence/lean-h50-endpoint-40889555940.json) and [raw axiom diagnostics](evidence/lean-h50-endpoint-40889555940.txt) | **LEAN_ELABORATES / PINNED_SOURCE / ENDPOINT_ONLY** |
 | Exact endpoint exceeds the corridor Lipschitz budget | [Verified Lean margin receipt](evidence/lean-h50-lipschitz-margin-40903574213.json) | **LEAN_ACCEPTED_ENDPOINT_MARGIN**; global MVT proof ordinary analysis |
 | Four interval polynomial sign sublemmas | [Pinned Lean proof receipt](evidence/lean-h50-head-tail-polynomial-40907184557.json) and [axiom trace](evidence/lean-h50-head-tail-polynomial-40907184557.txt) | **LEAN_ACCEPTED_FINITE_SIGNS**; continuous derivatives/composition ordinary analysis |
+| Source digamma summand positivity and majorant | [Pinned Lean P5 receipt](evidence/lean-h50-term-majorant-40926036033.json) | **LEAN_ACCEPTED_SOURCE_TERM_BOUND**; summed infinite tail and endpoint arithmetic remain external |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -141,6 +142,18 @@ the named Mathlib lemmas and the certificate inequalities inside a
 single proof environment remains a separate acceptance step.
 
 Independent interval audit: [v2 receipt](evidence/ordinate-interval-v2.json); strict endpoint signs are externally certified, while the [Lean sign-to-root bridge](evidence/lean-h50-ordinate-40913788312.json) is kernel-accepted only conditional on those signs.
+
+### 4.2 Source-exact digamma term inequalities in Lean (H50-P5)
+
+For `m>0`, `a>=0` and `z>=0`, set `s(m,a,z)=1/m-(m+a)/((m+a)^2+z)`. The exact algebraic identity
+
+```text
+s(m,a,z) = a/[m(m+a)] + z/[(m+a)((m+a)^2+z)]
+```
+
+gives `0<=s(m,a,z)<=a/m^2+z/m^3`. Five new Lean theorems verify the decomposition and both inequalities, including the precise summand of the pinned `Zeta23.MuFields.re_digamma_vertical` at `a=1/4` and `z=y^2`. [Run 40926036033](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40926036033) returned `PASS / ELABORATES`, exit `0`; [raw receipt](evidence/lean-h50-term-majorant-40926036033.json) and [axioms](evidence/lean-h50-term-majorant-40926036033.txt) are archived.
+
+**Acceptance boundary:** this formally proves a *pointwise series-term bound*, not the comparison of the infinite tail to its integral. Neither the external 1000-term endpoint interval calculation nor the final H50 theorem has been imported into Lean's kernel.
 
 ## 5. Finite head and analytic tail
 
