@@ -18,9 +18,10 @@ in a frozen 4,009-point slice, but that finite search does not prove the
 claim. A prospective analytic route reduces the inequality to strict
 convexity: a uniformly twice-differentiable digamma series, a rational
 bracket for the distinguished ordinate, and a positive finite-head
-plus analytic-tail lower bound. The original exact-rational certificates
-are now preserved with this draft and were independently rerun with
-byte-identical generated JSON in the observed Python/SymPy environment.
+plus analytic-tail lower bound. The original exact-rational certificates are preserved with this draft
+and were independently rerun with byte-identical JSON in Python/SymPy.
+One pointwise endpoint inequality is now independently checked in Lean;
+the complete digamma inequality and its novelty remain unverified.
 This draft distinguishes an ordinary-analysis proof argument from
 a kernel-checked formal proof and leaves the exact prior-art novelty
 assessment **UNKNOWN**. No assertion about the Riemann hypothesis follows.
@@ -60,7 +61,8 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | No counterexamples for `H-H(1/4)`, `H'` and `H''` on 4,009 frozen points | [preregistered H50-1 and receipt](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50#issuecomment-5858605700) | **FINITE_SLICE_ONLY**; not continuous-domain proof |
 | Uniform second-derivative series representation | [bounded analytic argument in #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50#issuecomment-6497800372); §3 below | **ANALYTIC_ARGUMENT**; not formalized in Lean |
 | Rational ordinate bracket `157/50 < y_* < 63/20` | [archived exact-rational script and certificate](evidence/README.md) | **EXACT_RATIONAL_CERTIFICATE_REPRODUCED**; external assumptions and Lean composition not yet checked |
-| Finite-head plus tail lower bound `H_y'' >= L(y) > 0` | [exact rational positive-curvature script and certificate](evidence/README.md) | **EXACT_RATIONAL_CERTIFICATE_REPRODUCED + HISTORICAL SYMBOLIC WITNESS**; formal composition pending |
+| Uniform finite-head/tail comparison and L(y)>0 throughout the corridor | [Archived exact-rational certificate](evidence/README.md) | **EXACT_RATIONAL_CERTIFICATE_REPRODUCED**; global corridor theorem and Lean composition remain **UNVERIFIED** |
+| Exact rational endpoint L(63/20)>0 | [Source-bound Lean certificate](evidence/lean-h50-endpoint-40889555940.json) and [raw axiom diagnostics](evidence/lean-h50-endpoint-40889555940.txt) | **LEAN_ELABORATES / PINNED_SOURCE / ENDPOINT_ONLY** |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -179,6 +181,23 @@ endpoint value
 L(63/20) = 0.172108104368515154195661532478... > 0.
 ```
 
+**Additional formally checked result (29 October 2026):** the exact
+single-point inequality L(63/20)>0 has been accepted by Lean 4.33.0-rc2,
+using the pinned Zeta23 source and the concrete finite-head/tail formula
+in the existing math lab Lean calculator. The 16 q terms and the tail
+weight were independently matched to the recorded exact-rational
+numerator/denominator. Hosted run
+[40889555940](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40889555940)
+returned ELABORATES/PASS, exit 0, with exact cache readback.
+The exported axiom list contains only propext, Classical.choice and
+Quot.sound; there is no sorry. [Raw receipt](evidence/lean-h50-endpoint-40889555940.json)
+and [diagnostics](evidence/lean-h50-endpoint-40889555940.txt)
+are preserved alongside the rational certificates.
+
+**This does not prove L(y)>0 across the corridor, nor H''(x)>=L(y).**
+Both are still proof obligations, separate from the now verified
+arithmetic at the upper endpoint.
+
 The script's correctness and the preservation of its assumptions
 must not be replaced by a bare GREEN CI status. The mathematical
 proof obligation is to compose the rational inequality, finite
@@ -223,10 +242,12 @@ verification and retrieval tools, not separate scientific study arms.
 
 The existing math lab
 [Lean calculator](https://github.com/TeaShaman-cyber/theseus-math-research-lab/blob/main/.github/workflows/lean-calculator.yml)
-is registered for other source families; as of this draft, the
-Zeta23-specific proof probe has **not run or been accepted**.
-A deterministic Lean receipt would provide precisely scoped
-formal verification, not substitute for the mathematical result.
+now has a pinned Zeta23 source and one actually executed **pointwise**
+arithmetic theorem (hosted run 40889555940). This verifies the exact
+upper-endpoint rational formula, not the remaining functional,
+uniform-convergence, global-positivity, or original H50 conclusions.
+The proof code, output JSON and axiom diagnostics are source-bound and
+retained in the evidence inventory.
 
 ## References and raw materials
 
