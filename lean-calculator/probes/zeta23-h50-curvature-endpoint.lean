@@ -340,6 +340,35 @@ theorem digamma_source_finite_tail_bound (k : ℕ) (y : ℝ) :
   simpa [pot, digammaTailPotential, div_eq_mul_inv,
     mul_inv_rev, mul_assoc, mul_comm, mul_left_comm] using hsum
 
+/-! ### H50: the finite source-bound tail controls the real infinite tsum
+
+The previous theorem gives a uniform bound for every finite sum.
+The imported Mathlib real-series theorem now takes the limit.
+-/
+
+/-- The exact real source digamma tail after index 1000 is summable. -/
+theorem digamma_source_tail_summable (y : ℝ) :
+    Summable (fun n : ℕ =>
+      digammaTerm ((n : ℝ) + 1001) (1 / 4) (y ^ 2)) := by
+  apply Real.summable_of_sum_range_le
+  · intro n
+    exact digamma_term_nonneg _ _ _ (by positivity) (by norm_num) (sq_nonneg y)
+  · intro k
+    exact digamma_source_finite_tail_bound k y
+
+/-- The complete infinite positive digamma tail is bounded by the
+    same source-certified 1000-term cutoff budget, not just every finite
+    partial sum. This does not certify the transcendent endpoint signs. -/
+theorem digamma_source_infinite_tail_bound (y : ℝ) :
+    (∑' n : ℕ,
+       digammaTerm ((n : ℝ) + 1001) (1 / 4) (y ^ 2)) ≤
+      (1 / 4 : ℝ) / 1000 + y ^ 2 / (2 * 1000 ^ 2) := by
+  apply Real.tsum_le_of_sum_range_le
+  · intro n
+    exact digamma_term_nonneg _ _ _ (by positivity) (by norm_num) (sq_nonneg y)
+  · intro k
+    exact digamma_source_finite_tail_bound k y
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -371,3 +400,6 @@ end H50
 #print axioms H50.recip_cube_le_telescoping
 #print axioms H50.digamma_term_le_telescoping
 #print axioms H50.digamma_source_finite_tail_bound
+
+#print axioms H50.digamma_source_tail_summable
+#print axioms H50.digamma_source_infinite_tail_bound
