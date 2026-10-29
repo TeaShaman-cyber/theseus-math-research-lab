@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.6, 2026-10-29.**
+**WORKING MATHEMATICAL DRAFT — v0.7, 2026-10-29.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -66,8 +66,9 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Exact rational endpoint L(63/20)>0 | [Source-bound Lean certificate](evidence/lean-h50-endpoint-40889555940.json) and [raw axiom diagnostics](evidence/lean-h50-endpoint-40889555940.txt) | **LEAN_ELABORATES / PINNED_SOURCE / ENDPOINT_ONLY** |
 | Exact endpoint exceeds the corridor Lipschitz budget | [Verified Lean margin receipt](evidence/lean-h50-lipschitz-margin-40903574213.json) | **LEAN_ACCEPTED_ENDPOINT_MARGIN**; global MVT proof ordinary analysis |
 | Four interval polynomial sign sublemmas | [Pinned Lean proof receipt](evidence/lean-h50-head-tail-polynomial-40907184557.json) and [axiom trace](evidence/lean-h50-head-tail-polynomial-40907184557.txt) | **LEAN_ACCEPTED_FINITE_SIGNS**; continuous derivatives/composition ordinary analysis |
-| Source digamma summand positivity and majorant | [Pinned Lean P5 receipt](evidence/lean-h50-term-majorant-40926036033.json) | **LEAN_ACCEPTED_SOURCE_TERM_BOUND**; summed infinite tail and endpoint arithmetic remain external |
-| Uniform finite partial-sum bound for digamma tail | [Lean H50-P6 proof](evidence/lean-h50-finite-tail-40929929018.json) | **LEAN_ACCEPTED_ALL_FINITE_CUTOFFS**; infinite tsum passage pending |
+| Source digamma summand positivity and majorant | [Pinned Lean P5 receipt](evidence/lean-h50-term-majorant-40926036033.json) | **LEAN_ACCEPTED_SOURCE_TERM_BOUND**; full infinite digamma sum now verified separately in P7 |
+| Uniform finite partial-sum bound for digamma tail | [Lean H50-P6 proof](evidence/lean-h50-finite-tail-40929929018.json) | **LEAN_ACCEPTED_ALL_FINITE_CUTOFFS**; full infinite tsum bound separately verified in P7 |
+| Complete source digamma infinite tail summability and bound | [Lean H50-P7 receipt](evidence/lean-h50-infinite-tail-40932637198.json) | **LEAN_ACCEPTED_INFINITE_DIGAMMA_TSUM**; finite endpoint signs still externally certified |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -172,7 +173,18 @@ sum_{m=1001}^{1000+k} s_m(y) <= V_1000
                              = a/1000+y²/(2*1000²).
 ```
 
-[Proof run 40929929018](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40929929018), [raw proof receipt](evidence/lean-h50-finite-tail-40929929018.json), and [axiom trace](evidence/lean-h50-finite-tail-40929929018.txt) are preserved. A kernel-accepted **infinite tsum bound** still requires the limit/series-convergence step, which is not claimed here; neither the transcendental endpoint signs nor H50 are kernel verified.
+[Proof run 40929929018](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40929929018), [raw proof receipt](evidence/lean-h50-finite-tail-40929929018.json), and [axiom trace](evidence/lean-h50-finite-tail-40929929018.txt) are preserved. The **infinite tsum bound is now accepted separately in Section 4.4 (H50-P7)**. The transcendental endpoint signs and full H50 are not yet kernel verified.
+
+### 4.4 Kernel-checked infinite digamma tail (H50-P7)
+
+Pinned Lean 4.33.0-rc2 now accepts **both summability and the full** `tsum` **upper bound**, not only its finite approximations. The already proved nonnegative term inequality and the uniform finite bound feed Mathlib's global `summable_of_sum_range_le` and `Real.tsum_le_of_sum_range_le`. For every real ordinate y:
+
+```text
+Summable (fun n => s_(1001+n)(y)),
+tsum (fun n => s_(1001+n)(y)) <= 1/4000 + y²/2000000.
+```
+
+[Hosted kernel run 40932637198](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40932637198) returned `PASS/ELABORATES/exit 0`; [raw JSON](evidence/lean-h50-infinite-tail-40932637198.json) and [axioms](evidence/lean-h50-infinite-tail-40932637198.txt) are preserved. This removes the **infinite source-digamma tail** from the outstanding Lean obligations. The distinct `q_y` curvature-series tail in Section 5 and the 1000 finite rational terms plus elementary transcendental constant bounds **remain separate**. Full endpoint signs and H50 are **not yet Lean-proved**.
 
 ## 5. Finite head and analytic tail
 
