@@ -240,6 +240,98 @@ theorem digamma_source_term_le_majorant (n : ℕ) (y : ℝ) :
     (1 / 4 : ℝ) / ((n : ℝ) + 1) ^ 2 + y ^ 2 / ((n : ℝ) + 1) ^ 3
   exact digamma_term_le_majorant _ _ _ (by positivity) (by norm_num) (sq_nonneg y)
 
+/-! ## H50: finite telescoping proof for the digamma-series tail
+
+For every m>=2, 1/m² and 1/m³ are bounded by exact differences
+of rational potentials. This is a discrete proof, not an integral test.
+-/
+
+theorem recip_sq_le_telescoping (m : ℝ) (hm : 2 ≤ m) :
+    1 / m ^ 2 ≤ 1 / (m - 1) - 1 / m := by
+  have hm0 : 0 < m := by linarith
+  have hm1 : 0 < m - 1 := by linarith
+  have heq : (1 : ℝ) / (m - 1) - 1 / m = 1 / (m * (m - 1)) := by
+    field_simp <;> ring
+  rw [heq]
+  apply (div_le_div_iff₀ (pow_pos hm0 2) (mul_pos hm0 hm1)).2
+  nlinarith
+
+theorem recip_cube_le_telescoping (m : ℝ) (hm : 2 ≤ m) :
+    1 / m ^ 3 ≤ (1 / 2 : ℝ) * (1 / (m - 1) ^ 2 - 1 / m ^ 2) := by
+  have hm0 : 0 < m := by linarith
+  have hm1 : 0 < m - 1 := by linarith
+  have heq : (1 / 2 : ℝ) * (1 / (m - 1) ^ 2 - 1 / m ^ 2) =
+      (2 * m - 1) / (2 * (m - 1) ^ 2 * m ^ 2) := by
+    field_simp <;> ring
+  rw [heq]
+  have hd : 0 < 2 * (m - 1) ^ 2 * m ^ 2 := by positivity
+  apply (div_le_div_iff₀ (pow_pos hm0 3) hd).2
+  have hbase : 2 * (m - 1) ^ 2 ≤ m * (2 * m - 1) := by nlinarith
+  have hscaled := mul_le_mul_of_nonneg_right hbase (sq_nonneg m)
+  nlinarith [hscaled]
+
+/-- The potential telescopes to the two analytic tail terms. -/
+private def digammaTailPotential (m a z : ℝ) : ℝ :=
+  a / m + z / (2 * m ^ 2)
+
+theorem digamma_term_le_telescoping (m a z : ℝ)
+    (hm : 2 ≤ m) (ha : 0 ≤ a) (hz : 0 ≤ z) :
+    digammaTerm m a z ≤
+      digammaTailPotential (m - 1) a z - digammaTailPotential m a z := by
+  have hm0 : 0 < m := by linarith
+  have hs := mul_le_mul_of_nonneg_left (recip_sq_le_telescoping m hm) ha
+  have hc := mul_le_mul_of_nonneg_left (recip_cube_le_telescoping m hm) hz
+  calc
+    digammaTerm m a z ≤ a / m ^ 2 + z / m ^ 3 :=
+      digamma_term_le_majorant m a z hm0 ha hz
+    _ ≤ a * (1 / (m - 1) - 1 / m) +
+          z * ((1 / 2 : ℝ) * (1 / (m - 1) ^ 2 - 1 / m ^ 2)) := by
+      nlinarith [hs, hc]
+    _ = digammaTailPotential (m - 1) a z -
+          digammaTailPotential m a z := by
+      unfold digammaTailPotential
+      ring
+
+/-- At index n after the first 1000 terms, the potential step holds. -/
+private theorem digamma_source_tail_step (n : ℕ) (y : ℝ) :
+    digammaTerm ((n : ℝ) + 1001) (1 / 4) (y ^ 2) ≤
+      digammaTailPotential ((n : ℝ) + 1000) (1 / 4) (y ^ 2) -
+      digammaTailPotential ((n : ℝ) + 1001) (1 / 4) (y ^ 2) := by
+  have hm : (2 : ℝ) ≤ (n : ℝ) + 1001 := by
+    have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+    linarith
+  convert digamma_term_le_telescoping ((n : ℝ) + 1001) (1 / 4) (y ^ 2)
+    hm (by norm_num) (sq_nonneg y) using 1 <;> ring
+
+/-- Every finite tail beyond N=1000 obeys the same certified budget.
+    This is a kernel-checked finite sum bound if the probe elaborates.
+    Limit passage to an infinite sum is not asserted here. -/
+theorem digamma_source_finite_tail_bound (k : ℕ) (y : ℝ) :
+    (∑ n ∈ Finset.range k,
+        digammaTerm ((n : ℝ) + 1001) (1 / 4) (y ^ 2)) ≤
+      (1 / 4 : ℝ) / 1000 + y ^ 2 / (2 * 1000 ^ 2) := by
+  let pot : ℕ → ℝ := fun n =>
+    digammaTailPotential ((n : ℝ) + 1000) (1 / 4) (y ^ 2)
+  have hstrong : ∀ k : ℕ,
+      (∑ n ∈ Finset.range k,
+        digammaTerm ((n : ℝ) + 1001) (1 / 4) (y ^ 2)) + pot k ≤ pot 0 := by
+    intro j
+    induction j with
+    | zero => simp
+    | succ j ih =>
+      rw [Finset.sum_range_succ]
+      have hstep : digammaTerm ((j : ℝ) + 1001) (1 / 4) (y ^ 2) ≤
+          pot j - pot (j + 1) := by
+        simpa [pot, Nat.cast_add, Nat.cast_one] using digamma_source_tail_step j y
+      linarith
+  have hpot : 0 ≤ pot k := by
+    dsimp [pot, digammaTailPotential]
+    positivity
+  have h := hstrong k
+  dsimp [pot, digammaTailPotential] at h
+  norm_num at h
+  linarith
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -266,3 +358,8 @@ end H50
 
 #print axioms H50.digamma_source_term_nonneg
 #print axioms H50.digamma_source_term_le_majorant
+
+#print axioms H50.recip_sq_le_telescoping
+#print axioms H50.recip_cube_le_telescoping
+#print axioms H50.digamma_term_le_telescoping
+#print axioms H50.digamma_source_finite_tail_bound
