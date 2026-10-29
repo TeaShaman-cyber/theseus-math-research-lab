@@ -88,3 +88,27 @@ failed due to three Lean noncomputable-definition diagnostics.
 corrected that declaration boundary only; no mathematical formula was
 changed. This history is retained to distinguish failed execution from
 a mathematical counterexample.
+
+## Verified stronger endpoint margin — Lean run 40903574213
+
+Run: https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40903574213
+Accepted main: bd7922ef3f38bb827b2b3943586da65613770f22.
+Pinned source: anthropics/formal-math@fbdc36bbf17d20af3fd0447c6d1a8a02773c9844.
+Lean 4.33.0-rc2; exact toolchain/source cache hit.
+
+Theorem: H50.lowerBound_upper_endpoint_gt_lipschitz_loss,
+showing (629/4000) < lowerBound((63/20)^2).
+
+- [Raw JSON result](lean-h50-lipschitz-margin-40903574213.json);
+  SHA-256 d925d9180707b606c933c0472d7e8b2d92e74e50cd84ff5539f866e1b19c768f
+- [Raw Lean diagnostics](lean-h50-lipschitz-margin-40903574213.txt);
+  SHA-256 fc569ef571d3bf1c30306b924e36949df42670b230629a9d390752d14f3d12d8
+- Probe source SHA-256 46bcc072ea7e176f336f620dda17ed76162a05d170afb6f970cdb6554dd6d250.
+- ELABORATES, PASS, return code 0. Axioms: propext,
+  Classical.choice, Quot.sound. No sorry.
+
+This proves only the exact rational endpoint margin in Lean.
+Manuscript Section 5.1 supplies the separate ordinary-analysis
+derivative/Lipschitz and mean-value proof that the rational L(y)
+stays positive throughout the entire corridor. Neither that
+global proof nor H_y''(x)>=L(y) is yet formalized in Lean.
