@@ -397,14 +397,17 @@ theorem digamma_source_prefix_tail_split (y : ℝ) :
       (fun n : ℕ =>
         digammaTerm ((n : ℝ) + 1001) (1 / 4) (y ^ 2)) := by
     funext n
-    congr 1
-    push_cast
-    ring
+    have hcast : (((n + 1000 : ℕ) : ℝ) + 1) =
+        ((n : ℝ) + 1001) := by
+      push_cast
+      ring
+    exact congrArg (fun u : ℝ =>
+      digammaTerm u (1 / 4) (y ^ 2)) hcast
   rw [hshift] at hsplit
   rw [hsource]
   simp only [digammaTerm] at hsplit
   simp only [sourcePrefix, sourceTail, digammaTerm]
-  rw [hsplit]
+  rw [← hsplit]
   ring
 
 /-- Strict negative left sign, assuming only the still-unproved
