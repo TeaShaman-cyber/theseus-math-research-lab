@@ -286,8 +286,7 @@ theorem digamma_term_le_telescoping (m a z : ℝ)
       digamma_term_le_majorant m a z hm0 ha hz
     _ ≤ a * (1 / (m - 1) - 1 / m) +
           z * ((1 / 2 : ℝ) * (1 / (m - 1) ^ 2 - 1 / m ^ 2)) := by
-      have h := add_le_add hs hc
-      convert h using 1 <;> ring
+      simpa only [div_eq_mul_inv, one_mul] using add_le_add hs hc
     _ = digammaTailPotential (m - 1) a z -
           digammaTailPotential m a z := by
       unfold digammaTailPotential
@@ -338,7 +337,8 @@ theorem digamma_source_finite_tail_bound (k : ℕ) (y : ℝ) :
   have hsum : (∑ n ∈ Finset.range k,
       digammaTerm ((n : ℝ) + 1001) (1 / 4) (y ^ 2)) ≤ pot 0 := by
     linarith [hstrong k]
-  simpa [pot, digammaTailPotential] using hsum
+  simpa [pot, digammaTailPotential, div_eq_mul_inv,
+    mul_inv_rev, mul_assoc, mul_comm, mul_left_comm] using hsum
 
 end H50
 
