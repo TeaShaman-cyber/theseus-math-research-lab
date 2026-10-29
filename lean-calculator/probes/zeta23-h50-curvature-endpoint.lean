@@ -1057,7 +1057,7 @@ private theorem exp_short_left_upper :
     Real.exp (1447 / 10000 : ℝ) ≤
       (∑ m ∈ Finset.range 6,
         (1447 / 10000 : ℝ) ^ m / (m.factorial : ℝ)) +
-      (1447 / 10000 : ℝ) ^ 6 * (6 + 1) / ((6.factorial : ℝ) * 6) := h
+      (1447 / 10000 : ℝ) ^ 6 * (6 + 1) / (((Nat.factorial 6 : ℕ) : ℝ) * 6) := h
     _ ≤ 11557 / 10000 := by
       norm_num [Finset.sum_range_succ, Finset.sum_range_zero, Nat.factorial]
 
@@ -1076,7 +1076,8 @@ private theorem exp_short_right_lower :
 bounds for e and pi, plus a 6-term exponential estimate. -/
 theorem log_pi_lower_short : (11447 / 10000 : ℝ) < Real.log Real.pi := by
   have he1 : Real.exp 1 ≤ (27182818286 / 10000000000 : ℝ) := by
-    convert Real.exp_one_lt_d9.le using 1 <;> norm_num
+    have h := Real.exp_one_lt_d9
+    linarith
   have he : Real.exp (11447 / 10000 : ℝ) < Real.pi := by
     rw [show (11447 / 10000 : ℝ) = 1 + 1447 / 10000 by norm_num,
       Real.exp_add]
@@ -1094,7 +1095,8 @@ theorem log_pi_lower_short : (11447 / 10000 : ℝ) < Real.log Real.pi := by
 bounds for e and pi. -/
 theorem log_pi_upper_short : Real.log Real.pi < (114475 / 100000 : ℝ) := by
   have he1 : (27182818283 / 10000000000 : ℝ) ≤ Real.exp 1 := by
-    convert Real.exp_one_gt_d9.le using 1 <;> norm_num
+    have h := Real.exp_one_gt_d9
+    linarith
   have he : Real.pi < Real.exp (114475 / 100000 : ℝ) := by
     rw [show (114475 / 100000 : ℝ) = 1 + 579 / 4000 by norm_num,
       Real.exp_add]
