@@ -916,7 +916,10 @@ theorem source_tail64_base_lower (k : ℕ) (y : ℝ) :
       rw [hcast]
       linarith
   have h := hstrong k
-  linarith
+  calc
+    (1 / 4 : ℝ) * (1 / 73 - 1 / ((k : ℝ) + 73)) =
+        (1 / 4 : ℝ) / 73 - (1 / 4 : ℝ) / ((k : ℝ) + 73) := by ring
+    _ ≤ _ := sub_le_iff_le_add.mpr h
 
 /-- Exact first eight terms of the right-endpoint remainder (m=65..72). -/
 theorem source_tail64_first8_right :
@@ -947,14 +950,33 @@ theorem source_tail64_infinite_right_lower :
       (∑ n ∈ Finset.range 4088, f (n + 8)) := by
     simpa only [show (8 + 4088 : ℕ) = 4096 by norm_num,
       Nat.add_comm] using (Finset.sum_range_add f 8 4088)
+  have hfirst_eq : sourceFiniteBlock 64 8 (63 / 20 : ℝ) =
+      (∑ n ∈ Finset.range 8, f n) := by
+    unfold sourceFiniteBlock
+    apply Finset.sum_congr rfl
+    intro n hn
+    have hcast : (((64 + n : ℕ) : ℝ) + 1) = (n : ℝ) + 65 := by
+      push_cast
+      ring
+    exact congrArg (fun u : ℝ =>
+      digammaTerm u (1 / 4) ((63 / 20 : ℝ) ^ 2)) hcast
   have hfirst : (671508317 / 1000000000000 : ℝ) <
       (∑ n ∈ Finset.range 8, f n) := by
-    simpa [f, sourceFiniteBlock, Nat.cast_add,
-      add_comm, add_left_comm, add_assoc] using source_tail64_first8_right
+    simpa only [hfirst_eq] using source_tail64_first8_right
+  have hrest_eq : (∑ n ∈ Finset.range 4088, f (n + 8)) =
+      (∑ n ∈ Finset.range 4088,
+        digammaTerm ((n : ℝ) + 73) (1 / 4) ((63 / 20 : ℝ) ^ 2)) := by
+    apply Finset.sum_congr rfl
+    intro n hn
+    have hcast : (((n + 8 : ℕ) : ℝ) + 65) = (n : ℝ) + 73 := by
+      push_cast
+      ring
+    exact congrArg (fun u : ℝ =>
+      digammaTerm u (1 / 4) ((63 / 20 : ℝ) ^ 2)) hcast
   have hrest : (1 / 4 : ℝ) * (1 / 73 - 1 / 4161) ≤
       (∑ n ∈ Finset.range 4088, f (n + 8)) := by
-    simpa [f, Nat.cast_add, add_assoc, add_comm, add_left_comm] using
-      (source_tail64_base_lower 4088 (63 / 20 : ℝ))
+    rw [hrest_eq]
+    convert source_tail64_base_lower 4088 (63 / 20 : ℝ) using 1 <;> norm_num
   rw [hsplit] at hpart
   linarith
 
