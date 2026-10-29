@@ -53,6 +53,16 @@ A2 = off-diagonal arithmetic / phase-correlation information
 
 Current formal evidence from Zeta23 shows that A2-like off-diagonal prime-side structure is genuinely used internally and then compressed into the exported A0 `CoeffMoments/GzMoments` seam. The direct Connes/CCM object is outside the currently accepted Repository Search corpus, which motivates #14.
 
+### Active mathematical manuscript draft — symmetric digamma inequality (#50)
+
+- [Working mathematical draft](research/digamma-symmetric-minimum/manuscript.md)
+- [Exact-rational certificates and reproduction notes](research/digamma-symmetric-minimum/evidence/README.md)
+
+This is an **unaccepted research draft**, not a Lean-checked theorem,
+publication, or assertion of new mathematics. The indexed Repository Search
+corpus is incomplete: a search miss cannot establish absence of a theorem.
+Coordination remains in [issue #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
+
 ## Bounded research seams
 
 Riemann spectral/operator:
