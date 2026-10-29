@@ -310,3 +310,20 @@ F(63/20)  >= 216277189783/2080500000000000 > 1/10000.
 - `PASS / ELABORATES / returncode 0`, all ten new axiom lists contain only `[propext, Classical.choice, Quot.sound]` with **no sorryAx**.
 
 **Acceptance boundary:** the complete source digamma finite-prefix and infinite-tail endpoint proof is checked *conditional on the named gamma/logpi bounds*. Those constant enclosures, and the independent functional curvature / H50 proof in Lean, remain open. Scientific novelty is UNKNOWN. The earlier 1000-term receipt is retained as historical independent evidence, not a remaining formal proof obligation.
+
+## H50-P14: short source-checked log-pi bounds — Lean 40956565512
+
+The source-pinned [Lean 4.33.0-rc2 run 40956565512](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40956565512) kernel-accepted four new declarations: `H50.log_pi_lower_short`, `H50.log_pi_upper_short`, `H50.digamma_left_sign64_of_gamma_only`, and `H50.digamma_right_sign64_of_gamma_only`. A six-term rational exponential Taylor upper/lower estimate, together with already proven Mathlib `Real.exp_one_gt_d9`, `Real.exp_one_lt_d9`, `Real.pi_gt_d6`, and `Real.pi_lt_d6`, yields the strict enclosure
+
+```
+11447/10000 < Real.log Real.pi < 114475/100000.
+```
+
+The previously kernel-checked H50-P13 64-term digamma prefix and two-sided tail margins are large enough that **these weaker, shorter bounds suffice** to discharge *both* `log pi` premises. The strict digamma signs now depend **only** on the named numerical Euler–Mascheroni constant inequalities. No additional 936-term finite digamma arithmetic, 50-term log-atanh series, or external log-pi numerical certificate is required.
+
+- [Raw JSON](lean-h50-logpi-short-40956565512.json), SHA-256 `eacb86e432b205672deb331512454c1758f87d62927d7421eabaf7a912ba9609`.
+- [Raw Lean axiom diagnostics](lean-h50-logpi-short-40956565512.txt), SHA-256 `d76175b902f9dfcf3f971621b853467867ed50313c709696a93d7b0d5daca3f3`.
+- Exact accepted proof SHA-256 `81264fd915371005b94c6b7ede9e1b179caf5cde53e5d8b8efbf58aef3866fc6`, accepted source main `9334134e89e151239f2ad49573f6784a20250dbe`.
+- `PASS/ELABORATES/exit 0`, four theorem axiom lists contain only `[propext, Classical.choice, Quot.sound]`, **no sorryAx**.
+
+**Boundary:** Euler constant `γ` numerical bounds remain **external, not yet proved in the Lean kernel**; neither the unconditional ordinate enclosure nor the full analytic curvature/minimum H50 theorem is accepted. Scientific novelty remains UNKNOWN.
