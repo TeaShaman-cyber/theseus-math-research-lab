@@ -14,6 +14,8 @@ Those are distinct obligations.
 There is no sorry and no declaration of mathematical axioms here.
 -/
 
+noncomputable section
+
 namespace H50
 
 private def q (u z : ℝ) : ℝ :=
