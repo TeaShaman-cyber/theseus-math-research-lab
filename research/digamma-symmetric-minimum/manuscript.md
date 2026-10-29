@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.12, 2026-10-29.**
+**WORKING MATHEMATICAL DRAFT — v0.13, 2026-10-29.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -61,7 +61,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Real digamma vertical series and height monotonicity | [Zeta23 `Mu.lean` at exact commit](https://github.com/anthropics/formal-math/blob/fbdc36bbf17d20af3fd0447c6d1a8a02773c9844/zeta23/Zeta23/GammaFacts/Mu.lean): `re_digamma_vertical`, `re_digamma_mono` | **FORMAL_SOURCE**; file blob `744e30031e69bfe25e10559ca71b12a53ccc1c14` |
 | No counterexamples for `H-H(1/4)`, `H'` and `H''` on 4,009 frozen points | [preregistered H50-1 and receipt](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50#issuecomment-5858605700) | **FINITE_SLICE_ONLY**; not continuous-domain proof |
 | Uniform second-derivative series representation | [bounded analytic argument in #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50#issuecomment-6497800372); §3 below | **ANALYTIC_ARGUMENT**; not formalized in Lean |
-| Rational ordinate bracket `157/50 < y_* < 63/20` | [archived exact-rational script and certificate](evidence/README.md) | **TWO_EXACT_INTERVAL_CERTIFICATES_REPRODUCED**; source-to-sign composition accepted in Lean P8, numerical premises pending |
+| Rational ordinate bracket `157/50 < y_* < 63/20` | [archived exact-rational script and certificate](evidence/README.md) | **LEAN_ACCEPTED_64_TERM_SOURCE_SIGN_BRIDGE** (P13); gamma/log-pi numerical bounds still pending |
 | Uniform finite-head/tail comparison and L(y)>0 throughout the corridor | §§5.0a and 5.1 analytic proofs, with [archived certificates](evidence/README.md) | **ANALYTIC_HEAD_TAIL_AND_POSITIVITY**; combined Lean proof remains **UNVERIFIED** |
 | Exact rational endpoint L(63/20)>0 | [Source-bound Lean certificate](evidence/lean-h50-endpoint-40889555940.json) and [raw axiom diagnostics](evidence/lean-h50-endpoint-40889555940.txt) | **LEAN_ELABORATES / PINNED_SOURCE / ENDPOINT_ONLY** |
 | Exact endpoint exceeds the corridor Lipschitz budget | [Verified Lean margin receipt](evidence/lean-h50-lipschitz-margin-40903574213.json) | **LEAN_ACCEPTED_ENDPOINT_MARGIN**; global MVT proof ordinary analysis |
@@ -73,7 +73,8 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Exact arithmetic of first 8 original digamma-prefix terms at both ordinates | [Lean H50-P9 receipt](evidence/lean-h50-eight-prefix-40937693278.json) | **LEAN_ACCEPTED_EIGHT_OF_1000**; remaining 992 terms plus constants pending |
 | Generic finite-block splitting and source prefix terms 9–16 | [Lean H50-P10 receipt](evidence/lean-h50-block16-40939988550.json) | **LEAN_ACCEPTED_SIXTEEN_OF_1000**; 984 terms and gamma/logpi numeric bounds pending |
 | Exact rational source prefix through 32 terms | [Lean H50-P11 certificate](evidence/lean-h50-block32-40944615197.json) | **LEAN_ACCEPTED_32_OF_1000**; remaining 968 terms and constants not yet formalized |
-| Exact rational source prefix through 64 terms | [Lean H50-P12 receipt](evidence/lean-h50-block64-40946098199.json) | **LEAN_ACCEPTED_64_OF_1000**; 936 finite terms and constant bounds pending |
+| Exact rational source prefix through 64 terms | [Lean H50-P12 receipt](evidence/lean-h50-block64-40946098199.json) | **LEAN_ACCEPTED_64_OF_1000**; superseded P13 proves the rest by a two-sided tail, constants pending |
+| Original source digamma exact 64-term split, two-sided infinite tail and conditional strict endpoint signs | [Lean H50-P13 proof](evidence/lean-h50-tail64-40951061773.json) | **LEAN_ACCEPTED_64_TERM_SOURCE_SIGNS_OF_CONSTANT_BOUNDS**; no 936-term expansion needed; gamma/logpi constants pending |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -262,7 +263,27 @@ The accepted 64-term intervals, scaled by `10^12`, are:
 
 The source fractions and each block were reproduced independently with exact `Fraction` arithmetic. The [raw JSON receipt](evidence/lean-h50-block64-40946098199.json) and [axiom diagnostics](evidence/lean-h50-block64-40946098199.txt) match the accepted source hash. All eleven proofs elaborate with only the standard axioms and no `sorryAx`.
 
-**Outstanding:** 936 of the 1000 original finite-prefix terms and the numerical Euler-constant/log-pi bounds are not yet kernel checked. Endpoint sign composition is conditional on those inputs, and full H50 is still open.
+**Historical P12 status:** 936 original finite terms were not kernel checked. **Superseded by H50-P13 (§4.10):** their enumeration is unnecessary because the entire remaining digamma tail is now kernel bounded. Numerical gamma/log-pi bounds and the full H50 proof remain open.
+
+### 4.10 Feynman shortcut: two-sided infinite tail after 64 terms (H50-P13)
+
+The preceding 1000-term finite-prefix plan was unnecessary: the earlier right-endpoint argument replaced the *positive* source digamma tail by zero, destroying the available margin. We instead combine the kernel-accepted first-64 source prefix from §4.9 with a **kernel-accepted two-sided bound on the entire infinite source tail**. [Lean run 40951061773](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40951061773) accepted ten new declarations including the exact source split, a full upper bound, a certified right-tail lower bound, and both conditional strict signs.
+
+For `a=1/4`, `z=y²` and `T64(y)=sum_{m=65}^infinity s_m(y)`, the new source-verified bounds are
+
+```text
+0 <= T64(y) <= a/64 + z/(2*64²)             for every real y,
+T64(63/20) >= 671508317/10^12 + a*(1/73 - 1/4161).
+```
+
+The lower bound proves an exact inequality for the eight terms `m=65..72`, bounds the next **4088 terms symbolically** using `a/[m(m+1)]`, telescopes their sum, and uses nonnegativity of the remaining infinite sequence. It performs **no 4088-term evaluation**. Exact `Fraction` checks of the resulting margins are reproduced by regression tests; Lean independently accepts the source-bound reasoning. Using the already certified conservative `prefix64` enclosures, we obtain **assuming only the frozen gamma and log-pi intervals**:
+
+```text
+F(157/50) <= -8013930047/8000000000000 < -1/1000,
+F(63/20)  >= 216277189783/2080500000000000 > 1/10000.
+```
+
+[Raw Lean certificate](evidence/lean-h50-tail64-40951061773.json) and [axiom trace](evidence/lean-h50-tail64-40951061773.txt) are accepted at the exact source hash with no `sorryAx`. This supersedes the prior 1000-term arithmetic strategy. **No proof of the numerical constant enclosures or of the global curvature/H50 statement is claimed.**
 
 ## 5. Finite head and analytic tail
 
@@ -536,8 +557,8 @@ H_{y_*}(x) >= H_{y_*}(1/4) = 2 log(π)
 
 Thus the head/tail comparison and positivity steps have **complete
 ordinary-analysis proofs** on the entire two-variable rectangle.
-The outstanding condition for an unconditional H50 theorem is
-independent formal acceptance of the **ordinate enclosure**:
+The remaining constant-bound condition for an unconditional ordinate enclosure is
+independent formal acceptance of the **Euler gamma and log-pi intervals**:
 the current rational program is reproducible, but its external
 constants, transcendental bounds and link to the canonical zero
 have not yet been discharged in the same accepted proof context.
