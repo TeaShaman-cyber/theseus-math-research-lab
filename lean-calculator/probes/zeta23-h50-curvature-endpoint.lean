@@ -1137,6 +1137,87 @@ theorem digamma_right_sign64_of_gamma_only
   norm_num at htail
   linarith
 
+/-! H50-P15: replace the external Euler constant interval with a single
+exact harmonic number and Mathlib's already verified log(2) bounds. -/
+
+/-- Fixed exact rational interval for the 1024th harmonic number. -/
+set_option maxRecDepth 16384 in
+set_option maxHeartbeats 10000000 in
+theorem harmonic1024_rational_interval :
+    (7509175672278 / 1000000000000 : ℚ) < harmonic 1024 ∧
+    harmonic 1024 < (7509175672279 / 1000000000000 : ℚ) := by
+  constructor <;> decide
+
+/-- The power-of-two choice avoids any additional logarithm certificate. -/
+theorem log1024_eq_ten_logtwo :
+    Real.log (1024 : ℝ) = 10 * Real.log 2 := by
+  rw [show (1024 : ℝ) = (2 : ℝ) ^ 10 by norm_num, Real.log_pow]
+  ring
+
+/-- Euler lower bound from Mathlib's lower sequence and an exact H1024. -/
+theorem gamma_lower_from_h1024
+    (hh : (7509175672278 / 1000000000000 : ℚ) < harmonic 1024) :
+    (576716080366 / 1000000000000 : ℝ) < Real.eulerMascheroniConstant := by
+  have hhR : (7509175672278 / 1000000000000 : ℝ) <
+      (harmonic 1024 : ℝ) := by exact_mod_cast hh
+  have hlogTwo : Real.log 2 < (6931471808 / 10000000000 : ℝ) := by
+    have h := Real.log_two_lt_d9
+    linarith
+  have hlogratio : Real.log (1025 / 1024 : ℝ) ≤
+      (1 / 1024 : ℝ) := by
+    have h := Real.log_le_sub_one_of_pos
+      (x := (1025 / 1024 : ℝ)) (by norm_num)
+    norm_num at h ⊢
+    linarith
+  have hlogdiv : Real.log (1025 / 1024 : ℝ) =
+      Real.log (1025 : ℝ) - Real.log (1024 : ℝ) := by
+    exact Real.log_div (by norm_num) (by norm_num)
+  have hlog : Real.log (1025 : ℝ) ≤
+      10 * Real.log 2 + (1 / 1024 : ℝ) := by
+    rw [hlogdiv, log1024_eq_ten_logtwo] at hlogratio
+    linarith
+  have hseq := Real.eulerMascheroniSeq_lt_eulerMascheroniConstant 1024
+  change (harmonic 1024 : ℝ) - Real.log (1025 : ℝ) <
+      Real.eulerMascheroniConstant at hseq
+  linarith
+
+/-- Euler upper bound from Mathlib's upper sequence and exact H1024. -/
+theorem gamma_upper_from_h1024
+    (hh : harmonic 1024 < (7509175672279 / 1000000000000 : ℚ)) :
+    Real.eulerMascheroniConstant <
+      (577715582178 / 1000000000000 : ℝ) := by
+  have hhR : (harmonic 1024 : ℝ) <
+      (7509175672279 / 1000000000000 : ℝ) := by exact_mod_cast hh
+  have hlogTwo : (6931471803 / 10000000000 : ℝ) < Real.log 2 := by
+    have h := Real.log_two_gt_d9
+    linarith
+  have hseq := Real.eulerMascheroniConstant_lt_eulerMascheroniSeq' 1024
+  change Real.eulerMascheroniConstant <
+      (harmonic 1024 : ℝ) - Real.log (1024 : ℝ) at hseq
+  rw [log1024_eq_ten_logtwo] at hseq
+  linarith
+
+/-- Both original constant premises are discharged by the one rational sum. -/
+theorem gamma_original_interval :
+    (576716080366 / 1000000000000 : ℝ) < Real.eulerMascheroniConstant ∧
+    Real.eulerMascheroniConstant <
+      (577715582178 / 1000000000000 : ℝ) := by
+  exact ⟨gamma_lower_from_h1024 harmonic1024_rational_interval.1,
+    gamma_upper_from_h1024 harmonic1024_rational_interval.2⟩
+
+/-- Original source digamma strict left sign with no numerical premises. -/
+theorem digamma_left_sign64_unconditional :
+    (Complex.digamma (((1 / 4 : ℝ) : ℂ) +
+      Complex.I * ((157 / 50 : ℝ) : ℂ))).re < Real.log Real.pi :=
+  digamma_left_sign64_of_gamma_only gamma_original_interval.1.le
+
+/-- Original source digamma strict right sign with no numerical premises. -/
+theorem digamma_right_sign64_unconditional :
+    Real.log Real.pi <
+      (Complex.digamma (((1 / 4 : ℝ) : ℂ) +
+        Complex.I * ((63 / 20 : ℝ) : ℂ))).re :=
+  digamma_right_sign64_of_gamma_only gamma_original_interval.2.le
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -1221,3 +1302,11 @@ end H50
 #print axioms H50.log_pi_upper_short
 #print axioms H50.digamma_left_sign64_of_gamma_only
 #print axioms H50.digamma_right_sign64_of_gamma_only
+
+#print axioms H50.harmonic1024_rational_interval
+#print axioms H50.log1024_eq_ten_logtwo
+#print axioms H50.gamma_lower_from_h1024
+#print axioms H50.gamma_upper_from_h1024
+#print axioms H50.gamma_original_interval
+#print axioms H50.digamma_left_sign64_unconditional
+#print axioms H50.digamma_right_sign64_unconditional
