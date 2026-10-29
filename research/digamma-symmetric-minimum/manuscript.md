@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.1, 2026-10-29.**
+**WORKING MATHEMATICAL DRAFT — v0.2, 2026-10-29.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -61,7 +61,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | No counterexamples for `H-H(1/4)`, `H'` and `H''` on 4,009 frozen points | [preregistered H50-1 and receipt](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50#issuecomment-5858605700) | **FINITE_SLICE_ONLY**; not continuous-domain proof |
 | Uniform second-derivative series representation | [bounded analytic argument in #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50#issuecomment-6497800372); §3 below | **ANALYTIC_ARGUMENT**; not formalized in Lean |
 | Rational ordinate bracket `157/50 < y_* < 63/20` | [archived exact-rational script and certificate](evidence/README.md) | **EXACT_RATIONAL_CERTIFICATE_REPRODUCED**; external assumptions and Lean composition not yet checked |
-| Uniform finite-head/tail comparison and L(y)>0 throughout the corridor | [Archived rational certificate](evidence/README.md) and §5.1 elementary Lipschitz argument | **ANALYTIC_UNIFORM_POSITIVITY**; head/tail comparison and Lean composition remain **UNVERIFIED** |
+| Uniform finite-head/tail comparison and L(y)>0 throughout the corridor | §§5.0a and 5.1 analytic proofs, with [archived certificates](evidence/README.md) | **ANALYTIC_HEAD_TAIL_AND_POSITIVITY**; combined Lean proof remains **UNVERIFIED** |
 | Exact rational endpoint L(63/20)>0 | [Source-bound Lean certificate](evidence/lean-h50-endpoint-40889555940.json) and [raw axiom diagnostics](evidence/lean-h50-endpoint-40889555940.txt) | **LEAN_ELABORATES / PINNED_SOURCE / ENDPOINT_ONLY** |
 | Exact endpoint exceeds the corridor Lipschitz budget | [Verified Lean margin receipt](evidence/lean-h50-lipschitz-margin-40903574213.json) | **LEAN_ACCEPTED_ENDPOINT_MARGIN**; global MVT proof ordinary analysis |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
@@ -147,28 +147,134 @@ r_y(u) = (y²-u²)/(u²+y²)²,
 r'_y(u) = -q_y(u).
 ```
 
-The fixed head consists of indices `n=0,` `n=1`, and
-`n=2,...,7`. The monotonicity intervals for `q_y`
-give the following **claimed symbolic inequality**, to be
-discharged by the formal proof:
+The fixed head consists of indices n=0,1,...,7. Below we
+discharge the previously **claimed** head/tail comparison in
+ordinary real analysis for the entire two-dimensional rectangle.
+This argument does not rely on sampling or on the large symbolic
+certificate.
+
+### 5.0a Head and tail comparison — proof (ordinary analysis)
+
+Write z=y², so
 
 ```text
-H_y''(x) >= L(y),
-
-L(y) = q_y(1/4)+q_y(1)+q_y(3/2)
-     + ∑_{n=2}^7 [q_y(n+1/4)+q_y(n+1/2)]
-     + 2[q_y(8)+r_y(8)].
+q_y(u) = q(u,z) = 2u(3z-u²)/(u²+z)³,
+r_y(u) = r(u,z) = (z-u²)/(u²+z)².
 ```
 
-For `u>=8`, `q_y(u)` is negative and increasing throughout
-the corridor, hence for `a>=0` the integral test gives
+Throughout this proof z is in
+[(157/50)²,(63/20)²], hence 9<z<10. Set t=u²/z.
+Direct differentiation and elementary algebra yield
 
 ```text
-∑_{n>=8} q_y(n+a)
-    >= q_y(8+a) + ∫_{8+a}^∞ q_y(u)du
-    = q_y(8+a) + r_y(8+a)
-    >= q_y(8) + r_y(8).
+∂_u q(u,z) = 6(u⁴-6zu²+z²)/(u²+z)⁴
+           = 6z²(t²-6t+1)/(u²+z)⁴,
+
+∂²_u q(u,z) = -24u(u⁴-10zu²+5z²)/(u²+z)⁵
+            = -24uz²(t²-10t+5)/(u²+z)⁵,
+
+∂_u r(u,z) = -q(u,z).
 ```
+
+**Intervals of shape (exact rational sign bounds).**
+
+* On 0<u<=3/2, 0<t<1/4 and
+  t²-10t+5 >= 5-10/4=5/2>0.
+  Therefore q is **strictly concave** on [0,3/2].
+  On 0<=u<=1/2, t<1/36, hence
+  t²-6t+1 >= 1-6/36>0; q is also **increasing**
+  on [0,1/2] and q(0,z)=0.
+* On 2<=u<=15/2,
+  2/5<t<23/4 (verified by the exact corridor
+  endpoints). The convex quadratic
+  p(t)=t²-6t+1 is negative throughout that
+  interval: p(2/5)=-31/25 and p(23/4)=-7/16,
+  and a convex graph lies below the chord between
+  its endpoints. Thus q is **strictly decreasing**
+  throughout [2,15/2].
+* On u>=8, t>6, so
+  p(t)=(t-3)²-8>=1>0. Here also
+  3z-u²<0. Hence q is **negative and increasing**
+  on [8,infinity).
+
+**First two head indices.** Set a=x, b=1/2-x,
+where 0<=a<=1/4 and a+b=1/2.
+Concavity of q on [0,1/2] gives the endpoint
+chord comparison
+
+```text
+q_y(a)+q_y(b) >= q_y(0)+q_y(1/2)
+              = q_y(1/2) >= q_y(1/4).
+```
+
+Applying the same concavity argument to
+1+a and 1+b=3/2-a in [1,3/2] gives
+
+```text
+q_y(1+a)+q_y(1+b) >= q_y(1)+q_y(3/2).
+```
+
+**Middle head indices.** For each integer
+2<=n<=7, both shifted arguments lie in
+[2,15/2], where q decreases. Thus
+
+```text
+q_y(n+a) >= q_y(n+1/4),
+q_y(n+b) >= q_y(n+1/2).
+```
+
+**Infinite tail.** For any a>=0,
+monotonicity of q on [8,infinity) yields
+
+```text
+sum_{n=8}^infinity q_y(n+a)
+  >= sum_{n=8}^infinity q_y(n).
+```
+
+Since q is increasing on this interval,
+q_y(n)>=integral_{n-1}^n q_y(u)du
+for every integer n>=9. Therefore,
+
+```text
+sum_{n=8}^infinity q_y(n)
+ >= q_y(8)+integral_8^infinity q_y(u)du
+ = q_y(8)+r_y(8).
+```
+
+The integral identity uses r'_y=-q_y and
+lim_{u->infinity}r_y(u)=0. Both the sum and
+the integral converge absolutely because
+|q_y(u)|<=6/u³ for u>=8.
+
+Apply this tail bound separately to a and b.
+Combining the first two head indices, indices
+2..7, and the two tails gives exactly
+
+```text
+H_y''(x)
+  >= q_y(1/4)+q_y(1)+q_y(3/2)
+     + sum_{n=2}^7
+       [q_y(n+1/4)+q_y(n+1/2)]
+     + 2[q_y(8)+r_y(8)]
+  = L(y)
+```
+
+for all 0<x<=1/4 and all 157/50<=y<=63/20.
+Thus H_y''(x)>=L(y) is established over this full rectangle.
+The series representation comes from Section 3.
+Combined with Section 5.1, **H_y''(x)>0**
+is now established in ordinary analysis on the
+whole rectangle, conditional only on the
+pinned digamma-series identity.
+
+**Formal verification boundary:** the derivative,
+concavity, monotonicity, integral comparison,
+and infinite sum composition have not yet been
+formalized into one Lean theorem. The existing
+Lean receipt checks only rational endpoint
+arithmetic. The y-star enclosure is a separate
+certificate obligation; no proof of the entire
+digamma inequality has been accepted in Lean.
 
 Two independent historical symbolic approaches (Wolfram and SymPy)
 checked the finite-head inequalities. The archived
@@ -266,9 +372,12 @@ Quot.sound, with no sorry. **Only the endpoint arithmetic is
 kernel-checked**, not the Lipschitz/MVT extension itself.
 
 The proof uses no assumption about the sign of `Λ'` and does not
-depend on the historic degree-62 polynomial computation. Importantly,
-this does **not** establish the separate bound `H_y''(x)>=L(y)`,
-formalize the infinite digamma series, or prove H50.
+depend on the historic degree-62 polynomial computation. Together
+with the analytic head/tail comparison in §5.0a, it now proves
+`H_y''(x)>0` on the entire rectangle in ordinary analysis.
+**The full combined inequality is not yet Lean-formalized, and
+the independent y-star corridor certificate still requires
+formal acceptance.**
 
 
 The script's correctness and the preservation of its assumptions
@@ -278,29 +387,46 @@ head/tail bounds, and §3 in a verifiable common context.
 
 ## 6. Conditional conclusion and remaining obligations
 
-**Conditional theorem.** Assume that (i) the rational y-corridor
-certificate selects the target ordinate and (ii) the
-uniform head/tail comparison H_y''(x) >= L(y) holds.
-Then §3 and the already established ordinary-analysis
-uniform positivity of the rational L in §5.1 give
-`H_{y_*}''(x)>0`. With central symmetry and
-`G_{y_*}(1/4)=log(π)`, it follows that
+**Theorem, conditional only on the distinguished-ordinate enclosure.**
+Assume that the target ordinate y_*=t_*/2 determined by
+Re ψ(1/4+i*y_*)=log(π) lies in
+[157/50,63/20]. Sections 3, 5.0a and 5.1 give
+
+```text
+H_{y_*}''(x) >= L(y_*) > 0   for 0<x<=1/4.
+```
+
+The symmetry of H implies H'_{y_*}(1/4)=0.
+Strict convexity on (0,1/4] then gives H'_{y_*}(x)<0
+for x<1/4 and hence
 
 ```text
 H_{y_*}(x) >= H_{y_*}(1/4) = 2 log(π)
-             (0<x<=1/4).
+             for 0<x<=1/4.
 ```
 
-This is a **conditional ordinary-mathematics composition**, not yet
-an accepted verified theorem. In particular, the following are
-outside the evidence currently claimed:
+Thus the head/tail comparison and positivity steps have **complete
+ordinary-analysis proofs** on the entire two-variable rectangle.
+The outstanding condition for an unconditional H50 theorem is
+independent formal acceptance of the **ordinate enclosure**:
+the current rational program is reproducible, but its external
+constants, transcendental bounds and link to the canonical zero
+have not yet been discharged in the same accepted proof context.
 
-1. A `lake env lean` / Lean-kernel-accepted declaration of the
-   combined lemma, with no `sorry` or extra uncontrolled axioms.
-2. Independent acceptance of the exact rational certificates and
-   assumptions at their declared source revisions.
-3. A sufficiently targeted prior-art review establishing whether
-   the special-function statement is already implied by known results.
+**Formal evidence still missing:**
+
+1. Lean/kernel acceptance of the analytic derivative/concavity,
+   finite-head, integral-tail, and full comparison proof.
+   Only the earlier exact rational endpoint and margin are currently
+   verified in Lean. Four additional finite-polynomial sign lemmas
+   are proposed in the same pinned probe; their Lean receipt is pending.
+2. A source-bound proof of the ordinate enclosure, including the
+   named constants/series remainder and the zero identity.
+3. A targeted prior-art check for the precise special-function
+   statement, before any claim of scientific novelty.
+
+The conditional mathematics result is substantive but must
+not be confused with those three independent acceptance steps.
 
 The publication decision and authorship are unassigned.
 **A manuscript is a record of mathematical work, not evidence that
