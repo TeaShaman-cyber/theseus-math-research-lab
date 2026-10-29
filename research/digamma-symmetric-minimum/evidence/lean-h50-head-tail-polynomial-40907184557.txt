@@ -1,0 +1,19 @@
+Lean (version 4.33.0-rc2, x86_64-unknown-linux-gnu, commit d8b18978322de05a8f3dba51ef03cf5461676c17, Release)
+.theseus-lean-calculator-probe.lean:60:5: warning: Variable name `ht0` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ht0
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+.theseus-lean-calculator-probe.lean:67:5: warning: Variable name `ht0` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ht0
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+'H50.lowerBound_upper_endpoint_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.lowerBound_upper_endpoint_gt_lipschitz_loss' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.tiny_first_poly_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.small_second_poly_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.middle_first_poly_neg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.tail_first_poly_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
