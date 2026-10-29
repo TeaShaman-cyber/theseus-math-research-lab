@@ -190,3 +190,19 @@ sourcePrefix(63/20) in [1723308817013, 1723308818014].
 ```
 
 The kernel has **not proved** these four numerical enclosure premises. This stage only discharges their *source-equivalent composition* into endpoint signs, using the independently accepted infinite digamma tail theorem. No H50, RH or novelty conclusion follows yet.
+
+## H50-P9: first 8 exact source-prefix terms — Lean 40937693278
+
+The source-pinned [Lean run](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40937693278) accepted the first **eight-term** prefix interval at both rational ordinates. Here `sourcePrefixBlock8(y) = -a/(a²+y²) + sum_{m=1}^8 s_m(y)` with `a=1/4` and exactly the digamma source summand `s_m` used elsewhere in H50. The kernel proved the strict bounds (scaled by 10^12):
+
+```
+1631025035773 < 10^12 sourcePrefixBlock8(157/50) < 1631025035774;
+1633848555154 < 10^12 sourcePrefixBlock8(63/20)  < 1633848555155.
+```
+
+- [Exact Lean JSON](lean-h50-eight-prefix-40937693278.json), SHA-256 `7a89a3cef070ac63d96883a66a0ea6dc23491e6f44f3d60d8a7675b1ad4b2697`.
+- [Axiom diagnostics](lean-h50-eight-prefix-40937693278.txt), SHA-256 `c3d341d291d570eed955cad2db5db259cdea4c7060a9f02ba0bd8f63fab08a9c`.
+- Probe SHA-256 `950fdba05150d93a267c16a94e40fdf560530a59d1f9505dfe6b929165affac1`, merged source commit `c96f194553504c0fb3f559ee8fad2cc81029e818`.
+- `PASS / ELABORATES / exit 0`; only `propext`, `Classical.choice`, `Quot.sound`. No `sorryAx` or compiler errors.
+
+**Scope:** this is a first exact arithmetic block **only 8 of the target 1000 rational terms**, independently backed by Python `Fraction` tests. No claim about the remaining 992, the final finite 1000-term prefix, gamma/logpi bounds, or unconditional H50 theorem.
