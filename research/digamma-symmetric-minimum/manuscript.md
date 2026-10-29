@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.13, 2026-10-29.**
+**WORKING MATHEMATICAL DRAFT — v0.14, 2026-10-29.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -61,7 +61,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Real digamma vertical series and height monotonicity | [Zeta23 `Mu.lean` at exact commit](https://github.com/anthropics/formal-math/blob/fbdc36bbf17d20af3fd0447c6d1a8a02773c9844/zeta23/Zeta23/GammaFacts/Mu.lean): `re_digamma_vertical`, `re_digamma_mono` | **FORMAL_SOURCE**; file blob `744e30031e69bfe25e10559ca71b12a53ccc1c14` |
 | No counterexamples for `H-H(1/4)`, `H'` and `H''` on 4,009 frozen points | [preregistered H50-1 and receipt](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50#issuecomment-5858605700) | **FINITE_SLICE_ONLY**; not continuous-domain proof |
 | Uniform second-derivative series representation | [bounded analytic argument in #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50#issuecomment-6497800372); §3 below | **ANALYTIC_ARGUMENT**; not formalized in Lean |
-| Rational ordinate bracket `157/50 < y_* < 63/20` | [archived exact-rational script and certificate](evidence/README.md) | **LEAN_ACCEPTED_64_TERM_SOURCE_SIGN_BRIDGE** (P13); gamma/log-pi numerical bounds still pending |
+| Rational ordinate bracket `157/50 < y_* < 63/20` | [archived exact-rational script and certificate](evidence/README.md) | **LEAN_ACCEPTED_SIGN_BRIDGE_GAMMA_ONLY** (P14); log-pi verified, gamma interval pending |
 | Uniform finite-head/tail comparison and L(y)>0 throughout the corridor | §§5.0a and 5.1 analytic proofs, with [archived certificates](evidence/README.md) | **ANALYTIC_HEAD_TAIL_AND_POSITIVITY**; combined Lean proof remains **UNVERIFIED** |
 | Exact rational endpoint L(63/20)>0 | [Source-bound Lean certificate](evidence/lean-h50-endpoint-40889555940.json) and [raw axiom diagnostics](evidence/lean-h50-endpoint-40889555940.txt) | **LEAN_ELABORATES / PINNED_SOURCE / ENDPOINT_ONLY** |
 | Exact endpoint exceeds the corridor Lipschitz budget | [Verified Lean margin receipt](evidence/lean-h50-lipschitz-margin-40903574213.json) | **LEAN_ACCEPTED_ENDPOINT_MARGIN**; global MVT proof ordinary analysis |
@@ -75,6 +75,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Exact rational source prefix through 32 terms | [Lean H50-P11 certificate](evidence/lean-h50-block32-40944615197.json) | **LEAN_ACCEPTED_32_OF_1000**; remaining 968 terms and constants not yet formalized |
 | Exact rational source prefix through 64 terms | [Lean H50-P12 receipt](evidence/lean-h50-block64-40946098199.json) | **LEAN_ACCEPTED_64_OF_1000**; superseded P13 proves the rest by a two-sided tail, constants pending |
 | Original source digamma exact 64-term split, two-sided infinite tail and conditional strict endpoint signs | [Lean H50-P13 proof](evidence/lean-h50-tail64-40951061773.json) | **LEAN_ACCEPTED_64_TERM_SOURCE_SIGNS_OF_CONSTANT_BOUNDS**; no 936-term expansion needed; gamma/logpi constants pending |
+| Strict `log pi` interval and both gamma-only source-digamma endpoint sign implications | [Lean H50-P14 receipt](evidence/lean-h50-logpi-short-40956565512.json) | **LEAN_ACCEPTED_LOGPI_AND_GAMMA_ONLY_SIGNS**; gamma numerical interval still pending |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -284,6 +285,12 @@ F(63/20)  >= 216277189783/2080500000000000 > 1/10000.
 ```
 
 [Raw Lean certificate](evidence/lean-h50-tail64-40951061773.json) and [axiom trace](evidence/lean-h50-tail64-40951061773.txt) are accepted at the exact source hash with no `sorryAx`. This supersedes the prior 1000-term arithmetic strategy. **No proof of the numerical constant enclosures or of the global curvature/H50 statement is claimed.**
+
+### 4.11 Kernel-checked logarithm of pi via six-term exponentials (H50-P14)
+
+The pinned [Lean run 40956565512](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40956565512) proved **strictly** `1.1447 < log(pi) < 1.14475`, using only six-term exponential polynomial inequalities and Mathlib's certified bounds for `exp 1` and `pi`. [Raw receipt](evidence/lean-h50-logpi-short-40956565512.json) and [axiom diagnostics](evidence/lean-h50-logpi-short-40956565512.txt) confirm exact source matching and no `sorryAx`.
+
+Substituting this weaker but sufficient enclosure into the already kernel-verified 64-term digamma/tail inequalities proves *both* endpoint signs **conditionally only on the Euler–Mascheroni gamma bounds**, which are **not yet kernel-checked**. Consequently the old 50-term logarithmic atanh certificate is no longer a prerequisite for the Lean ordinate enclosure. The remaining constant task is exclusively the Euler `γ` rational bracket, followed separately by full curvature/minimum formalization.
 
 ## 5. Finite head and analytic tail
 
