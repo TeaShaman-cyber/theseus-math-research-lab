@@ -280,3 +280,33 @@ The source-exact 64-term fraction and independent block fractions were reproduce
 - `PASS / ELABORATES / exit 0`; each of eleven new theorems has only axioms `[propext, Classical.choice, Quot.sound]`; no `sorryAx`.
 
 **Scientific boundary:** the first **64 of 1000** original source terms are kernel checked. The remaining **936**, the Euler constant and log-pi interval proofs, and final unconditional H50 theorem remain open. Do not equate rational finite-prefix progress with an RH result or established novelty.
+
+## H50-P13: 64-term source digamma + two-sided infinite tail, Lean run 40951061773
+
+The original 1000-term arithmetic plan is **superseded**. A Feynman/5-Why audit found that only the first 64 source terms and a sharper lower bound for the remaining *positive* tail are required for the strict ordinate signs. The source-pinned [Lean calculator run 40951061773](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40951061773) kernel-accepted ten declarations:
+
+- `source_tail64_finite_upper`, `source_tail64_summable`, `source_tail64_infinite_upper` via the previously checked rational potential and `Real.tsum_le_of_sum_range_le`;
+- `digamma_term_ge_telescoping_base`, `source_tail64_base_lower` via term decomposition and finite telescoping;
+- `source_tail64_first8_right`, `source_tail64_infinite_right_lower` using eight exact right-tail terms, a symbolic lower bound on 4088 additional terms, and a partial-sum lower bound for the full positive `tsum`;
+- `source_prefix64_tail_split`, `digamma_left_sign64_of_constants`, `digamma_right_sign64_of_constants` connecting the exact pinned `Zeta23.MuFields.re_digamma_vertical` source function to both strict endpoint signs **assuming only** the previously frozen numerical gamma and log-pi intervals.
+
+For a=1/4, z=y², T64(y)=sum_{m=65}^infinity s_m(y), the accepted inequalities include
+
+```
+0 <= T64(y) <= a/64 + z/(2*64²),
+T64(63/20) >= 671508317/10^12 + a*(1/73 - 1/4161).
+```
+
+The first inequality holds for **every real y**. For the lower right bound, finite telescoping proves that the sum of terms m=73..4160 dominates `a*(1/73-1/4161)`; it does **not** compute or expand those 4088 terms. The remaining infinite terms are nonnegative. Exact 64-term source-prefix bounds from H50-P12 then imply, **under the unverified-in-Lean constant interval hypotheses**,
+
+```
+F(157/50) <= -8013930047/8000000000000 < -1/1000;
+F(63/20)  >= 216277189783/2080500000000000 > 1/10000.
+```
+
+- [Raw JSON](lean-h50-tail64-40951061773.json), SHA-256 `c91b29f79677381bf0ec1415e594180d852f00ba14e5f09fbbd1fb93733d3dd6`.
+- [Raw axiom trace](lean-h50-tail64-40951061773.txt), SHA-256 `e5e90384340abc206d49184696a93f241e713167dce66ea3951b7cbac33ae148`.
+- Exact source-probe SHA-256 `5c4e8aac15b80d48c427335c885b6eef23c7d399948b403bbe88cd32c3190f37` from merged main `1acf174b337609920e336c4634b27854a2de7fdc`.
+- `PASS / ELABORATES / returncode 0`, all ten new axiom lists contain only `[propext, Classical.choice, Quot.sound]` with **no sorryAx**.
+
+**Acceptance boundary:** the complete source digamma finite-prefix and infinite-tail endpoint proof is checked *conditional on the named gamma/logpi bounds*. Those constant enclosures, and the independent functional curvature / H50 proof in Lean, remain open. Scientific novelty is UNKNOWN. The earlier 1000-term receipt is retained as historical independent evidence, not a remaining formal proof obligation.
