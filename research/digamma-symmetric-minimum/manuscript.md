@@ -18,7 +18,7 @@ in a frozen 4,009-point slice, but that finite search does not prove the
 claim. A prospective analytic route reduces the inequality to strict
 convexity: a uniformly twice-differentiable digamma series, a rational
 bracket for the distinguished ordinate, and a positive finite-head
-plus analytic-tail lower bound. The original exact-rational certificates are preserved with this draft
+plus analytic-tail lower bound. The rational lower bound is now shown positive throughout the ordinate corridor by a short Lipschitz argument (§5.1). The original exact-rational certificates are preserved with this draft
 and were independently rerun with byte-identical JSON in Python/SymPy.
 One pointwise endpoint inequality is now independently checked in Lean;
 the complete digamma inequality and its novelty remain unverified.
@@ -61,7 +61,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | No counterexamples for `H-H(1/4)`, `H'` and `H''` on 4,009 frozen points | [preregistered H50-1 and receipt](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50#issuecomment-5858605700) | **FINITE_SLICE_ONLY**; not continuous-domain proof |
 | Uniform second-derivative series representation | [bounded analytic argument in #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50#issuecomment-6497800372); §3 below | **ANALYTIC_ARGUMENT**; not formalized in Lean |
 | Rational ordinate bracket `157/50 < y_* < 63/20` | [archived exact-rational script and certificate](evidence/README.md) | **EXACT_RATIONAL_CERTIFICATE_REPRODUCED**; external assumptions and Lean composition not yet checked |
-| Uniform finite-head/tail comparison and L(y)>0 throughout the corridor | [Archived exact-rational certificate](evidence/README.md) | **EXACT_RATIONAL_CERTIFICATE_REPRODUCED**; global corridor theorem and Lean composition remain **UNVERIFIED** |
+| Uniform finite-head/tail comparison and L(y)>0 throughout the corridor | [Archived rational certificate](evidence/README.md) and §5.1 elementary Lipschitz argument | **ANALYTIC_UNIFORM_POSITIVITY**; head/tail comparison and Lean composition remain **UNVERIFIED** |
 | Exact rational endpoint L(63/20)>0 | [Source-bound Lean certificate](evidence/lean-h50-endpoint-40889555940.json) and [raw axiom diagnostics](evidence/lean-h50-endpoint-40889555940.txt) | **LEAN_ELABORATES / PINNED_SOURCE / ENDPOINT_ONLY** |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
@@ -194,9 +194,76 @@ Quot.sound; there is no sorry. [Raw receipt](evidence/lean-h50-endpoint-40889555
 and [diagnostics](evidence/lean-h50-endpoint-40889555940.txt)
 are preserved alongside the rational certificates.
 
-**This does not prove L(y)>0 across the corridor, nor H''(x)>=L(y).**
-Both are still proof obligations, separate from the now verified
-arithmetic at the upper endpoint.
+### 5.1 Short uniform positivity proof — avoiding the degree-62 certificate
+
+The historic rational certificate established that the numerator of a
+high-degree rational derivative has uniformly negative coefficients.
+A much smaller proof suffices for **positivity**, without requiring
+monotonicity of the rational lower bound.
+
+Set `z=y²` and write `Λ(z)=L(√z)` for the **same** finite rational
+expression used in the Lean endpoint probe. The input interval is
+
+`z_lo=(157/50)²=24649/2500` and `z_hi=(63/20)²=3969/400`,
+with `z_hi-z_lo=629/10000`; hence `9<=z<=10`.
+
+The lower bound `Λ` contains 16 distinct `q(u,z)` arguments, with
+`q(8,z)` multiplied by two. Thus it has **17 q-summands with
+multiplicity**; their parameters all satisfy `0<u<=8`. The only
+remaining summand is `2r(8,z)`. Differentiating the rational functions
+from Section 5 with respect to `z` gives
+
+```text
+∂_z q(u,z) = 12u(u²-z)/(u²+z)^4,
+∂_z r(u,z) = (3u²-z)/(u²+z)^3.
+```
+
+For all `0<u<=8` and `9<=z<=10`,
+
+```text
+|∂_z q(u,z)| <= 12u/(u²+z)^3
+               <= 96/9³ = 32/243 < 1/7,
+
+|2∂_z r(8,z)| = 2(192-z)/(64+z)^3
+               <= 384/73³ < 1/14.
+```
+
+The triangle inequality on the finite sum therefore yields
+
+```text
+|Λ'(z)| < 17*(1/7)+1/14 = 5/2.
+```
+
+The exact-rational endpoint computation gives the stronger statement
+
+```text
+Λ(z_hi) > (5/2)*(z_hi-z_lo) = 629/4000 = 0.15725,
+Λ(z_hi) = 0.172108104368515154195661532478...
+```
+
+By the mean-value theorem, for every `z` in the corridor,
+
+```text
+Λ(z) >= Λ(z_hi) - (5/2)*(z_hi-z)
+     >= Λ(z_hi) - 629/4000 > 0.
+```
+
+The final lower margin is approximately `0.0148581043685`.
+Thus **uniform positivity of this fixed rational function follows
+in ordinary analysis** from elementary derivative bounds and one
+exact-rational endpoint. Wolfram independently confirmed the two
+derivative identities; exact Python `Fraction` arithmetic checked the
+rational majorants, the 17 terms, and the strict endpoint margin.
+The source-pinned Lean probe now includes a statement of the stricter
+endpoint bound `lowerBound_upper_endpoint_gt_lipschitz_loss`; at this
+draft checkpoint **no Lean receipt for that new declaration has yet
+been observed**.
+
+The proof uses no assumption about the sign of `Λ'` and does not
+depend on the historic degree-62 polynomial computation. Importantly,
+this does **not** establish the separate bound `H_y''(x)>=L(y)`,
+formalize the infinite digamma series, or prove H50.
+
 
 The script's correctness and the preservation of its assumptions
 must not be replaced by a bare GREEN CI status. The mathematical
