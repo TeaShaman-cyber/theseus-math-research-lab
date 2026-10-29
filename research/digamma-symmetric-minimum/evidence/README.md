@@ -327,3 +327,24 @@ The previously kernel-checked H50-P13 64-term digamma prefix and two-sided tail 
 - `PASS/ELABORATES/exit 0`, four theorem axiom lists contain only `[propext, Classical.choice, Quot.sound]`, **no sorryAx**.
 
 **Boundary:** Euler constant `γ` numerical bounds remain **external, not yet proved in the Lean kernel**; neither the unconditional ordinate enclosure nor the full analytic curvature/minimum H50 theorem is accepted. Scientific novelty remains UNKNOWN.
+
+## H50-P15: Euler–Mascheroni gamma interval and unconditional source endpoint signs — Lean 40959547396
+
+The exact pinned [Lean 4.33.0-rc2 run 40959547396](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40959547396) **kernel-accepted all seven new declarations**: `harmonic1024_rational_interval`, `log1024_eq_ten_logtwo`, `gamma_lower_from_h1024`, `gamma_upper_from_h1024`, `gamma_original_interval`, `digamma_left_sign64_unconditional`, and `digamma_right_sign64_unconditional`. The proof uses a single exact 1024-term rational harmonic witness (computed by Lean `decide +kernel`), `log(1024)=10log 2`, source-pinned Mathlib `log_two_gt/lt_d9` and both Euler–Mascheroni sequence inequalities. The witness and margin were independently checked with Python `Fraction` before submitting the Lean proof.
+
+The kernel-certified strict intervals are:
+
+```
+7509175672278/10^12 < harmonic(1024) < 7509175672279/10^12,
+576716080366/10^12 < Real.eulerMascheroniConstant < 577715582178/10^12,
+Re digamma(1/4 + i*157/50) < log(pi) < Re digamma(1/4 + i*63/20).
+```
+
+Unlike the historical external 1000-term and log-atanh certificates, the strict digamma signs are now **unconditional source-exact Lean theorems** using P13 (64-term digamma source sum with two-sided infinite tail) and P14 (six-term exponential proof of log pi). The previously accepted theorem `nonnegative_mu_zero_in_corridor_of_digamma_signs` can use these signs to bracket **any prescribed nonnegative zero** of canonical Zeta23 `mu`; this statement does not itself prove existence of such a zero or the full H50 functional convexity theorem.
+
+- [Raw JSON](lean-h50-gamma1024-40959547396.json), SHA-256 `a9ad7b64d08464619c189c70862edfa05dc94ccf411afe8cbf95a3665a1837b8`.
+- [Raw Lean axiom trace](lean-h50-gamma1024-40959547396.txt), SHA-256 `b38566224af416be734d080e804cf6376d8be399c6ceef60fbb26e44b7abae88`.
+- Exact proof SHA-256 `b6d26c845b9cc3d48c7c162f58748bb580c96d1d950c9c7587e4604db183ec79` at canonical main `4543dce65090bdb696768a8e5c738d27ae8d051b`.
+- `PASS/ELABORATES/exit0`; each of seven new theorem axiom lists contains only `[propext, Classical.choice, Quot.sound]`, **no sorryAx**.
+
+**Remaining proof boundary:** both digamma ordinate endpoint signs are accepted in Lean without external numerical premises. The independent real analytic second-derivative/curvature comparison and complete symmetric minimum H50 are **not** accepted as a unified Lean proof. Scientific novelty and publication-level claims remain `UNKNOWN`.

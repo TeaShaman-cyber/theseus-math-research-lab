@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.14, 2026-10-29.**
+**WORKING MATHEMATICAL DRAFT — v0.15, 2026-10-29.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -61,7 +61,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Real digamma vertical series and height monotonicity | [Zeta23 `Mu.lean` at exact commit](https://github.com/anthropics/formal-math/blob/fbdc36bbf17d20af3fd0447c6d1a8a02773c9844/zeta23/Zeta23/GammaFacts/Mu.lean): `re_digamma_vertical`, `re_digamma_mono` | **FORMAL_SOURCE**; file blob `744e30031e69bfe25e10559ca71b12a53ccc1c14` |
 | No counterexamples for `H-H(1/4)`, `H'` and `H''` on 4,009 frozen points | [preregistered H50-1 and receipt](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50#issuecomment-5858605700) | **FINITE_SLICE_ONLY**; not continuous-domain proof |
 | Uniform second-derivative series representation | [bounded analytic argument in #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50#issuecomment-6497800372); §3 below | **ANALYTIC_ARGUMENT**; not formalized in Lean |
-| Rational ordinate bracket `157/50 < y_* < 63/20` | [archived exact-rational script and certificate](evidence/README.md) | **LEAN_ACCEPTED_SIGN_BRIDGE_GAMMA_ONLY** (P14); log-pi verified, gamma interval pending |
+| Rational ordinate bracket `157/50 < y_* < 63/20` | [archived exact-rational script and certificate](evidence/README.md) | **LEAN_ACCEPTED_UNCONDITIONAL_SOURCE_ENDPOINT_SIGNS** (P15); any nonnegative mu-zero enclosed via accepted bridge |
 | Uniform finite-head/tail comparison and L(y)>0 throughout the corridor | §§5.0a and 5.1 analytic proofs, with [archived certificates](evidence/README.md) | **ANALYTIC_HEAD_TAIL_AND_POSITIVITY**; combined Lean proof remains **UNVERIFIED** |
 | Exact rational endpoint L(63/20)>0 | [Source-bound Lean certificate](evidence/lean-h50-endpoint-40889555940.json) and [raw axiom diagnostics](evidence/lean-h50-endpoint-40889555940.txt) | **LEAN_ELABORATES / PINNED_SOURCE / ENDPOINT_ONLY** |
 | Exact endpoint exceeds the corridor Lipschitz budget | [Verified Lean margin receipt](evidence/lean-h50-lipschitz-margin-40903574213.json) | **LEAN_ACCEPTED_ENDPOINT_MARGIN**; global MVT proof ordinary analysis |
@@ -76,6 +76,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Exact rational source prefix through 64 terms | [Lean H50-P12 receipt](evidence/lean-h50-block64-40946098199.json) | **LEAN_ACCEPTED_64_OF_1000**; superseded P13 proves the rest by a two-sided tail, constants pending |
 | Original source digamma exact 64-term split, two-sided infinite tail and conditional strict endpoint signs | [Lean H50-P13 proof](evidence/lean-h50-tail64-40951061773.json) | **LEAN_ACCEPTED_64_TERM_SOURCE_SIGNS_OF_CONSTANT_BOUNDS**; no 936-term expansion needed; gamma/logpi constants pending |
 | Strict `log pi` interval and both gamma-only source-digamma endpoint sign implications | [Lean H50-P14 receipt](evidence/lean-h50-logpi-short-40956565512.json) | **LEAN_ACCEPTED_LOGPI_AND_GAMMA_ONLY_SIGNS**; gamma numerical interval still pending |
+| Exact H1024 rational witness, Euler gamma interval, and source-exact unconditional ordinate endpoint signs | [Lean H50-P15 receipt](evidence/lean-h50-gamma1024-40959547396.json) | **LEAN_ACCEPTED_GAMMA_AND_UNCONDITIONAL_ENDPOINT_SIGNS**; full functional curvature/H50 pending |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -145,12 +146,13 @@ F(63/20)  > +0.0008633501003785... > 0.
 ```
 
 Using continuity and the source's monotonicity, this brackets a
-zero in `(157/50,63/20)`. **The rational program is an external
-certificate, not a theorem checked by Lean's kernel.** Establishing
-the named Mathlib lemmas and the certificate inequalities inside a
-single proof environment remains a separate acceptance step.
-
-Independent interval audit: [v2 receipt](evidence/ordinate-interval-v2.json); strict endpoint signs are externally certified, while the [Lean sign-to-root bridge](evidence/lean-h50-ordinate-40913788312.json) is kernel-accepted only conditional on those signs.
+zero in `(157/50,63/20)`. **Historical certificate note:** the original
+`N=1000` rational program was an external verification artifact. Its endpoint
+signs are now independently **Lean-kernel-checked without numerical hypotheses**
+by P13–P15 (§§4.10–4.12), using only 64 source terms and the proved infinite
+remainder. The original [v2 receipt](evidence/ordinate-interval-v2.json) remains
+archived; the previously accepted [source sign-to-root bridge](evidence/lean-h50-ordinate-40913788312.json)
+now has fully accepted endpoint inputs for any assumed nonnegative mu-zero.
 
 ### 4.2 Source-exact digamma term inequalities in Lean (H50-P5)
 
@@ -291,6 +293,29 @@ F(63/20)  >= 216277189783/2080500000000000 > 1/10000.
 The pinned [Lean run 40956565512](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40956565512) proved **strictly** `1.1447 < log(pi) < 1.14475`, using only six-term exponential polynomial inequalities and Mathlib's certified bounds for `exp 1` and `pi`. [Raw receipt](evidence/lean-h50-logpi-short-40956565512.json) and [axiom diagnostics](evidence/lean-h50-logpi-short-40956565512.txt) confirm exact source matching and no `sorryAx`.
 
 Substituting this weaker but sufficient enclosure into the already kernel-verified 64-term digamma/tail inequalities proves *both* endpoint signs **conditionally only on the Euler–Mascheroni gamma bounds**, which are **not yet kernel-checked**. Consequently the old 50-term logarithmic atanh certificate is no longer a prerequisite for the Lean ordinate enclosure. The remaining constant task is exclusively the Euler `γ` rational bracket, followed separately by full curvature/minimum formalization.
+
+### 4.12 Euler–Mascheroni gamma interval closes the numerical corridor (H50-P15)
+
+The actual [pinned Lean 4.33.0-rc2 run 40959547396](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40959547396) accepts a *single exact rational computation* of the harmonic number `H₁₀₂₄`, with
+
+```text
+7509175672278/10^12 < H₁₀₂₄ < 7509175672279/10^12.
+```
+
+Using `log 1024 = 10*log 2`, the independently proved source Mathlib numerical `log 2` interval, and both source Euler–Mascheroni sequence bounds, the kernel proves
+
+```text
+576716080366/10^12 < γ < 577715582178/10^12.
+```
+
+The seven new kernel-accepted theorems include **unconditional** strict signs of the *canonical digamma source*:
+
+```text
+F(157/50) = Re ψ(1/4+i*157/50) - log π < 0,
+F(63/20)  = Re ψ(1/4+i*63/20)  - log π > 0.
+```
+
+The source-signed root bridge proved in H50-P3 can now conclude `157/50 < tau/2 < 63/20` for **any nonnegative** `tau` satisfying `Zeta23.mu tau = 0`. The explicit source-to-root theorem remains separate and assumes existence of that zero; H50's *global functional convexity and symmetric-minimum statement* remains a distinct unformalized obligation. [Raw accepted receipt](evidence/lean-h50-gamma1024-40959547396.json) and [axiom trace](evidence/lean-h50-gamma1024-40959547396.txt) contain no `sorryAx` and match the exact source hash. The historical N=1000 and log-atanh computations remain archived as external reproducibility records rather than outstanding proof steps.
 
 ## 5. Finite head and analytic tail
 
@@ -564,11 +589,11 @@ H_{y_*}(x) >= H_{y_*}(1/4) = 2 log(π)
 
 Thus the head/tail comparison and positivity steps have **complete
 ordinary-analysis proofs** on the entire two-variable rectangle.
-The remaining constant-bound condition for an unconditional ordinate enclosure is
-independent formal acceptance of the **Euler gamma and log-pi intervals**:
-the current rational program is reproducible, but its external
-constants, transcendental bounds and link to the canonical zero
-have not yet been discharged in the same accepted proof context.
+The Euler gamma and log-pi numerical intervals and both *source-digamma endpoint
+signs* are now **Lean-kernel-accepted** (H50-P13–P15). The previously accepted
+source-to-root bridge applies to any **assumed nonnegative mu-zero**. This does
+not mean that the full analytic curvature/symmetric-minimum argument has been
+assembled into one kernel-checked proof.
 
 **Formal evidence still missing:**
 
@@ -577,8 +602,11 @@ have not yet been discharged in the same accepted proof context.
    The exact rational endpoint margin and four finite-polynomial
    sign lemmas are accepted by Lean 4.33.0-rc2; this remains
    strictly weaker than Lean acceptance of the functional comparison.
-2. A source-bound proof of the ordinate enclosure, including the
-   named constants/series remainder and the zero identity.
+2. A directly composed source-bound theorem instantiating the existing
+   mu-zero corridor bridge with P15's unconditional strict signs, if required
+   by downstream formalization; the inputs and implication are separately
+   kernel-accepted. Existence of the designated mu-zero remains a distinct
+   source theorem/assumption to cite explicitly.
 3. A targeted prior-art check for the precise special-function
    statement, before any claim of scientific novelty.
 
