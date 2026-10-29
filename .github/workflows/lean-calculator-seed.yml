@@ -86,7 +86,9 @@ jobs:
         with:
           path: |
             _lean_calc/source/.lake/packages
+            _lean_calc/source/zeta23/.lake/packages
             _lean_calc/source/.lake/build
+            _lean_calc/source/zeta23/.lake/build
             _lean_calc/cache-meta/seed.json
             ~/.cache/mathlib
             ~/.elan/toolchains
@@ -156,7 +158,9 @@ jobs:
         with:
           path: |
             _lean_calc/source/.lake/packages
+            _lean_calc/source/zeta23/.lake/packages
             _lean_calc/source/.lake/build
+            _lean_calc/source/zeta23/.lake/build
             _lean_calc/cache-meta/seed.json
             ~/.cache/mathlib
             ~/.elan/toolchains

@@ -62,6 +62,8 @@ class LeanCalculatorContractTests(unittest.TestCase):
         for name in ("lean-calculator.yml", "lean-calculator-seed.yml"):
             workflow = (ROOT / ".github/workflows" / name).read_text()
             self.assertIn("- zeta23-h50-curvature-endpoint", workflow)
+            for suffix in (".lake/packages", ".lake/build"):
+                self.assertIn("_lean_calc/source/zeta23/" + suffix, workflow)
 
     def test_cdclean_source_identity_is_frozen(self):
         reg = MOD.load_registry()
