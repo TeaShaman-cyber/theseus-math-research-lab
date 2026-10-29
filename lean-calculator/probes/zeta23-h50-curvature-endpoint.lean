@@ -1141,12 +1141,12 @@ theorem digamma_right_sign64_of_gamma_only
 exact harmonic number and Mathlib's already verified log(2) bounds. -/
 
 /-- Fixed exact rational interval for the 1024th harmonic number. -/
-set_option maxRecDepth 16384 in
-set_option maxHeartbeats 10000000 in
+set_option maxRecDepth 8192
+set_option maxHeartbeats 20000000
 theorem harmonic1024_rational_interval :
     (7509175672278 / 1000000000000 : ℚ) < harmonic 1024 ∧
     harmonic 1024 < (7509175672279 / 1000000000000 : ℚ) := by
-  constructor <;> decide
+  constructor <;> decide +kernel
 
 /-- The power-of-two choice avoids any additional logarithm certificate. -/
 theorem log1024_eq_ten_logtwo :
@@ -1176,9 +1176,11 @@ theorem gamma_lower_from_h1024
       10 * Real.log 2 + (1 / 1024 : ℝ) := by
     rw [hlogdiv, log1024_eq_ten_logtwo] at hlogratio
     linarith
-  have hseq := Real.eulerMascheroniSeq_lt_eulerMascheroniConstant 1024
-  change (harmonic 1024 : ℝ) - Real.log (1025 : ℝ) <
-      Real.eulerMascheroniConstant at hseq
+  have hseq : (harmonic 1024 : ℝ) - Real.log (1025 : ℝ) <
+      Real.eulerMascheroniConstant := by
+    simpa only [Real.eulerMascheroniSeq, Nat.cast_ofNat,
+      show ((1024 : ℝ) + 1) = (1025 : ℝ) by norm_num] using
+      (Real.eulerMascheroniSeq_lt_eulerMascheroniConstant 1024)
   linarith
 
 /-- Euler upper bound from Mathlib's upper sequence and exact H1024. -/
