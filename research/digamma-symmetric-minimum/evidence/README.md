@@ -53,3 +53,38 @@ matched the committed historical certificate JSON **byte-for-byte**:
 This verifies that the recorded computations reproduce exactly in the
 observed Python/SymPy runtime. **It does not constitute a Lean theorem
 verification or a new proof of mathematical novelty.**
+
+## Pinned Lean endpoint proof — source-bound run 40889555940
+
+The existing Lean calculator was run after seeding the exact
+Zeta23.GammaFacts.Mu target. The successful hosted result is:
+
+- [GitHub Actions proof run](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40889555940)
+- Exact accepted source: anthropics/formal-math at
+  fbdc36bbf17d20af3fd0447c6d1a8a02773c9844; Lean 4.33.0-rc2
+- Canonical math-lab proof source:
+  [zeta23-h50-curvature-endpoint.lean](https://github.com/TeaShaman-cyber/theseus-math-research-lab/blob/main/lean-calculator/probes/zeta23-h50-curvature-endpoint.lean)
+- Archive: [JSON result](lean-h50-endpoint-40889555940.json),
+  SHA-256 96d868ab0693ae6141806eef23975a39bbb42e4325da792d926db0a4813d7978
+- Archive: [raw diagnostics](lean-h50-endpoint-40889555940.txt),
+  SHA-256 c5db737263a0d7fdb260707bd109d3d10a3dc4bd71821d2aadf74416518489d4
+- Observations: cache hit, source SHA matches pinned input,
+  result PASS, elaboration ELABORATES, process return code 0,
+  diagnostics SHA independently matched archived bytes
+- Axiom inventory: propext, Classical.choice, Quot.sound.
+  No sorry or extra new axioms.
+
+The proved proposition is only the **exact rational upper-endpoint
+positivity** of the bound L(63/20), with identical 16 q terms and
+tail weight to the historical certificate. It does **not** prove
+the positivity of L throughout [3.14,3.15], the head/tail
+inequality, the digamma differentiation lemma in Lean, or the H50
+inequality itself.
+
+The preceding attempt
+[run 40888769870](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40888769870)
+failed due to three Lean noncomputable-definition diagnostics.
+[PR #61](https://github.com/TeaShaman-cyber/theseus-math-research-lab/pull/61)
+corrected that declaration boundary only; no mathematical formula was
+changed. This history is retained to distinguish failed execution from
+a mathematical counterexample.
