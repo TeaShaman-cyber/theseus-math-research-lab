@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.9, 2026-10-29.**
+**WORKING MATHEMATICAL DRAFT — v0.10, 2026-10-29.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -71,6 +71,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Complete source digamma infinite tail summability and bound | [Lean H50-P7 receipt](evidence/lean-h50-infinite-tail-40932637198.json) | **LEAN_ACCEPTED_INFINITE_DIGAMMA_TSUM**; finite endpoint signs still externally certified |
 | Source digamma exact 1000-term split and conditional endpoint signs | [Lean H50-P8 receipt](evidence/lean-h50-prefix-signs-40935732434.json) | **LEAN_ACCEPTED_CONDITIONAL_SIGNS**; four finite/constant interval certificates not kernel-checked |
 | Exact arithmetic of first 8 original digamma-prefix terms at both ordinates | [Lean H50-P9 receipt](evidence/lean-h50-eight-prefix-40937693278.json) | **LEAN_ACCEPTED_EIGHT_OF_1000**; remaining 992 terms plus constants pending |
+| Generic finite-block splitting and source prefix terms 9–16 | [Lean H50-P10 receipt](evidence/lean-h50-block16-40939988550.json) | **LEAN_ACCEPTED_SIXTEEN_OF_1000**; 984 terms and gamma/logpi numeric bounds pending |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -217,6 +218,19 @@ The kernel accepted the **correct source splitting and conditional arithmetic im
 The pinned [Lean run 40937693278](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40937693278) verifies **strict 12-decimal rational bounds for the base term and first 8 original digamma summands**, at *both* `y=157/50` and `y=63/20`. The interval values are `1.631025035773..1.631025035774` and `1.633848555154..1.633848555155`, respectively. [Raw JSON](evidence/lean-h50-eight-prefix-40937693278.json) and [axiom trace](evidence/lean-h50-eight-prefix-40937693278.txt) match the accepted source hash, with no `sorryAx`. The arithmetic values were independently checked with exact Python `Fraction` before proving them in Lean.
 
 This is deliberately **8 of the required 1000 terms**, not a final certificate. The remaining 992 terms and the gamma/logpi interval bounds remain unverified by Lean. The next arithmetic proof should reuse exact blocks, rather than expanding one enormous rational expression.
+
+### 4.7 Arbitrary finite-block splitting and first 16 terms (H50-P10)
+
+The pinned [Lean run 40939988550](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40939988550) accepted a **general finite-block splitting lemma** for the canonical digamma summands: for any natural start index and block lengths, the source-exact sum of two consecutive blocks equals their sum separately. This provides a reusable composition rule for the remaining prefix terms.
+
+Lean also accepted strict 12-decimal interval bounds for terms **9–16** at both rational ordinates, and combined them with the previous first-eight certificates. The certified first-sixteen results, scaled by `10^12`, are:
+
+```text
+1688089176972 < 10^12 prefix16(157/50) < 1688089176974,
+1691167398045 < 10^12 prefix16(63/20)  < 1691167398047.
+```
+
+These are exact, conservative composite bounds; see [raw JSON receipt](evidence/lean-h50-block16-40939988550.json) and [axiom lists](evidence/lean-h50-block16-40939988550.txt), both source-hash matched. **984 terms still remain**, and the numerical Euler/log-pi enclosures remain separate formal obligations. No unconditional endpoint sign is claimed.
 
 ## 5. Finite head and analytic tail
 
