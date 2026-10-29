@@ -452,6 +452,35 @@ theorem digamma_right_sign_of_finite_bounds
       (sq_nonneg _)
   linarith
 
+/-! H50-P9: small exact rational finite source-prefix block.
+Kernel verification of this 8-term block is deliberately separate
+from the remaining 992 terms and all transcendental constants. -/
+
+private def sourcePrefixBlock8 (y : ℝ) : ℝ :=
+  -(1 / 4 : ℝ) / ((1 / 4 : ℝ) ^ 2 + y ^ 2) +
+    ∑ n ∈ Finset.range 8,
+      digammaTerm ((n : ℝ) + 1) (1 / 4) (y ^ 2)
+
+/-- Exact enclosing rationals, obtained independently before Lean. -/
+theorem finite_source_prefix_eight_left :
+    (1631025035773 / 1000000000000 : ℝ) <
+       sourcePrefixBlock8 (157 / 50 : ℝ) ∧
+    sourcePrefixBlock8 (157 / 50 : ℝ) <
+       (1631025035774 / 1000000000000 : ℝ) := by
+  constructor <;>
+    norm_num [sourcePrefixBlock8, digammaTerm,
+      Finset.sum_range_succ, Finset.sum_range_zero]
+
+/-- Same exact finite source-prefix block at the right endpoint. -/
+theorem finite_source_prefix_eight_right :
+    (1633848555154 / 1000000000000 : ℝ) <
+       sourcePrefixBlock8 (63 / 20 : ℝ) ∧
+    sourcePrefixBlock8 (63 / 20 : ℝ) <
+       (1633848555155 / 1000000000000 : ℝ) := by
+  constructor <;>
+    norm_num [sourcePrefixBlock8, digammaTerm,
+      Finset.sum_range_succ, Finset.sum_range_zero]
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -490,3 +519,6 @@ end H50
 #print axioms H50.digamma_source_prefix_tail_split
 #print axioms H50.digamma_left_sign_of_finite_bounds
 #print axioms H50.digamma_right_sign_of_finite_bounds
+
+#print axioms H50.finite_source_prefix_eight_left
+#print axioms H50.finite_source_prefix_eight_right
