@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.3, 2026-10-29.**
+**WORKING MATHEMATICAL DRAFT — v0.4, 2026-10-29.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -139,6 +139,8 @@ zero in `(157/50,63/20)`. **The rational program is an external
 certificate, not a theorem checked by Lean's kernel.** Establishing
 the named Mathlib lemmas and the certificate inequalities inside a
 single proof environment remains a separate acceptance step.
+
+Independent interval audit: [v2 receipt](evidence/ordinate-interval-v2.json); strict endpoint signs are externally certified, while the [Lean sign-to-root bridge](evidence/lean-h50-ordinate-40913788312.json) is kernel-accepted only conditional on those signs.
 
 ## 5. Finite head and analytic tail
 
