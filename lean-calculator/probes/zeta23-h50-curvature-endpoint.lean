@@ -1045,6 +1045,96 @@ theorem digamma_right_sign64_of_constants
   norm_num at htail
   linarith
 
+/-! H50-P14: the exact source endpoint proof needs only 5 decimal
+places for log pi. Two short exp series replace 50 log-atangents. -/
+
+/-- A six-term rational exponential upper certificate at x=0.1447. -/
+private theorem exp_short_left_upper :
+    Real.exp (1447 / 10000 : ℝ) ≤ 11557 / 10000 := by
+  have h := Real.exp_bound' (x := (1447 / 10000 : ℝ))
+    (by norm_num) (by norm_num) (n := 6) (by norm_num)
+  calc
+    Real.exp (1447 / 10000 : ℝ) ≤
+      (∑ m ∈ Finset.range 6,
+        (1447 / 10000 : ℝ) ^ m / (m.factorial : ℝ)) +
+      (1447 / 10000 : ℝ) ^ 6 * (6 + 1) / ((6.factorial : ℝ) * 6) := h
+    _ ≤ 11557 / 10000 := by
+      norm_num [Finset.sum_range_succ, Finset.sum_range_zero, Nat.factorial]
+
+/-- A six-term rational exponential lower certificate at x=0.14475. -/
+private theorem exp_short_right_lower :
+    (57787 / 50000 : ℝ) ≤ Real.exp (579 / 4000 : ℝ) := by
+  calc
+    (57787 / 50000 : ℝ) ≤
+      ∑ m ∈ Finset.range 6,
+        (579 / 4000 : ℝ) ^ m / (m.factorial : ℝ) := by
+          norm_num [Finset.sum_range_succ, Finset.sum_range_zero, Nat.factorial]
+    _ ≤ Real.exp (579 / 4000 : ℝ) :=
+      Real.sum_le_exp_of_nonneg (by norm_num) 6
+
+/-- The required *lower* log-pi bound needs only pre-proved Mathlib
+bounds for e and pi, plus a 6-term exponential estimate. -/
+theorem log_pi_lower_short : (11447 / 10000 : ℝ) < Real.log Real.pi := by
+  have he1 : Real.exp 1 ≤ (27182818286 / 10000000000 : ℝ) := by
+    convert Real.exp_one_lt_d9.le using 1 <;> norm_num
+  have he : Real.exp (11447 / 10000 : ℝ) < Real.pi := by
+    rw [show (11447 / 10000 : ℝ) = 1 + 1447 / 10000 by norm_num,
+      Real.exp_add]
+    calc
+      Real.exp 1 * Real.exp (1447 / 10000 : ℝ) ≤
+          (27182818286 / 10000000000 : ℝ) * Real.exp (1447 / 10000 : ℝ) :=
+        mul_le_mul_of_nonneg_right he1 (Real.exp_nonneg _)
+      _ ≤ (27182818286 / 10000000000 : ℝ) * (11557 / 10000) :=
+        mul_le_mul_of_nonneg_left exp_short_left_upper (by norm_num)
+      _ < (3141592 / 1000000 : ℝ) := by norm_num
+      _ < Real.pi := by convert Real.pi_gt_d6 using 1 <;> norm_num
+  exact (Real.lt_log_iff_exp_lt Real.pi_pos).2 he
+
+/-- Upper log-pi bound from a six-term exp lower series and Mathlib
+bounds for e and pi. -/
+theorem log_pi_upper_short : Real.log Real.pi < (114475 / 100000 : ℝ) := by
+  have he1 : (27182818283 / 10000000000 : ℝ) ≤ Real.exp 1 := by
+    convert Real.exp_one_gt_d9.le using 1 <;> norm_num
+  have he : Real.pi < Real.exp (114475 / 100000 : ℝ) := by
+    rw [show (114475 / 100000 : ℝ) = 1 + 579 / 4000 by norm_num,
+      Real.exp_add]
+    calc
+      Real.pi < (3141593 / 1000000 : ℝ) := by
+        convert Real.pi_lt_d6 using 1 <;> norm_num
+      _ < (27182818283 / 10000000000 : ℝ) * (57787 / 50000) := by norm_num
+      _ ≤ Real.exp 1 * (57787 / 50000) :=
+        mul_le_mul_of_nonneg_right he1 (by norm_num)
+      _ ≤ Real.exp 1 * Real.exp (579 / 4000 : ℝ) :=
+        mul_le_mul_of_nonneg_left exp_short_right_lower (Real.exp_nonneg _)
+  exact (Real.log_lt_iff_lt_exp Real.pi_pos).2 he
+
+/-- Source-exact negative endpoint sign now depends on Euler gamma alone. -/
+theorem digamma_left_sign64_of_gamma_only
+    (hgamma : (576716080366 / 1000000000000 : ℝ) ≤
+      Real.eulerMascheroniConstant) :
+    (Complex.digamma (((1 / 4 : ℝ) : ℂ) +
+      Complex.I * ((157 / 50 : ℝ) : ℂ))).re < Real.log Real.pi := by
+  have hsplit := source_prefix64_tail_split (157 / 50 : ℝ)
+  have hprefix := (finite_source_prefix_sixtyfour_left).2
+  have htail := source_tail64_infinite_upper (157 / 50 : ℝ)
+  have hlog := log_pi_lower_short
+  norm_num at htail
+  linarith
+
+/-- Source-exact positive endpoint sign now depends on Euler gamma alone. -/
+theorem digamma_right_sign64_of_gamma_only
+    (hgamma : Real.eulerMascheroniConstant ≤
+      (577715582178 / 1000000000000 : ℝ)) :
+    Real.log Real.pi <
+      (Complex.digamma (((1 / 4 : ℝ) : ℂ) +
+        Complex.I * ((63 / 20 : ℝ) : ℂ))).re := by
+  have hsplit := source_prefix64_tail_split (63 / 20 : ℝ)
+  have hprefix := (finite_source_prefix_sixtyfour_right).1
+  have htail := source_tail64_infinite_right_lower
+  have hlog := log_pi_upper_short
+  norm_num at htail
+  linarith
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -1124,3 +1214,8 @@ end H50
 #print axioms H50.source_prefix64_tail_split
 #print axioms H50.digamma_left_sign64_of_constants
 #print axioms H50.digamma_right_sign64_of_constants
+
+#print axioms H50.log_pi_lower_short
+#print axioms H50.log_pi_upper_short
+#print axioms H50.digamma_left_sign64_of_gamma_only
+#print axioms H50.digamma_right_sign64_of_gamma_only
