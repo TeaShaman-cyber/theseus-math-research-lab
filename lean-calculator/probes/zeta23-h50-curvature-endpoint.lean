@@ -1140,9 +1140,9 @@ theorem digamma_right_sign64_of_gamma_only
 /-! H50-P15: replace the external Euler constant interval with a single
 exact harmonic number and Mathlib's already verified log(2) bounds. -/
 
-/-- Fixed exact rational interval for the 1024th harmonic number. -/
 set_option maxRecDepth 8192
 set_option maxHeartbeats 20000000
+/-- Fixed exact rational interval for the 1024th harmonic number. -/
 theorem harmonic1024_rational_interval :
     (7509175672278 / 1000000000000 : ℚ) < harmonic 1024 ∧
     harmonic 1024 < (7509175672279 / 1000000000000 : ℚ) := by
@@ -1159,7 +1159,11 @@ theorem gamma_lower_from_h1024
     (hh : (7509175672278 / 1000000000000 : ℚ) < harmonic 1024) :
     (576716080366 / 1000000000000 : ℝ) < Real.eulerMascheroniConstant := by
   have hhR : (7509175672278 / 1000000000000 : ℝ) <
-      (harmonic 1024 : ℝ) := by exact_mod_cast hh
+      (harmonic 1024 : ℝ) := by
+    calc
+      (7509175672278 / 1000000000000 : ℝ) =
+          (((7509175672278 / 1000000000000 : ℚ) : ℝ)) := by norm_num
+      _ < (harmonic 1024 : ℝ) := (Rat.cast_lt (K := ℝ)).2 hh
   have hlogTwo : Real.log 2 < (6931471808 / 10000000000 : ℝ) := by
     have h := Real.log_two_lt_d9
     linarith
@@ -1189,7 +1193,12 @@ theorem gamma_upper_from_h1024
     Real.eulerMascheroniConstant <
       (577715582178 / 1000000000000 : ℝ) := by
   have hhR : (harmonic 1024 : ℝ) <
-      (7509175672279 / 1000000000000 : ℝ) := by exact_mod_cast hh
+      (7509175672279 / 1000000000000 : ℝ) := by
+    calc
+      (harmonic 1024 : ℝ) <
+          (((7509175672279 / 1000000000000 : ℚ) : ℝ)) :=
+        (Rat.cast_lt (K := ℝ)).2 hh
+      _ = (7509175672279 / 1000000000000 : ℝ) := by norm_num
   have hlogTwo : (6931471803 / 10000000000 : ℝ) < Real.log 2 := by
     have h := Real.log_two_gt_d9
     linarith
