@@ -1,0 +1,32 @@
+Lean (version 4.33.0-rc2, x86_64-unknown-linux-gnu, commit d8b18978322de05a8f3dba51ef03cf5461676c17, Release)
+.theseus-lean-calculator-probe.lean:60:5: warning: Variable name `ht0` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ht0
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+.theseus-lean-calculator-probe.lean:67:5: warning: Variable name `ht0` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ht0
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+.theseus-lean-calculator-probe.lean:151:62: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+.theseus-lean-calculator-probe.lean:155:61: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+'H50.lowerBound_upper_endpoint_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.lowerBound_upper_endpoint_gt_lipschitz_loss' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.tiny_first_poly_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.small_second_poly_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.middle_first_poly_neg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.tail_first_poly_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.nonnegative_mu_zero_in_corridor' depends on axioms: [propext, Classical.choice, Quot.sound]
+Real.eulerMascheroniSeq_lt_eulerMascheroniConstant (n : ℕ) : Real.eulerMascheroniSeq n < Real.eulerMascheroniConstant
+Real.eulerMascheroniConstant_lt_eulerMascheroniSeq' (n : ℕ) : Real.eulerMascheroniConstant < Real.eulerMascheroniSeq' n
+Real.pi_gt_d20 : 3.14159265358979323846 < Real.pi
+Real.pi_lt_d20 : Real.pi < 3.14159265358979323847
+'H50.mu_twice_ordinate_identity' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.nonnegative_mu_zero_in_corridor_of_digamma_signs' depends on axioms: [propext, Classical.choice, Quot.sound]
