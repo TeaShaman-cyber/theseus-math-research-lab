@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0, 2026-10-29.**
+**WORKING MATHEMATICAL DRAFT — v0.1, 2026-10-29.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -63,6 +63,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Rational ordinate bracket `157/50 < y_* < 63/20` | [archived exact-rational script and certificate](evidence/README.md) | **EXACT_RATIONAL_CERTIFICATE_REPRODUCED**; external assumptions and Lean composition not yet checked |
 | Uniform finite-head/tail comparison and L(y)>0 throughout the corridor | [Archived rational certificate](evidence/README.md) and §5.1 elementary Lipschitz argument | **ANALYTIC_UNIFORM_POSITIVITY**; head/tail comparison and Lean composition remain **UNVERIFIED** |
 | Exact rational endpoint L(63/20)>0 | [Source-bound Lean certificate](evidence/lean-h50-endpoint-40889555940.json) and [raw axiom diagnostics](evidence/lean-h50-endpoint-40889555940.txt) | **LEAN_ELABORATES / PINNED_SOURCE / ENDPOINT_ONLY** |
+| Exact endpoint exceeds the corridor Lipschitz budget | [Verified Lean margin receipt](evidence/lean-h50-lipschitz-margin-40903574213.json) | **LEAN_ACCEPTED_ENDPOINT_MARGIN**; global MVT proof ordinary analysis |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -254,10 +255,15 @@ in ordinary analysis** from elementary derivative bounds and one
 exact-rational endpoint. Wolfram independently confirmed the two
 derivative identities; exact Python `Fraction` arithmetic checked the
 rational majorants, the 17 terms, and the strict endpoint margin.
-The source-pinned Lean probe now includes a statement of the stricter
-endpoint bound `lowerBound_upper_endpoint_gt_lipschitz_loss`; at this
-draft checkpoint **no Lean receipt for that new declaration has yet
-been observed**.
+The stronger endpoint inequality has now been **accepted by Lean
+4.33.0-rc2** in the pinned Zeta23 calculator:
+[run 40903574213](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40903574213),
+ELABORATES/PASS, return code 0. Its
+[raw receipt](evidence/lean-h50-lipschitz-margin-40903574213.json)
+and [axiom diagnostics](evidence/lean-h50-lipschitz-margin-40903574213.txt)
+are versioned; the proof uses only propext, Classical.choice, and
+Quot.sound, with no sorry. **Only the endpoint arithmetic is
+kernel-checked**, not the Lipschitz/MVT extension itself.
 
 The proof uses no assumption about the sign of `Λ'` and does not
 depend on the historic degree-62 polynomial computation. Importantly,
@@ -273,9 +279,10 @@ head/tail bounds, and §3 in a verifiable common context.
 ## 6. Conditional conclusion and remaining obligations
 
 **Conditional theorem.** Assume that (i) the rational y-corridor
-certificate, (ii) the finite-head and tail inequalities, and
-(iii) the strict positivity of `L(y)` are correct on their
-declared domains. The derivative lemma in §3 then gives
+certificate selects the target ordinate and (ii) the
+uniform head/tail comparison H_y''(x) >= L(y) holds.
+Then §3 and the already established ordinary-analysis
+uniform positivity of the rational L in §5.1 give
 `H_{y_*}''(x)>0`. With central symmetry and
 `G_{y_*}(1/4)=log(π)`, it follows that
 
