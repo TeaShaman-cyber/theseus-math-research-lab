@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.5, 2026-10-29.**
+**WORKING MATHEMATICAL DRAFT — v0.6, 2026-10-29.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -67,6 +67,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Exact endpoint exceeds the corridor Lipschitz budget | [Verified Lean margin receipt](evidence/lean-h50-lipschitz-margin-40903574213.json) | **LEAN_ACCEPTED_ENDPOINT_MARGIN**; global MVT proof ordinary analysis |
 | Four interval polynomial sign sublemmas | [Pinned Lean proof receipt](evidence/lean-h50-head-tail-polynomial-40907184557.json) and [axiom trace](evidence/lean-h50-head-tail-polynomial-40907184557.txt) | **LEAN_ACCEPTED_FINITE_SIGNS**; continuous derivatives/composition ordinary analysis |
 | Source digamma summand positivity and majorant | [Pinned Lean P5 receipt](evidence/lean-h50-term-majorant-40926036033.json) | **LEAN_ACCEPTED_SOURCE_TERM_BOUND**; summed infinite tail and endpoint arithmetic remain external |
+| Uniform finite partial-sum bound for digamma tail | [Lean H50-P6 proof](evidence/lean-h50-finite-tail-40929929018.json) | **LEAN_ACCEPTED_ALL_FINITE_CUTOFFS**; infinite tsum passage pending |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -154,6 +155,24 @@ s(m,a,z) = a/[m(m+a)] + z/[(m+a)((m+a)^2+z)]
 gives `0<=s(m,a,z)<=a/m^2+z/m^3`. Five new Lean theorems verify the decomposition and both inequalities, including the precise summand of the pinned `Zeta23.MuFields.re_digamma_vertical` at `a=1/4` and `z=y^2`. [Run 40926036033](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40926036033) returned `PASS / ELABORATES`, exit `0`; [raw receipt](evidence/lean-h50-term-majorant-40926036033.json) and [axioms](evidence/lean-h50-term-majorant-40926036033.txt) are archived.
 
 **Acceptance boundary:** this formally proves a *pointwise series-term bound*, not the comparison of the infinite tail to its integral. Neither the external 1000-term endpoint interval calculation nor the final H50 theorem has been imported into Lean's kernel.
+
+### 4.3 Kernel-checked finite tails through discrete telescoping (H50-P6)
+
+The source-exact real digamma summand obeys `0<=s_m(y)<=a/m²+y²/m³` for `a=1/4`. For `m>=2`, the two inequalities
+
+```text
+1/m² <= 1/(m-1)-1/m,
+1/m³ <= (1/2)*(1/(m-1)²-1/m²)
+```
+
+show that its majorant is bounded by a telescoping difference of the potential `V_m=a/m+y²/(2m²)`. The new pinned Lean theorem `H50.digamma_source_finite_tail_bound` has been **kernel-accepted for every finite cutoff k**:
+
+```text
+sum_{m=1001}^{1000+k} s_m(y) <= V_1000
+                             = a/1000+y²/(2*1000²).
+```
+
+[Proof run 40929929018](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40929929018), [raw proof receipt](evidence/lean-h50-finite-tail-40929929018.json), and [axiom trace](evidence/lean-h50-finite-tail-40929929018.txt) are preserved. A kernel-accepted **infinite tsum bound** still requires the limit/series-convergence step, which is not claimed here; neither the transcendental endpoint signs nor H50 are kernel verified.
 
 ## 5. Finite head and analytic tail
 
