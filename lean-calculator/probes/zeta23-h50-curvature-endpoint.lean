@@ -644,6 +644,156 @@ theorem finite_source_prefix_thirtytwo_right :
   rcases finite_source_fourth_eight_right with ⟨h5, h6⟩
   constructor <;> linarith
 
+/-! H50-P12: canonical source digamma blocks 33..64 and exact composition. -/
+
+private def sourceFifthBlock8 (y : ℝ) : ℝ :=
+  sourceFiniteBlock 32 8 y
+
+/-- Source terms 33..40, left rational ordinate. -/
+theorem finite_source_fifth_eight_left :
+    (3123416667 / 1000000000000 : ℝ) <
+      sourceFifthBlock8 (157 / 50 : ℝ) ∧
+    sourceFifthBlock8 (157 / 50 : ℝ) <
+      (3123416668 / 1000000000000 : ℝ) := by
+  constructor <;>
+    norm_num [sourceFifthBlock8, sourceFiniteBlock, digammaTerm,
+      Finset.sum_range_succ, Finset.sum_range_zero]
+
+/-- Source terms 33..40, right rational ordinate. -/
+theorem finite_source_fifth_eight_right :
+    (3133639979 / 1000000000000 : ℝ) <
+      sourceFifthBlock8 (63 / 20 : ℝ) ∧
+    sourceFifthBlock8 (63 / 20 : ℝ) <
+      (3133639980 / 1000000000000 : ℝ) := by
+  constructor <;>
+    norm_num [sourceFifthBlock8, sourceFiniteBlock, digammaTerm,
+      Finset.sum_range_succ, Finset.sum_range_zero]
+
+private def sourceSixthBlock8 (y : ℝ) : ℝ :=
+  sourceFiniteBlock 40 8 y
+
+/-- Source terms 41..48, left rational ordinate. -/
+theorem finite_source_sixth_eight_left :
+    (1902035592 / 1000000000000 : ℝ) <
+      sourceSixthBlock8 (157 / 50 : ℝ) ∧
+    sourceSixthBlock8 (157 / 50 : ℝ) <
+      (1902035593 / 1000000000000 : ℝ) := by
+  constructor <;>
+    norm_num [sourceSixthBlock8, sourceFiniteBlock, digammaTerm,
+      Finset.sum_range_succ, Finset.sum_range_zero]
+
+/-- Source terms 41..48, right rational ordinate. -/
+theorem finite_source_sixth_eight_right :
+    (1907682841 / 1000000000000 : ℝ) <
+      sourceSixthBlock8 (63 / 20 : ℝ) ∧
+    sourceSixthBlock8 (63 / 20 : ℝ) <
+      (1907682842 / 1000000000000 : ℝ) := by
+  constructor <;>
+    norm_num [sourceSixthBlock8, sourceFiniteBlock, digammaTerm,
+      Finset.sum_range_succ, Finset.sum_range_zero]
+
+private def sourceSeventhBlock8 (y : ℝ) : ℝ :=
+  sourceFiniteBlock 48 8 y
+
+/-- Source terms 49..56, left rational ordinate. -/
+theorem finite_source_seventh_eight_left :
+    (1267877890 / 1000000000000 : ℝ) <
+      sourceSeventhBlock8 (157 / 50 : ℝ) ∧
+    sourceSeventhBlock8 (157 / 50 : ℝ) <
+      (1267877891 / 1000000000000 : ℝ) := by
+  constructor <;>
+    norm_num [sourceSeventhBlock8, sourceFiniteBlock, digammaTerm,
+      Finset.sum_range_succ, Finset.sum_range_zero]
+
+/-- Source terms 49..56, right rational ordinate. -/
+theorem finite_source_seventh_eight_right :
+    (1271320343 / 1000000000000 : ℝ) <
+      sourceSeventhBlock8 (63 / 20 : ℝ) ∧
+    sourceSeventhBlock8 (63 / 20 : ℝ) <
+      (1271320344 / 1000000000000 : ℝ) := by
+  constructor <;>
+    norm_num [sourceSeventhBlock8, sourceFiniteBlock, digammaTerm,
+      Finset.sum_range_succ, Finset.sum_range_zero]
+
+private def sourceEighthBlock8 (y : ℝ) : ℝ :=
+  sourceFiniteBlock 56 8 y
+
+/-- Source terms 57..64, left rational ordinate. -/
+theorem finite_source_eighth_eight_left :
+    (900379864 / 1000000000000 : ℝ) <
+      sourceEighthBlock8 (157 / 50 : ℝ) ∧
+    sourceEighthBlock8 (157 / 50 : ℝ) <
+      (900379865 / 1000000000000 : ℝ) := by
+  constructor <;>
+    norm_num [sourceEighthBlock8, sourceFiniteBlock, digammaTerm,
+      Finset.sum_range_succ, Finset.sum_range_zero]
+
+/-- Source terms 57..64, right rational ordinate. -/
+theorem finite_source_eighth_eight_right :
+    (902631309 / 1000000000000 : ℝ) <
+      sourceEighthBlock8 (63 / 20 : ℝ) ∧
+    sourceEighthBlock8 (63 / 20 : ℝ) <
+      (902631310 / 1000000000000 : ℝ) := by
+  constructor <;>
+    norm_num [sourceEighthBlock8, sourceFiniteBlock, digammaTerm,
+      Finset.sum_range_succ, Finset.sum_range_zero]
+
+private def sourcePrefixBlock64 (y : ℝ) : ℝ :=
+  -(1 / 4 : ℝ) / ((1 / 4 : ℝ) ^ 2 + y ^ 2) +
+    sourceFiniteBlock 0 64 y
+
+/-- Decompose the first sixty-four exact source terms into earlier 32 + four blocks. -/
+theorem source_prefix_split_thirtytwo_four_eights (y : ℝ) :
+    sourcePrefixBlock64 y = sourcePrefixBlock32 y +
+      sourceFifthBlock8 y + sourceSixthBlock8 y +
+      sourceSeventhBlock8 y + sourceEighthBlock8 y := by
+  have h0 : sourceFiniteBlock 0 64 y =
+      sourceFiniteBlock 0 32 y + sourceFiniteBlock 32 32 y := by
+    simpa only [Nat.reduceAdd, Nat.zero_add] using
+      source_finite_block_split 0 32 32 y
+  have h1 : sourceFiniteBlock 32 32 y =
+      sourceFiniteBlock 32 8 y + sourceFiniteBlock 40 24 y := by
+    simpa only [Nat.reduceAdd] using source_finite_block_split 32 8 24 y
+  have h2 : sourceFiniteBlock 40 24 y =
+      sourceFiniteBlock 40 8 y + sourceFiniteBlock 48 16 y := by
+    simpa only [Nat.reduceAdd] using source_finite_block_split 40 8 16 y
+  have h3 : sourceFiniteBlock 48 16 y =
+      sourceFiniteBlock 48 8 y + sourceFiniteBlock 56 8 y := by
+    simpa only [Nat.reduceAdd] using source_finite_block_split 48 8 8 y
+  unfold sourcePrefixBlock64 sourcePrefixBlock32 sourceFifthBlock8
+    sourceSixthBlock8 sourceSeventhBlock8 sourceEighthBlock8
+  rw [h0, h1, h2, h3]
+  ring
+
+/-- Conservative sixty-four-term exact rational prefix enclosure, left. -/
+theorem finite_source_prefix_sixtyfour_left :
+    (1715334410487 / 1000000000000 : ℝ) <
+      sourcePrefixBlock64 (157 / 50 : ℝ) ∧
+    sourcePrefixBlock64 (157 / 50 : ℝ) <
+      (1715334410495 / 1000000000000 : ℝ) := by
+  rw [source_prefix_split_thirtytwo_four_eights]
+  rcases finite_source_prefix_thirtytwo_left with ⟨h1, h2⟩
+  rcases finite_source_fifth_eight_left with ⟨h3, h4⟩
+  rcases finite_source_sixth_eight_left with ⟨h5, h6⟩
+  rcases finite_source_seventh_eight_left with ⟨h7, h8⟩
+  rcases finite_source_eighth_eight_left with ⟨h9, h10⟩
+  constructor <;> linarith
+
+/-- Conservative sixty-four-term exact rational prefix enclosure, right. -/
+theorem finite_source_prefix_sixtyfour_right :
+    (1718513338407 / 1000000000000 : ℝ) <
+      sourcePrefixBlock64 (63 / 20 : ℝ) ∧
+    sourcePrefixBlock64 (63 / 20 : ℝ) <
+      (1718513338415 / 1000000000000 : ℝ) := by
+  rw [source_prefix_split_thirtytwo_four_eights]
+  rcases finite_source_prefix_thirtytwo_right with ⟨h1, h2⟩
+  rcases finite_source_fifth_eight_right with ⟨h3, h4⟩
+  rcases finite_source_sixth_eight_right with ⟨h5, h6⟩
+  rcases finite_source_seventh_eight_right with ⟨h7, h8⟩
+  rcases finite_source_eighth_eight_right with ⟨h9, h10⟩
+  constructor <;> linarith
+
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -700,3 +850,15 @@ end H50
 #print axioms H50.source_prefix_split_sixteen_eight_eight
 #print axioms H50.finite_source_prefix_thirtytwo_left
 #print axioms H50.finite_source_prefix_thirtytwo_right
+
+#print axioms H50.finite_source_fifth_eight_left
+#print axioms H50.finite_source_fifth_eight_right
+#print axioms H50.finite_source_sixth_eight_left
+#print axioms H50.finite_source_sixth_eight_right
+#print axioms H50.finite_source_seventh_eight_left
+#print axioms H50.finite_source_seventh_eight_right
+#print axioms H50.finite_source_eighth_eight_left
+#print axioms H50.finite_source_eighth_eight_right
+#print axioms H50.source_prefix_split_thirtytwo_four_eights
+#print axioms H50.finite_source_prefix_sixtyfour_left
+#print axioms H50.finite_source_prefix_sixtyfour_right
