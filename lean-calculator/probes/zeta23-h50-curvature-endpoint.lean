@@ -350,7 +350,7 @@ The imported Mathlib real-series theorem now takes the limit.
 theorem digamma_source_tail_summable (y : ℝ) :
     Summable (fun n : ℕ =>
       digammaTerm ((n : ℝ) + 1001) (1 / 4) (y ^ 2)) := by
-  apply Real.summable_of_sum_range_le
+  apply summable_of_sum_range_le
   · intro n
     exact digamma_term_nonneg _ _ _ (by positivity) (by norm_num) (sq_nonneg y)
   · intro k

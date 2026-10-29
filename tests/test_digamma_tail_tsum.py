@@ -15,7 +15,7 @@ class InfiniteTailContract(unittest.TestCase):
         for theorem in ('digamma_source_tail_summable', 'digamma_source_infinite_tail_bound'):
             self.assertIn('theorem ' + theorem, source)
             self.assertIn('#print axioms H50.' + theorem, source)
-        self.assertIn('Real.summable_of_sum_range_le', source)
+        self.assertIn('apply summable_of_sum_range_le\n', source)
         self.assertIn('Real.tsum_le_of_sum_range_le', source)
         self.assertIn('digamma_source_finite_tail_bound', source)
         self.assertIn('∑\' n : ℕ', source)
