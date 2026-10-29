@@ -42,6 +42,15 @@ theorem lowerBound_upper_endpoint_pos :
     0 < lowerBound ((63 / 20 : ℝ) ^ 2) := by
   norm_num [lowerBound, q, r]
 
+/-- The exact endpoint exceeds the entire Lipschitz loss budget
+    (5/2) * ((63/20)^2 - (157/50)^2) = 629/4000.
+    This proves only the finite rational inequality, not the
+    mean-value theorem or the global derivative estimate. -/
+theorem lowerBound_upper_endpoint_gt_lipschitz_loss :
+    (629 / 4000 : ℝ) < lowerBound ((63 / 20 : ℝ) ^ 2) := by
+  norm_num [lowerBound, q, r]
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
+#print axioms H50.lowerBound_upper_endpoint_gt_lipschitz_loss
