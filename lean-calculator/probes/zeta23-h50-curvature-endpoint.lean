@@ -481,6 +481,77 @@ theorem finite_source_prefix_eight_right :
     norm_num [sourcePrefixBlock8, digammaTerm,
       Finset.sum_range_succ, Finset.sum_range_zero]
 
+/-! H50-P10: reusable indexed finite blocks of the canonical digamma series. -/
+
+private def sourceFiniteBlock (start count : ℕ) (y : ℝ) : ℝ :=
+  ∑ n ∈ Finset.range count,
+    digammaTerm (((start + n : ℕ) : ℝ) + 1) (1 / 4) (y ^ 2)
+
+/-- Every source series block splits at an arbitrary finite index. -/
+theorem source_finite_block_split (start first second : ℕ) (y : ℝ) :
+    sourceFiniteBlock start (first + second) y =
+      sourceFiniteBlock start first y +
+      sourceFiniteBlock (start + first) second y := by
+  simp only [sourceFiniteBlock, Finset.sum_range_add, Nat.add_assoc]
+
+private def sourceSecondBlock8 (y : ℝ) : ℝ :=
+  sourceFiniteBlock 8 8 y
+
+/-- Rational interval for terms 9..16, left ordinate. -/
+theorem finite_source_second_eight_left :
+    (57064141199 / 1000000000000 : ℝ) <
+      sourceSecondBlock8 (157 / 50 : ℝ) ∧
+    sourceSecondBlock8 (157 / 50 : ℝ) <
+      (57064141200 / 1000000000000 : ℝ) := by
+  constructor <;>
+    norm_num [sourceSecondBlock8, sourceFiniteBlock, digammaTerm,
+      Finset.sum_range_succ, Finset.sum_range_zero]
+
+/-- Rational interval for terms 9..16, right ordinate. -/
+theorem finite_source_second_eight_right :
+    (57318842891 / 1000000000000 : ℝ) <
+      sourceSecondBlock8 (63 / 20 : ℝ) ∧
+    sourceSecondBlock8 (63 / 20 : ℝ) <
+      (57318842892 / 1000000000000 : ℝ) := by
+  constructor <;>
+    norm_num [sourceSecondBlock8, sourceFiniteBlock, digammaTerm,
+      Finset.sum_range_succ, Finset.sum_range_zero]
+
+private def sourcePrefixBlock16 (y : ℝ) : ℝ :=
+  -(1 / 4 : ℝ) / ((1 / 4 : ℝ) ^ 2 + y ^ 2) +
+    sourceFiniteBlock 0 16 y
+
+/-- Assemble the old eight terms with the independent next eight. -/
+theorem source_prefix_split_eight_eight (y : ℝ) :
+    sourcePrefixBlock16 y = sourcePrefixBlock8 y + sourceSecondBlock8 y := by
+  have h := source_finite_block_split 0 8 8 y
+  unfold sourcePrefixBlock16 sourcePrefixBlock8 sourceSecondBlock8
+  simp only [sourceFiniteBlock, Nat.zero_add, Nat.add_assoc] at h ⊢
+  rw [h]
+  ring
+
+/-- Interval arithmetic combines the two accepted left blocks. -/
+theorem finite_source_prefix_sixteen_left :
+    (1688089176972 / 1000000000000 : ℝ) <
+      sourcePrefixBlock16 (157 / 50 : ℝ) ∧
+    sourcePrefixBlock16 (157 / 50 : ℝ) <
+      (1688089176974 / 1000000000000 : ℝ) := by
+  rw [source_prefix_split_eight_eight]
+  rcases finite_source_prefix_eight_left with ⟨h1, h2⟩
+  rcases finite_source_second_eight_left with ⟨h3, h4⟩
+  constructor <;> linarith
+
+/-- Interval arithmetic combines the two accepted right blocks. -/
+theorem finite_source_prefix_sixteen_right :
+    (1691167398045 / 1000000000000 : ℝ) <
+      sourcePrefixBlock16 (63 / 20 : ℝ) ∧
+    sourcePrefixBlock16 (63 / 20 : ℝ) <
+      (1691167398047 / 1000000000000 : ℝ) := by
+  rw [source_prefix_split_eight_eight]
+  rcases finite_source_prefix_eight_right with ⟨h1, h2⟩
+  rcases finite_source_second_eight_right with ⟨h3, h4⟩
+  constructor <;> linarith
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -522,3 +593,10 @@ end H50
 
 #print axioms H50.finite_source_prefix_eight_left
 #print axioms H50.finite_source_prefix_eight_right
+
+#print axioms H50.source_finite_block_split
+#print axioms H50.finite_source_second_eight_left
+#print axioms H50.finite_source_second_eight_right
+#print axioms H50.source_prefix_split_eight_eight
+#print axioms H50.finite_source_prefix_sixteen_left
+#print axioms H50.finite_source_prefix_sixteen_right
