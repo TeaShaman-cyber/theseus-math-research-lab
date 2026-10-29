@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.10, 2026-10-29.**
+**WORKING MATHEMATICAL DRAFT — v0.11, 2026-10-29.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -72,6 +72,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Source digamma exact 1000-term split and conditional endpoint signs | [Lean H50-P8 receipt](evidence/lean-h50-prefix-signs-40935732434.json) | **LEAN_ACCEPTED_CONDITIONAL_SIGNS**; four finite/constant interval certificates not kernel-checked |
 | Exact arithmetic of first 8 original digamma-prefix terms at both ordinates | [Lean H50-P9 receipt](evidence/lean-h50-eight-prefix-40937693278.json) | **LEAN_ACCEPTED_EIGHT_OF_1000**; remaining 992 terms plus constants pending |
 | Generic finite-block splitting and source prefix terms 9–16 | [Lean H50-P10 receipt](evidence/lean-h50-block16-40939988550.json) | **LEAN_ACCEPTED_SIXTEEN_OF_1000**; 984 terms and gamma/logpi numeric bounds pending |
+| Exact rational source prefix through 32 terms | [Lean H50-P11 certificate](evidence/lean-h50-block32-40944615197.json) | **LEAN_ACCEPTED_32_OF_1000**; remaining 968 terms and constants not yet formalized |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -231,6 +232,21 @@ Lean also accepted strict 12-decimal interval bounds for terms **9–16** at bot
 ```
 
 These are exact, conservative composite bounds; see [raw JSON receipt](evidence/lean-h50-block16-40939988550.json) and [axiom lists](evidence/lean-h50-block16-40939988550.txt), both source-hash matched. **984 terms still remain**, and the numerical Euler/log-pi enclosures remain separate formal obligations. No unconditional endpoint sign is claimed.
+
+### 4.8 Exact first-32 source terms in Lean (H50-P11)
+
+The kernel-accepted [Lean run 40944615197](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40944615197) verifies **four new eight-term intervals** for the actual source digamma terms 17–24 and 25–32 at both rational ordinates, plus an exact composition of the earlier first-sixteen prefix with those blocks. Seven new Lean theorems elaborate with only the standard axioms and no `sorryAx`.
+
+The resulting conservative first-32 prefix bounds, scaled by `10^12`, are:
+
+```text
+1708140700474 < 10^12 prefix32(157/50) < 1708140700478,
+1711298063935 < 10^12 prefix32(63/20)  < 1711298063939.
+```
+
+[Raw receipt](evidence/lean-h50-block32-40944615197.json) and [axiom diagnostics](evidence/lean-h50-block32-40944615197.txt) are source-hash matched. The rational block values were checked independently using exact `Fraction` arithmetic; kernel acceptance is established by the separate real Lean proof. The interval assembly is deliberately conservative, not a decimal approximation masquerading as equality.
+
+**Remaining:** 968 of the 1000 rational source-prefix terms and the gamma/log-pi numerical intervals have not yet been kernel checked. The source-to-sign bridge is conditional on those inputs, and the complete H50 theorem remains open.
 
 ## 5. Finite head and analytic tail
 
