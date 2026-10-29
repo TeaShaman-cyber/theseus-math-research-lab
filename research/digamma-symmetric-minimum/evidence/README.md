@@ -228,3 +228,27 @@ The sixteen-term intervals are conservatively assembled from two individually ce
 - `PASS/ELABORATES/returncode0`, six axiom lists `[propext, Classical.choice, Quot.sound]`; no `sorryAx`.
 
 **Scope:** 16 of 1000 finite source-prefix terms are now kernel checked. The remaining 984 terms and gamma/log-pi numerical bounds remain separate. No complete endpoint sign or full H50 Lean claim.
+
+## H50-P11: source-exact rational prefix through 32 terms — Lean 40944615197
+
+The [source-pinned Lean calculator run](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40944615197) has **kernel-accepted seven new theorems**: four rational interval bounds for source digamma terms 17–24 and 25–32 (both ordinates), one exact splitting identity `source_prefix_split_sixteen_eight_eight`, and two conservative composed first-32 prefix intervals. The proof reuses the previously accepted generic finite source-block decomposition.
+
+Certified strict intervals, all numbers scaled by `10^12`:
+
+```
+14156494364 < block(17..24, 157/50)*10^12 < 14156494365;
+14214178478 < block(17..24, 63/20)*10^12  < 14214178479;
+5895029138 < block(25..32, 157/50)*10^12 < 5895029139;
+5916487412 < block(25..32, 63/20)*10^12  < 5916487413;
+1708140700474 < prefix32(157/50)*10^12 < 1708140700478;
+1711298063935 < prefix32(63/20)*10^12  < 1711298063939.
+```
+
+The full 32-term exact fraction and the individual 8-term blocks were independently computed with Python `Fraction` before defining the Lean bounds; the final composed bounds intentionally allow interval accumulation. The strict bounds above were accepted by the Lean kernel, not merely observed numerically.
+
+- [Raw JSON](lean-h50-block32-40944615197.json) SHA-256 `f8e9cc0c168bf8f2cfcee6cd05370621f35e28d78a3ef3ccf88409b5f88c57ab`.
+- [Raw Lean axiom diagnostics](lean-h50-block32-40944615197.txt) SHA-256 `cab0a28497837c811c97ad2edd7a3b82c27263047525e4b209187f0c366b33bc`.
+- Exact accepted probe SHA-256 `d6bcc80dcf57a8838bc5da1408e37a57a7c7e89794dc0d9d747ec9bbe055a402`, accepted main `89634f2e14a1387479b61323c788bf9440084da8`.
+- `PASS/ELABORATES/exit 0`, only axioms `[propext, Classical.choice, Quot.sound]` for all seven; **no sorryAx**.
+
+**Boundary:** 32 of the required 1000 original source-prefix summands are kernel checked. The other **968**, the Euler constant and log-pi enclosures, and the complete H50 theorem remain separate, unproved-in-Lean obligations. Novelty unknown.
