@@ -552,6 +552,98 @@ theorem finite_source_prefix_sixteen_right :
   rcases finite_source_second_eight_right with ⟨h3, h4⟩
   constructor <;> linarith
 
+/-! H50-P11: finite source-digamma blocks 17..32 in kernel-checkable pieces. -/
+
+private def sourceThirdBlock8 (y : ℝ) : ℝ :=
+  sourceFiniteBlock 16 8 y
+
+private def sourceFourthBlock8 (y : ℝ) : ℝ :=
+  sourceFiniteBlock 24 8 y
+
+/-- Exact rational interval for source terms 17..24, left ordinate. -/
+theorem finite_source_third_eight_left :
+    (14156494364 / 1000000000000 : ℝ) <
+      sourceThirdBlock8 (157 / 50 : ℝ) ∧
+    sourceThirdBlock8 (157 / 50 : ℝ) <
+      (14156494365 / 1000000000000 : ℝ) := by
+  constructor <;>
+    norm_num [sourceThirdBlock8, sourceFiniteBlock, digammaTerm,
+      Finset.sum_range_succ, Finset.sum_range_zero]
+
+/-- Exact rational interval for source terms 17..24, right ordinate. -/
+theorem finite_source_third_eight_right :
+    (14214178478 / 1000000000000 : ℝ) <
+      sourceThirdBlock8 (63 / 20 : ℝ) ∧
+    sourceThirdBlock8 (63 / 20 : ℝ) <
+      (14214178479 / 1000000000000 : ℝ) := by
+  constructor <;>
+    norm_num [sourceThirdBlock8, sourceFiniteBlock, digammaTerm,
+      Finset.sum_range_succ, Finset.sum_range_zero]
+
+/-- Exact rational interval for source terms 25..32, left ordinate. -/
+theorem finite_source_fourth_eight_left :
+    (5895029138 / 1000000000000 : ℝ) <
+      sourceFourthBlock8 (157 / 50 : ℝ) ∧
+    sourceFourthBlock8 (157 / 50 : ℝ) <
+      (5895029139 / 1000000000000 : ℝ) := by
+  constructor <;>
+    norm_num [sourceFourthBlock8, sourceFiniteBlock, digammaTerm,
+      Finset.sum_range_succ, Finset.sum_range_zero]
+
+/-- Exact rational interval for source terms 25..32, right ordinate. -/
+theorem finite_source_fourth_eight_right :
+    (5916487412 / 1000000000000 : ℝ) <
+      sourceFourthBlock8 (63 / 20 : ℝ) ∧
+    sourceFourthBlock8 (63 / 20 : ℝ) <
+      (5916487413 / 1000000000000 : ℝ) := by
+  constructor <;>
+    norm_num [sourceFourthBlock8, sourceFiniteBlock, digammaTerm,
+      Finset.sum_range_succ, Finset.sum_range_zero]
+
+private def sourcePrefixBlock32 (y : ℝ) : ℝ :=
+  -(1 / 4 : ℝ) / ((1 / 4 : ℝ) ^ 2 + y ^ 2) +
+    sourceFiniteBlock 0 32 y
+
+/-- Generic splitting at 16 and 24 makes the 32-term prefix exact. -/
+theorem source_prefix_split_sixteen_eight_eight (y : ℝ) :
+    sourcePrefixBlock32 y =
+      sourcePrefixBlock16 y + sourceThirdBlock8 y + sourceFourthBlock8 y := by
+  have hfirst : sourceFiniteBlock 0 32 y =
+      sourceFiniteBlock 0 16 y + sourceFiniteBlock 16 16 y := by
+    simpa only [Nat.reduceAdd, Nat.zero_add] using
+      source_finite_block_split 0 16 16 y
+  have hnext : sourceFiniteBlock 16 16 y =
+      sourceFiniteBlock 16 8 y + sourceFiniteBlock 24 8 y := by
+    simpa only [Nat.reduceAdd] using
+      source_finite_block_split 16 8 8 y
+  unfold sourcePrefixBlock32 sourcePrefixBlock16 sourceThirdBlock8 sourceFourthBlock8
+  rw [hfirst, hnext]
+  ring
+
+/-- Conservative exact composite enclosure, left ordinate, 32 terms. -/
+theorem finite_source_prefix_thirtytwo_left :
+    (1708140700474 / 1000000000000 : ℝ) <
+      sourcePrefixBlock32 (157 / 50 : ℝ) ∧
+    sourcePrefixBlock32 (157 / 50 : ℝ) <
+      (1708140700478 / 1000000000000 : ℝ) := by
+  rw [source_prefix_split_sixteen_eight_eight]
+  rcases finite_source_prefix_sixteen_left with ⟨h1, h2⟩
+  rcases finite_source_third_eight_left with ⟨h3, h4⟩
+  rcases finite_source_fourth_eight_left with ⟨h5, h6⟩
+  constructor <;> linarith
+
+/-- Conservative exact composite enclosure, right ordinate, 32 terms. -/
+theorem finite_source_prefix_thirtytwo_right :
+    (1711298063935 / 1000000000000 : ℝ) <
+      sourcePrefixBlock32 (63 / 20 : ℝ) ∧
+    sourcePrefixBlock32 (63 / 20 : ℝ) <
+      (1711298063939 / 1000000000000 : ℝ) := by
+  rw [source_prefix_split_sixteen_eight_eight]
+  rcases finite_source_prefix_sixteen_right with ⟨h1, h2⟩
+  rcases finite_source_third_eight_right with ⟨h3, h4⟩
+  rcases finite_source_fourth_eight_right with ⟨h5, h6⟩
+  constructor <;> linarith
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -600,3 +692,11 @@ end H50
 #print axioms H50.source_prefix_split_eight_eight
 #print axioms H50.finite_source_prefix_sixteen_left
 #print axioms H50.finite_source_prefix_sixteen_right
+
+#print axioms H50.finite_source_third_eight_left
+#print axioms H50.finite_source_third_eight_right
+#print axioms H50.finite_source_fourth_eight_left
+#print axioms H50.finite_source_fourth_eight_right
+#print axioms H50.source_prefix_split_sixteen_eight_eight
+#print axioms H50.finite_source_prefix_thirtytwo_left
+#print axioms H50.finite_source_prefix_thirtytwo_right
