@@ -794,6 +794,235 @@ theorem finite_source_prefix_sixtyfour_right :
   constructor <;> linarith
 
 
+/-! H50-P13: avoid the 1000-term certificate using a full tail after 64 terms. -/
+
+private def sourceTail64 (y : ℝ) : ℝ :=
+  ∑' n : ℕ, digammaTerm ((n : ℝ) + 65) (1 / 4) (y ^ 2)
+
+private theorem source_tail64_step (n : ℕ) (y : ℝ) :
+    digammaTerm ((n : ℝ) + 65) (1 / 4) (y ^ 2) ≤
+      digammaTailPotential ((n : ℝ) + 64) (1 / 4) (y ^ 2) -
+      digammaTailPotential ((n : ℝ) + 65) (1 / 4) (y ^ 2) := by
+  have hm : (2 : ℝ) ≤ (n : ℝ) + 65 := by
+    have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+    linarith
+  convert digamma_term_le_telescoping ((n : ℝ) + 65) (1 / 4) (y ^ 2)
+    hm (by norm_num) (sq_nonneg y) using 1 <;> ring
+
+/-- Every finite remainder past source term 64 obeys the same potential bound. -/
+theorem source_tail64_finite_upper (k : ℕ) (y : ℝ) :
+    (∑ n ∈ Finset.range k,
+        digammaTerm ((n : ℝ) + 65) (1 / 4) (y ^ 2)) ≤
+      (1 / 4 : ℝ) / 64 + y ^ 2 / (2 * 64 ^ 2) := by
+  let pot : ℕ → ℝ := fun n =>
+    digammaTailPotential ((n : ℝ) + 64) (1 / 4) (y ^ 2)
+  have hstrong : ∀ k : ℕ,
+      (∑ n ∈ Finset.range k,
+        digammaTerm ((n : ℝ) + 65) (1 / 4) (y ^ 2)) + pot k ≤ pot 0 := by
+    intro j
+    induction j with
+    | zero => simp
+    | succ j ih =>
+      rw [Finset.sum_range_succ]
+      have hstep : digammaTerm ((j : ℝ) + 65) (1 / 4) (y ^ 2) ≤
+          pot j - pot (j + 1) := by
+        change digammaTerm ((j : ℝ) + 65) (1 / 4) (y ^ 2) ≤
+          digammaTailPotential ((j : ℝ) + 64) (1 / 4) (y ^ 2) -
+          digammaTailPotential (((j + 1 : ℕ) : ℝ) + 64) (1 / 4) (y ^ 2)
+        have hcast : (((j + 1 : ℕ) : ℝ) + 64) = (j : ℝ) + 65 := by
+          push_cast
+          ring
+        rw [hcast]
+        exact source_tail64_step j y
+      linarith
+  have hpot : 0 ≤ pot k := by
+    dsimp [pot, digammaTailPotential]
+    positivity
+  have hsum : (∑ n ∈ Finset.range k,
+      digammaTerm ((n : ℝ) + 65) (1 / 4) (y ^ 2)) ≤ pot 0 := by
+    linarith [hstrong k]
+  simpa [pot, digammaTailPotential, div_eq_mul_inv,
+    mul_inv_rev, mul_assoc, mul_comm, mul_left_comm] using hsum
+
+/-- The exact source digamma remainder past the 64-term prefix is summable. -/
+theorem source_tail64_summable (y : ℝ) :
+    Summable (fun n : ℕ =>
+      digammaTerm ((n : ℝ) + 65) (1 / 4) (y ^ 2)) := by
+  apply summable_of_sum_range_le
+  · intro n
+    exact digamma_term_nonneg _ _ _ (by positivity) (by norm_num) (sq_nonneg y)
+  · intro k
+    exact source_tail64_finite_upper k y
+
+/-- Full infinite source tail (not just partial sums) has the bound V_64. -/
+theorem source_tail64_infinite_upper (y : ℝ) :
+    sourceTail64 y ≤ (1 / 4 : ℝ) / 64 + y ^ 2 / (2 * 64 ^ 2) := by
+  unfold sourceTail64
+  apply Real.tsum_le_of_sum_range_le
+  · intro n
+    exact digamma_term_nonneg _ _ _ (by positivity) (by norm_num) (sq_nonneg y)
+  · intro k
+    exact source_tail64_finite_upper k y
+
+/-! The lower source-tail bound uses only 8 exact terms and one
+4096-term telescoping comparison, with no 4096-term rational expansion. -/
+
+/-- Nonnegative digamma terms dominate a telescoping rational base. -/
+theorem digamma_term_ge_telescoping_base (m a z : ℝ)
+    (hm : 0 < m) (ha : 0 ≤ a) (ha1 : a ≤ 1) (hz : 0 ≤ z) :
+    a * (1 / m - 1 / (m + 1)) ≤ digammaTerm m a z := by
+  rw [digamma_term_decompose m a z hm ha hz]
+  have hma : 0 < m + a := by linarith
+  have hm1 : 0 < m + 1 := by linarith
+  have hden : m * (m + a) ≤ m * (m + 1) :=
+    mul_le_mul_of_nonneg_left (by linarith) hm.le
+  have hdiv : a / (m * (m + 1)) ≤ a / (m * (m + a)) :=
+    div_le_div_of_nonneg_left ha (mul_pos hm hma) hden
+  have htel : a * (1 / m - 1 / (m + 1)) = a / (m * (m + 1)) := by
+    field_simp
+    ring
+  rw [htel]
+  have hpos : 0 ≤ z / ((m + a) * ((m + a) ^ 2 + z)) := by positivity
+  linarith
+
+/-- Arbitrarily many source terms from m=73 dominate an exact
+rational telescoping sum, without expanding those terms. -/
+theorem source_tail64_base_lower (k : ℕ) (y : ℝ) :
+    (1 / 4 : ℝ) * (1 / 73 - 1 / ((k : ℝ) + 73)) ≤
+    (∑ n ∈ Finset.range k,
+      digammaTerm ((n : ℝ) + 73) (1 / 4) (y ^ 2)) := by
+  have hstrong : ∀ j : ℕ,
+      (1 / 4 : ℝ) / 73 ≤
+      (∑ n ∈ Finset.range j,
+        digammaTerm ((n : ℝ) + 73) (1 / 4) (y ^ 2)) +
+          (1 / 4 : ℝ) / ((j : ℝ) + 73) := by
+    intro j
+    induction j with
+    | zero => simp
+    | succ j ih =>
+      rw [Finset.sum_range_succ]
+      have hj : (0 : ℝ) ≤ j := Nat.cast_nonneg j
+      have hm : (0 : ℝ) < (j : ℝ) + 73 := by linarith
+      have hstep := digamma_term_ge_telescoping_base
+        ((j : ℝ) + 73) (1 / 4) (y ^ 2)
+        hm (by norm_num) (by norm_num) (sq_nonneg y)
+      have hstep' : (1 / 4 : ℝ) / ((j : ℝ) + 73) -
+          (1 / 4 : ℝ) / ((j : ℝ) + 74) ≤
+          digammaTerm ((j : ℝ) + 73) (1 / 4) (y ^ 2) := by
+        convert hstep using 1 <;> ring
+      have hcast : (((j + 1 : ℕ) : ℝ) + 73) = (j : ℝ) + 74 := by
+        push_cast
+        ring
+      rw [hcast]
+      linarith
+  have h := hstrong k
+  linarith
+
+/-- Exact first eight terms of the right-endpoint remainder (m=65..72). -/
+theorem source_tail64_first8_right :
+    (671508317 / 1000000000000 : ℝ) <
+       sourceFiniteBlock 64 8 (63 / 20 : ℝ) := by
+  norm_num [sourceFiniteBlock, digammaTerm,
+    Finset.sum_range_succ, Finset.sum_range_zero]
+
+/-- A finite 4096-term lower bound is sufficient to control the
+entire infinite positive tail. All 4088 later terms are bounded
+by one telescope rather than individually evaluated. -/
+theorem source_tail64_infinite_right_lower :
+    (671508317 / 1000000000000 : ℝ) +
+      (1 / 4 : ℝ) * (1 / 73 - 1 / 4161) ≤
+      sourceTail64 (63 / 20 : ℝ) := by
+  let f : ℕ → ℝ := fun n =>
+    digammaTerm ((n : ℝ) + 65) (1 / 4) ((63 / 20 : ℝ) ^ 2)
+  have hpart : (∑ n ∈ Finset.range 4096, f n) ≤
+      sourceTail64 (63 / 20 : ℝ) := by
+    change (∑ n ∈ Finset.range 4096, f n) ≤ ∑' n : ℕ, f n
+    exact (source_tail64_summable (63 / 20 : ℝ)).sum_le_tsum
+      (Finset.range 4096) (by
+        intro n hn
+        exact digamma_term_nonneg _ _ _ (by positivity) (by norm_num)
+          (sq_nonneg _))
+  have hsplit : (∑ n ∈ Finset.range 4096, f n) =
+      (∑ n ∈ Finset.range 8, f n) +
+      (∑ n ∈ Finset.range 4088, f (n + 8)) := by
+    simpa only [show (8 + 4088 : ℕ) = 4096 by norm_num,
+      Nat.add_comm] using (Finset.sum_range_add f 8 4088)
+  have hfirst : (671508317 / 1000000000000 : ℝ) <
+      (∑ n ∈ Finset.range 8, f n) := by
+    simpa [f, sourceFiniteBlock, Nat.cast_add,
+      add_comm, add_left_comm, add_assoc] using source_tail64_first8_right
+  have hrest : (1 / 4 : ℝ) * (1 / 73 - 1 / 4161) ≤
+      (∑ n ∈ Finset.range 4088, f (n + 8)) := by
+    simpa [f, Nat.cast_add, add_assoc, add_comm, add_left_comm] using
+      (source_tail64_base_lower 4088 (63 / 20 : ℝ))
+  rw [hsplit] at hpart
+  linarith
+
+/-! The original pinned Zeta23 digamma function now splits at 64,
+without evaluating the previous 1000-term external certificate. -/
+
+/-- Canonical source digamma equals the 64-term prefix and exact tail. -/
+theorem source_prefix64_tail_split (y : ℝ) :
+    (Complex.digamma (((1 / 4 : ℝ) : ℂ) + Complex.I * (y : ℂ))).re =
+      -Real.eulerMascheroniConstant + sourcePrefixBlock64 y + sourceTail64 y := by
+  have hsource := Zeta23.MuFields.re_digamma_vertical
+    (a := (1 / 4 : ℝ)) (by norm_num) (by norm_num) y
+  have hs : Summable (fun n : ℕ =>
+      digammaTerm ((n : ℝ) + 1) (1 / 4) (y ^ 2)) := by
+    simpa only [digammaTerm] using
+      (Zeta23.MuFields.summable_re_terms
+        (a := (1 / 4 : ℝ)) (by norm_num) (by norm_num) y)
+  have hsplit := hs.sum_add_tsum_nat_add 64
+  have hshift : (fun n : ℕ =>
+      digammaTerm (((n + 64 : ℕ) : ℝ) + 1) (1 / 4) (y ^ 2)) =
+      (fun n : ℕ =>
+        digammaTerm ((n : ℝ) + 65) (1 / 4) (y ^ 2)) := by
+    funext n
+    have hcast : (((n + 64 : ℕ) : ℝ) + 1) =
+        ((n : ℝ) + 65) := by
+      push_cast
+      ring
+    exact congrArg (fun u : ℝ =>
+      digammaTerm u (1 / 4) (y ^ 2)) hcast
+  rw [hshift] at hsplit
+  rw [hsource]
+  simp only [digammaTerm] at hsplit
+  simp only [sourcePrefixBlock64, sourceFiniteBlock,
+    sourceTail64, digammaTerm]
+  rw [← hsplit]
+  ring
+
+/-- Unconditional left sign follows once only the Euler/log-pi
+constant bounds are independently kernel certified. -/
+theorem digamma_left_sign64_of_constants
+    (hgamma : (576716080366 / 1000000000000 : ℝ) ≤
+      Real.eulerMascheroniConstant)
+    (hlog : (1144729885838 / 1000000000000 : ℝ) ≤
+      Real.log Real.pi) :
+    (Complex.digamma (((1 / 4 : ℝ) : ℂ) +
+      Complex.I * ((157 / 50 : ℝ) : ℂ))).re < Real.log Real.pi := by
+  have hsplit := source_prefix64_tail_split (157 / 50 : ℝ)
+  have hprefix := (finite_source_prefix_sixtyfour_left).2
+  have htail := source_tail64_infinite_upper (157 / 50 : ℝ)
+  norm_num at htail
+  linarith
+
+/-- Unconditional right sign likewise awaits only the same
+numerical constant enclosures: no further source summands. -/
+theorem digamma_right_sign64_of_constants
+    (hgamma : Real.eulerMascheroniConstant ≤
+      (577715582178 / 1000000000000 : ℝ))
+    (hlog : Real.log Real.pi ≤
+      (1144729885940 / 1000000000000 : ℝ)) :
+    Real.log Real.pi <
+      (Complex.digamma (((1 / 4 : ℝ) : ℂ) +
+        Complex.I * ((63 / 20 : ℝ) : ℂ))).re := by
+  have hsplit := source_prefix64_tail_split (63 / 20 : ℝ)
+  have hprefix := (finite_source_prefix_sixtyfour_right).1
+  have htail := source_tail64_infinite_right_lower
+  norm_num at htail
+  linarith
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -862,3 +1091,14 @@ end H50
 #print axioms H50.source_prefix_split_thirtytwo_four_eights
 #print axioms H50.finite_source_prefix_sixtyfour_left
 #print axioms H50.finite_source_prefix_sixtyfour_right
+
+#print axioms H50.source_tail64_finite_upper
+#print axioms H50.source_tail64_summable
+#print axioms H50.source_tail64_infinite_upper
+#print axioms H50.digamma_term_ge_telescoping_base
+#print axioms H50.source_tail64_base_lower
+#print axioms H50.source_tail64_first8_right
+#print axioms H50.source_tail64_infinite_right_lower
+#print axioms H50.source_prefix64_tail_split
+#print axioms H50.digamma_left_sign64_of_constants
+#print axioms H50.digamma_right_sign64_of_constants
