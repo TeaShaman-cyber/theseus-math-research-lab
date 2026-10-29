@@ -1229,6 +1229,19 @@ theorem digamma_right_sign64_unconditional :
         Complex.I * ((63 / 20 : ℝ) : ℂ))).re :=
   digamma_right_sign64_of_gamma_only gamma_original_interval.2.le
 
+/-! H50-P16: all numerical sign premises and source-dependent
+    transformations are now discharged. The only remaining hypothesis
+    is that the given nonnegative ordinate is a zero of Zeta23.mu. -/
+
+/-- The distinguished corridor follows for any nonnegative mu-zero,
+    using two independently kernel-accepted source digamma endpoint signs.
+    No numerical approximation or existence of a zero is assumed here. -/
+theorem nonnegative_mu_zero_in_corridor_unconditional (tau : ℝ)
+    (htau : 0 ≤ tau) (hzero : Zeta23.mu tau = 0) :
+    (157 / 50 : ℝ) < tau / 2 ∧ tau / 2 < (63 / 20 : ℝ) := by
+  exact nonnegative_mu_zero_in_corridor_of_digamma_signs tau htau hzero
+    digamma_left_sign64_unconditional digamma_right_sign64_unconditional
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -1321,3 +1334,5 @@ end H50
 #print axioms H50.gamma_original_interval
 #print axioms H50.digamma_left_sign64_unconditional
 #print axioms H50.digamma_right_sign64_unconditional
+
+#print axioms H50.nonnegative_mu_zero_in_corridor_unconditional
