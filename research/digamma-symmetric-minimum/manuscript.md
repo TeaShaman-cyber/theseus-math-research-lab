@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.23, 2026-10-30.**
+**WORKING MATHEMATICAL DRAFT — v0.24, 2026-10-30.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -85,7 +85,8 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Source digamma infinite tsum first-derivative interchange on `a>0,z>0` | [Lean P21 receipt](evidence/lean-h50-first-derivative-41008796392.json) | **LEAN_ACCEPTED_FIRST_DERIVATIVE_EXCHANGE**; negative-r series differentiation verified in P22; standalone rational head and symmetric `H_y` still pending |
 | Infinite source negative-r series second-derivative exchange on `a>0,z>0` | [Lean P22 receipt](evidence/lean-h50-second-series-41014036669.json) | **LEAN_ACCEPTED_SECOND_SOURCE_SERIES_DERIVATIVE**; standalone full-source rational term composed in P23; symmetric H_y still pending |
 | Complete original digamma source formula, standalone rational head, and exact second source derivative | [Lean P23 receipt](evidence/lean-h50-full-source-second-41050325732.json) | **LEAN_ACCEPTED_FULL_SOURCE_FORMULA_SECOND_DERIVATIVE**; derivative transfer verified in P24; symmetric `H_y` and global inequality still pending |
-| Direct second derivative of `Re digamma(a+i sqrt z)` for `0<a<1,z>0` | [Lean P24 receipt](evidence/lean-h50-real-digamma-41052957695.json) | **LEAN_ACCEPTED_ORIGINAL_REAL_DIGAMMA_CURVATURE**; symmetric `H_y` and positivity pending |
+| Direct second derivative of `Re digamma(a+i sqrt z)` for `0<a<1,z>0` | [Lean P24 receipt](evidence/lean-h50-real-digamma-41052957695.json) | **LEAN_ACCEPTED_ORIGINAL_REAL_DIGAMMA_CURVATURE**; symmetric `H_y` identity accepted in P25; strict positivity pending |
+| Original symmetric digamma H second derivative identity on `0<x<1/2,z>0` | [Lean P25 receipt](evidence/lean-h50-symmetric-second-41053665168.json) | **LEAN_ACCEPTED_SYMMETRIC_CURVATURE_IDENTITY**; strict positivity and global H50 still unproved |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -424,6 +425,19 @@ d²/da² Re digamma(a+i sqrt(z)) = q(a,z) + sum_{n>=0} q(n+1+a,z),
 ```
 
 Unlike P23, this theorem directly concerns the original Complex.digamma real-part function. Pointwise identity with the formal source series on the open interval supplies the necessary equality of derivatives on a neighborhood. The theorem uses only standard Lean axioms, no `sorryAx`; the immutable [raw JSON](evidence/lean-h50-real-digamma-41052957695.json) and [compiler trace](evidence/lean-h50-real-digamma-41052957695.txt) have been archived. Still pending: the `H_y` symmetric second-derivative chain rule and proof of strict positivity on the entire constrained domain. No global H50 claim, no novelty claim.
+
+### 4.21 Original symmetric real digamma curvature (H50-P25)
+
+The source-bound [Lean run 41053665168](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41053665168) kernel-accepts the second derivative of the **original** `H_z(x)=Re digamma(x+i sqrt(z))+Re digamma(1/2-x+i sqrt(z))`, for `0<x<1/2,z>0`:
+
+```text
+H_z''(x) = [q(x,z) + sum_{n>=0} q(n+1+x,z)]
+          +[q(1/2-x,z) + sum_{n>=0} q(n+1+1/2-x,z)].
+```
+
+The equivalent reindexed expression in §3 is mathematical shorthand; the exact Lean theorem uses explicit rational heads and shifted infinite tails. Four source-derived theorems pass with standard axioms and no `sorryAx`; [raw JSON](evidence/lean-h50-symmetric-second-41053665168.json), [axiom trace](evidence/lean-h50-symmetric-second-41053665168.txt), probe SHA256 `8552b4f938d2f54dcf7624d0b976557078c6c6a92e71fab8f90f1c5d7dc123c1`.
+
+**Unverified:** strict positivity of this expression on the designated corridor and `0<x<=1/4`, derivation of the global minimum, mu-zero existence, and scientific novelty. The source-derived equality does not imply its own positivity.
 
 ## 5. Finite head and analytic tail
 
