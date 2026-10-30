@@ -1558,6 +1558,46 @@ theorem digamma_source_tsum_hasDerivAt_first (a z : ℝ)
         curvature_source_r_abs_le_majorant n t z (le_of_lt ht) hz.le)
     (by norm_num : (1 / 4 : ℝ) ∈ Set.Ioi 0) h0 ha
 
+
+/-! H50-P22: second infinite-series differentiation, with the original
+    exact rational kernels from the source digamma series. This is the
+    derivative of the P21 -r series, not yet the assembled H_y'' identity. -/
+
+/-- The negative rational first-derivative summand has derivative q. -/
+theorem curvature_source_neg_r_hasDerivAt_q (n : ℕ) (a z : ℝ) (hz : 0 < z) :
+    HasDerivAt (fun t : ℝ => -r (((n : ℝ) + 1) + t) z)
+      (q (((n : ℝ) + 1) + a) z) a := by
+  have hshift : HasDerivAt (fun t : ℝ => ((n : ℝ) + 1) + t) 1 a := by
+    simpa using (hasDerivAt_id a).const_add ((n : ℝ) + 1)
+  have h := (rational_r_hasDerivAt_neg_q _ z hz).comp a hshift
+  simpa only [one_mul, neg_neg] using h.neg
+
+/-- The series of negative r kernels differentiates to the actual q
+    curvature series on the open positive abscissa interval. -/
+theorem curvature_source_neg_r_tsum_hasDerivAt_q (a z : ℝ)
+    (ha : 0 < a) (hz : 0 < z) :
+    HasDerivAt
+      (fun t : ℝ => ∑' n : ℕ, -r (((n : ℝ) + 1) + t) z)
+      (∑' n : ℕ, q (((n : ℝ) + 1) + a) z) a := by
+  have h0 : Summable (fun n : ℕ =>
+      -r (((n : ℝ) + 1) + (1 / 4 : ℝ)) z) := by
+    apply curvature_square_majorant_summable.of_norm_bounded
+    intro n
+    simpa only [Real.norm_eq_abs, abs_neg] using
+      curvature_source_r_abs_le_majorant n (1 / 4) z (by norm_num) hz.le
+  exact hasDerivAt_tsum_of_isPreconnected
+    (u := fun n : ℕ => (6 : ℝ) / (((n : ℝ) + 1) ^ 3))
+    (g := fun n (t : ℝ) => -r (((n : ℝ) + 1) + t) z)
+    (g' := fun n (t : ℝ) => q (((n : ℝ) + 1) + t) z)
+    (t := Set.Ioi (0 : ℝ))
+    curvature_cubic_majorant_summable isOpen_Ioi isPreconnected_Ioi
+    (by intro n t ht; exact curvature_source_neg_r_hasDerivAt_q n t z hz)
+    (by
+      intro n t ht
+      simpa only [Real.norm_eq_abs] using
+        curvature_source_q_abs_le_majorant n t z (le_of_lt ht) hz.le)
+    (by norm_num : (1 / 4 : ℝ) ∈ Set.Ioi 0) h0 ha
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -1672,3 +1712,6 @@ end H50
 #print axioms H50.curvature_square_majorant_summable
 #print axioms H50.digamma_source_term_hasDerivAt
 #print axioms H50.digamma_source_tsum_hasDerivAt_first
+
+#print axioms H50.curvature_source_neg_r_hasDerivAt_q
+#print axioms H50.curvature_source_neg_r_tsum_hasDerivAt_q
