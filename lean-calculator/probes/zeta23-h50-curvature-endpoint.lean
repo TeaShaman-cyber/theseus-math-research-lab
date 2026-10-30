@@ -1,5 +1,7 @@
 import Zeta23.GammaFacts.Mu
 import Mathlib.Analysis.Normed.Group.FunctionSeries
+import Mathlib.Analysis.Calculus.SmoothSeries
+import Mathlib.Analysis.PSeries
 
 /-!
 # H50: exact-rational endpoint certificate (one bounded arithmetic seam)
@@ -1492,6 +1494,70 @@ theorem curvature_q_series_uniform_nonneg :
   simpa only [Real.norm_eq_abs] using
     curvature_source_q_abs_le_majorant n p.1 p.2 hp.1 hp.2
 
+
+/-! H50-P21: First derivative of the actual source digamma series. -/
+
+/-- The first source derivative has a parameter-independent square majorant. -/
+theorem curvature_source_r_abs_le_majorant (n : ℕ) (a z : ℝ)
+    (ha : 0 ≤ a) (hz : 0 ≤ z) :
+    |r (((n : ℝ) + 1) + a) z| ≤ 1 / (((n : ℝ) + 1) ^ 2) := by
+  have hm : 0 < (n : ℝ) + 1 := by positivity
+  have hu : 0 < ((n : ℝ) + 1) + a := by linarith
+  have hpow : ((n : ℝ) + 1) ^ 2 ≤ (((n : ℝ) + 1) + a) ^ 2 := by
+    nlinarith [mul_nonneg hm.le ha, sq_nonneg a]
+  calc
+    |r (((n : ℝ) + 1) + a) z| ≤ 1 / ((((n : ℝ) + 1) + a) ^ 2) :=
+      rational_r_abs_le_recip_sq _ _ hu hz
+    _ ≤ 1 / (((n : ℝ) + 1) ^ 2) := by
+      apply (div_le_div_iff₀ (pow_pos hu 2) (pow_pos hm 2)).2
+      nlinarith [hpow]
+
+/-- The square majorant has a genuine finite tsum, not just a cutoff bound. -/
+theorem curvature_square_majorant_summable :
+    Summable (fun n : ℕ => (1 : ℝ) / (((n : ℝ) + 1) ^ 2)) := by
+  have hs : Summable (fun n : ℕ => (1 : ℝ) / ((n : ℝ) ^ 2)) :=
+    Real.summable_one_div_nat_pow.mpr (by norm_num)
+  simpa only [Nat.cast_add, Nat.cast_one] using hs.nat_add 1
+
+/-- One canonical digamma source summand is differentiable in abscissa. -/
+theorem digamma_source_term_hasDerivAt (n : ℕ) (a z : ℝ) (hz : 0 < z) :
+    HasDerivAt (fun t : ℝ => digammaTerm ((n : ℝ) + 1) t z)
+      (-r (((n : ℝ) + 1) + a) z) a := by
+  have hshift : HasDerivAt (fun t : ℝ => ((n : ℝ) + 1) + t) 1 a := by
+    simpa using (hasDerivAt_id a).const_add ((n : ℝ) + 1)
+  have hcore : HasDerivAt
+      (fun t : ℝ => (((n : ℝ) + 1) + t) /
+        (((n : ℝ) + 1 + t) ^ 2 + z))
+      (r (((n : ℝ) + 1) + a) z) a := by
+    convert (rational_f_hasDerivAt_r _ _ hz).comp a hshift using 1 <;>
+      first | rfl | ring
+  simpa only [digammaTerm] using hcore.const_sub (1 / ((n : ℝ) + 1))
+
+/-- Differentiate the original digamma source sum (not a surrogate series)
+    once on the positive abscissa interval for every positive squared height. -/
+theorem digamma_source_tsum_hasDerivAt_first (a z : ℝ)
+    (ha : 0 < a) (hz : 0 < z) :
+    HasDerivAt
+      (fun t : ℝ => ∑' n : ℕ, digammaTerm ((n : ℝ) + 1) t z)
+      (∑' n : ℕ, -r (((n : ℝ) + 1) + a) z) a := by
+  have h0 : Summable
+      (fun n : ℕ => digammaTerm ((n : ℝ) + 1) (1 / 4) z) := by
+    have hs := Zeta23.MuFields.summable_re_terms
+      (a := (1 / 4 : ℝ)) (by norm_num) (by norm_num) (Real.sqrt z)
+    simpa only [digammaTerm, Real.sq_sqrt hz.le] using hs
+  exact hasDerivAt_tsum_of_isPreconnected
+    (u := fun n : ℕ => (1 : ℝ) / (((n : ℝ) + 1) ^ 2))
+    (g := fun n (t : ℝ) => digammaTerm ((n : ℝ) + 1) t z)
+    (g' := fun n (t : ℝ) => -r (((n : ℝ) + 1) + t) z)
+    (t := Set.Ioi (0 : ℝ))
+    curvature_square_majorant_summable isOpen_Ioi isPreconnected_Ioi
+    (by intro n t ht; exact digamma_source_term_hasDerivAt n t z hz)
+    (by
+      intro n t ht
+      simpa only [Real.norm_eq_abs, abs_neg] using
+        curvature_source_r_abs_le_majorant n t z (le_of_lt ht) hz.le)
+    (by norm_num : (1 / 4 : ℝ) ∈ Set.Ioi 0) h0 ha
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -1601,3 +1667,8 @@ end H50
 #print axioms H50.curvature_source_q_abs_summable
 
 #print axioms H50.curvature_q_series_uniform_nonneg
+
+#print axioms H50.curvature_source_r_abs_le_majorant
+#print axioms H50.curvature_square_majorant_summable
+#print axioms H50.digamma_source_term_hasDerivAt
+#print axioms H50.digamma_source_tsum_hasDerivAt_first
