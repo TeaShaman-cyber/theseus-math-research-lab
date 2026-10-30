@@ -418,3 +418,14 @@ Combined with P18, this supplies a formally checked **single summable pointwise 
 - [Raw Lean axiom diagnostics](lean-h50-curvature-cubic-summable-40998899290.txt): SHA-256 `ec84845f24a313deb303bd39eaa764f2fc15bf67c7cc5539be98a77da1b74c4a`.
 
 **Next proof gate:** use the pinned Mathlib uniform-convergence theorem for series under a summable pointwise bound, then justify the real first/second derivative interchange on a suitable open parameter interval; separately derive the original symmetric digamma `H_y''` series and prove strict positivity. `H50_NOT_YET_LEAN_PROVED / NOVELTY_UNKNOWN`.
+
+## H50-P20: uniform convergence of the original curvature q-series — Lean 41005153298
+
+The pinned [Lean 4.33.0-rc2 run 41005153298](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41005153298) formally accepted `H50.curvature_q_series_uniform_nonneg`. Applying pinned Mathlib `tendstoUniformlyOn_tsum_nat` to the original q source kernel and the P18/P19 already accepted pointwise/summable majorants shows **uniform convergence** of the source curvature series jointly on `{(a,z): a>=0, z>=0}`. This closes the M-test/uniform-limit theorem gate, not either differentiation-under-the-sum gate.
+
+- Exact accepted source main `324e709a34424b0413cbff2f22461c1c80d917a3` (merged PR #112), source probe SHA-256 `46758cff22f918b7e039f904ff2d6f16c070b03df3ff0f647698837d416438e6`.
+- [Raw JSON](lean-h50-q-uniform-41005153298.json), SHA-256 `46f1ac033057e8d9f8b511394766c8e774b4ac4a9058f6d0dcb21a259baaad2e`.
+- [Raw compiler/axiom diagnostics](lean-h50-q-uniform-41005153298.txt), SHA-256 `bd47bb29b8931951c5dcd0d142b8bc7917189eb94791a9111b65b7e6bc676db8`.
+- `PASS/ELABORATES/returncode0`; new theorem axiom list `[propext, Classical.choice, Quot.sound]`, **NO sorryAx**. Native deterministic QA and hosted qa/witness PASS on exact candidate head.
+
+**Boundary:** The canonical source digamma series is still not twice differentiated in Lean, and `H_y''` has not been assembled from the source q-series. Finite-head/integral-tail positivity, global H50 minimum and scientific novelty remain **not Lean verified / UNKNOWN**. The differentiated q-series M-test is not a proof of those further statements.

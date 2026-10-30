@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.18, 2026-10-30.**
+**WORKING MATHEMATICAL DRAFT — v0.19, 2026-10-30.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -81,6 +81,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Pointwise rational source curvature derivatives `f' = r`, `r' = -q` and `f'' = -q` for z>0 | [Lean H50-P17 receipt](evidence/lean-h50-curvature-deriv-40996280696.json) | **LEAN_ACCEPTED_RATIONAL_CURVATURE_KERNEL**; differentiation under infinite sum remains open |
 | Source-uniform pointwise rational curvature majorants for all a,z≥0 | [Lean P18 receipt](evidence/lean-h50-curvature-majorants-40998423368.json) | **LEAN_ACCEPTED_CURVATURE_QR_MTEST_BOUNDS**; summability checked separately in P19 |
 | Summable cubic curvature majorant and absolute q-series summability | [Lean P19 receipt](evidence/lean-h50-curvature-cubic-summable-40998899290.json) | **LEAN_ACCEPTED_CUBIC_MAJORANT_SUMMABLE**; uniform convergence and differentiated infinite digamma series pending |
+| Uniform convergence of the exact original q-series for jointly nonnegative `(a,z)` | [Lean P20 receipt](evidence/lean-h50-q-uniform-41005153298.json) | **LEAN_ACCEPTED_Q_SERIES_UNIFORM_CONVERGENCE**; two source digamma derivative exchanges and exact H_y second-derivative formula pending |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -366,7 +367,13 @@ Summable (fun n => |q(n+1+a,z)|)  for all a,z>=0.
 
 The shared majorant is independent of both parameters, completing the **numerical hypotheses** for a Weierstrass M-test argument. Each of the seven new theorems was kernel accepted with only standard axioms, no `sorryAx`, and exact source matching; the [P18 raw receipt](evidence/lean-h50-curvature-majorants-40998423368.json), [P18 axioms](evidence/lean-h50-curvature-majorants-40998423368.txt), [P19 raw receipt](evidence/lean-h50-curvature-cubic-summable-40998899290.json), and [P19 axioms](evidence/lean-h50-curvature-cubic-summable-40998899290.txt) are preserved separately with their original source hashes.
 
-**Acceptance boundary:** A kernel-accepted lemma explicitly invoking a pinned Mathlib uniform-convergence theorem has **not** yet been assembled. More importantly, source-bound differentiation under the infinite digamma sum and the exact symmetric `H_y''` identity require additional analytic work. Strict global H50 curvature and the minimum at `x=1/4` remain **unproved in Lean**; scientific novelty remains unknown.
+**Historical boundary at P19 (superseded by P20):** A kernel-accepted lemma explicitly invoking a pinned Mathlib uniform-convergence theorem had **not** yet been assembled. More importantly, source-bound differentiation under the infinite digamma sum and the exact symmetric `H_y''` identity require additional analytic work. Strict global H50 curvature and the minimum at `x=1/4` remain **unproved in Lean**; scientific novelty remains unknown.
+
+### 4.16 Kernel-accepted two-parameter q-series uniform convergence (H50-P20)
+
+The source-bound [Lean P20 run 41005153298](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41005153298) proved `H50.curvature_q_series_uniform_nonneg` by invoking pinned Mathlib `tendstoUniformlyOn_tsum_nat` with the accepted P19 summable majorant and P18 source q-term bound. For the **original** q definition, finite range sums converge uniformly to the infinite q tsum over every pair `(a,z)` satisfying `a>=0` and `z>=0`. This is stronger than one parameter at a time and requires no special-ordinate approximation. Proof SHA-256 `46758cff22f918b7e039f904ff2d6f16c070b03df3ff0f647698837d416438e6`; [raw JSON](evidence/lean-h50-q-uniform-41005153298.json) and [axiom diagnostics](evidence/lean-h50-q-uniform-41005153298.txt) were archived at their original hashes. The new theorem is kernel accepted with only `propext`, `Classical.choice`, `Quot.sound`, and no `sorryAx`.
+
+**Still missing:** the derivative exchange for the original digamma infinite sum, a second derivative exchange, and composition with the standalone `-f_z(a)` term to obtain the exact `H_y''` representation; thereafter the finite-head/integral-tail positivity has its own Lean obligations. Neither H50 nor novelty is promoted.
 
 ## 5. Finite head and analytic tail
 
