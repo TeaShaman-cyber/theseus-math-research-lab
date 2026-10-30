@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.19, 2026-10-30.**
+**WORKING MATHEMATICAL DRAFT — v0.20, 2026-10-30.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -81,7 +81,8 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Pointwise rational source curvature derivatives `f' = r`, `r' = -q` and `f'' = -q` for z>0 | [Lean H50-P17 receipt](evidence/lean-h50-curvature-deriv-40996280696.json) | **LEAN_ACCEPTED_RATIONAL_CURVATURE_KERNEL**; differentiation under infinite sum remains open |
 | Source-uniform pointwise rational curvature majorants for all a,z≥0 | [Lean P18 receipt](evidence/lean-h50-curvature-majorants-40998423368.json) | **LEAN_ACCEPTED_CURVATURE_QR_MTEST_BOUNDS**; summability checked separately in P19 |
 | Summable cubic curvature majorant and absolute q-series summability | [Lean P19 receipt](evidence/lean-h50-curvature-cubic-summable-40998899290.json) | **LEAN_ACCEPTED_CUBIC_MAJORANT_SUMMABLE**; uniform convergence and differentiated infinite digamma series pending |
-| Uniform convergence of the exact original q-series for jointly nonnegative `(a,z)` | [Lean P20 receipt](evidence/lean-h50-q-uniform-41005153298.json) | **LEAN_ACCEPTED_Q_SERIES_UNIFORM_CONVERGENCE**; two source digamma derivative exchanges and exact H_y second-derivative formula pending |
+| Uniform convergence of the exact original q-series for jointly nonnegative `(a,z)` | [Lean P20 receipt](evidence/lean-h50-q-uniform-41005153298.json) | **LEAN_ACCEPTED_Q_SERIES_UNIFORM_CONVERGENCE**; first derivative exchange verified in P21; second derivative and exact H_y formula pending |
+| Source digamma infinite tsum first-derivative interchange on `a>0,z>0` | [Lean P21 receipt](evidence/lean-h50-first-derivative-41008796392.json) | **LEAN_ACCEPTED_FIRST_DERIVATIVE_EXCHANGE**; second derivative, standalone rational head and symmetric `H_y` still pending |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -374,6 +375,19 @@ The shared majorant is independent of both parameters, completing the **numerica
 The source-bound [Lean P20 run 41005153298](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41005153298) proved `H50.curvature_q_series_uniform_nonneg` by invoking pinned Mathlib `tendstoUniformlyOn_tsum_nat` with the accepted P19 summable majorant and P18 source q-term bound. For the **original** q definition, finite range sums converge uniformly to the infinite q tsum over every pair `(a,z)` satisfying `a>=0` and `z>=0`. This is stronger than one parameter at a time and requires no special-ordinate approximation. Proof SHA-256 `46758cff22f918b7e039f904ff2d6f16c070b03df3ff0f647698837d416438e6`; [raw JSON](evidence/lean-h50-q-uniform-41005153298.json) and [axiom diagnostics](evidence/lean-h50-q-uniform-41005153298.txt) were archived at their original hashes. The new theorem is kernel accepted with only `propext`, `Classical.choice`, `Quot.sound`, and no `sorryAx`.
 
 **Still missing:** the derivative exchange for the original digamma infinite sum, a second derivative exchange, and composition with the standalone `-f_z(a)` term to obtain the exact `H_y''` representation; thereafter the finite-head/integral-tail positivity has its own Lean obligations. Neither H50 nor novelty is promoted.
+
+### 4.17 Kernel-accepted first derivative of the canonical digamma series (H50-P21)
+
+The pinned [Lean run 41008796392](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41008796392) accepted the derivative interchange for the **original** `digammaTerm` infinite series, for every `a>0,z>0`:
+
+```text
+d/da (sum_{n>=0} digammaTerm(n+1,a,z))
+  = sum_{n>=0} -r(n+1+a,z).
+```
+
+The proof combines the source summability at `a=1/4`, an explicit `1/(n+1)^2` uniform majorant for `|r|`, the accepted rational derivative `f'=r`, and pinned Mathlib `hasDerivAt_tsum_of_isPreconnected`. All four new declarations passed source-checked Lean 4.33.0-rc2 with only standard axioms and no `sorryAx`. [Original JSON](evidence/lean-h50-first-derivative-41008796392.json) and [original compiler trace](evidence/lean-h50-first-derivative-41008796392.txt) are archived unchanged. The first attempt failed at a nonexistent Mathlib API method; PR #115 corrected only that method, leaving statements unchanged.
+
+**Still missing:** the second derivative interchange for the `r` series using the q majorant, the standalone digamma `-f_z(a)` rational term, and the symmetric `H_y''` source identity. The analytic curvature positivity argument is not promoted to Lean proof. Neither H50 nor novelty is claimed.
 
 ## 5. Finite head and analytic tail
 
