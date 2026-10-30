@@ -1926,6 +1926,163 @@ theorem curvature_q_two_tail8_lower (a b z : ℝ)
   have h₂ := curvature_q_tail8_tsum_lower b z hb hz
   linarith
 
+
+/-! H50-P27: interval-arithmetic-only positive finite curvature head.
+    This avoids the integral test and all monotonicity/concavity lemmas. -/
+
+/-- A lower q-bound on a positive-kernel bin [l,h]. -/
+theorem q_bin_positive_lower (l h u z : ℝ)
+    (hl : 0 ≤ l) (hlu : l ≤ u) (huh : u ≤ h)
+    (hz0 : 9 ≤ z) (hz1 : z ≤ 10) (hh : h ^ 2 ≤ 27) :
+    (2 * l * (27 - h ^ 2)) / (h ^ 2 + 10) ^ 3 ≤ q u z := by
+  have hu0 : 0 ≤ u := le_trans hl hlu
+  have hh0 : 0 ≤ h := le_trans hu0 huh
+  have hsq : u ^ 2 ≤ h ^ 2 := by
+    nlinarith [mul_nonneg (sub_nonneg.mpr huh) (add_nonneg hu0 hh0)]
+  have hk : 27 - h ^ 2 ≤ 3 * z - u ^ 2 := by nlinarith
+  have hk0 : 0 ≤ 27 - h ^ 2 := by linarith
+  have hnum : 2 * l * (27 - h ^ 2) ≤ 2 * u * (3 * z - u ^ 2) := by
+    calc
+      2 * l * (27 - h ^ 2) ≤ 2 * u * (27 - h ^ 2) := by gcongr
+      _ ≤ 2 * u * (3 * z - u ^ 2) := by gcongr
+  have hden : (u ^ 2 + z) ^ 3 ≤ (h ^ 2 + 10) ^ 3 := by
+    gcongr
+    nlinarith
+  have hd0 : 0 < (h ^ 2 + 10) ^ 3 := by positivity
+  have hd1 : 0 < (u ^ 2 + z) ^ 3 := by positivity
+  have hc : 0 ≤ 2 * l * (27 - h ^ 2) := by positivity
+  unfold q
+  apply (div_le_div_iff₀ hd0 hd1).2
+  calc
+    (2 * l * (27 - h ^ 2)) * (u ^ 2 + z) ^ 3 ≤
+        (2 * l * (27 - h ^ 2)) * (h ^ 2 + 10) ^ 3 :=
+          mul_le_mul_of_nonneg_left hden hc
+    _ ≤ (2 * u * (3 * z - u ^ 2)) * (h ^ 2 + 10) ^ 3 :=
+          mul_le_mul_of_nonneg_right hnum hd0.le
+
+/-- A lower q-bound when the numerator might be negative. -/
+theorem q_bin_negative_lower (l h u z : ℝ)
+    (hl : 0 < l) (hlu : l ≤ u) (huh : u ≤ h)
+    (hz0 : 9 ≤ z) (hz1 : z ≤ 10) (hh : 27 ≤ h ^ 2) :
+    (2 * h * (27 - h ^ 2)) / (l ^ 2 + 9) ^ 3 ≤ q u z := by
+  have hu0 : 0 ≤ u := le_trans hl.le hlu
+  have hh0 : 0 ≤ h := le_trans hu0 huh
+  have hsq : l ^ 2 ≤ u ^ 2 := by
+    nlinarith [mul_nonneg (sub_nonneg.mpr hlu) (add_nonneg hl.le hu0)]
+  have hk : 27 - h ^ 2 ≤ 3 * z - u ^ 2 := by
+    have hsqhi : u ^ 2 ≤ h ^ 2 := by
+      nlinarith [mul_nonneg (sub_nonneg.mpr huh) (add_nonneg hu0 hh0)]
+    nlinarith
+  have hk0 : 27 - h ^ 2 ≤ 0 := by linarith
+  have hnum : 2 * h * (27 - h ^ 2) ≤ 2 * u * (3 * z - u ^ 2) := by
+    calc
+      2 * h * (27 - h ^ 2) ≤ 2 * u * (27 - h ^ 2) := by
+        nlinarith [mul_nonneg (sub_nonneg.mpr huh) (neg_nonneg.mpr hk0)]
+      _ ≤ 2 * u * (3 * z - u ^ 2) := by gcongr
+  have hden : (l ^ 2 + 9) ^ 3 ≤ (u ^ 2 + z) ^ 3 := by
+    gcongr
+    nlinarith
+  have hd0 : 0 < (l ^ 2 + 9) ^ 3 := by positivity
+  have hd1 : 0 < (u ^ 2 + z) ^ 3 := by positivity
+  have hc : 2 * h * (27 - h ^ 2) ≤ 0 := by
+    have : 0 ≤ 2 * h := by positivity
+    exact mul_nonpos_of_nonneg_of_nonpos this hk0
+  unfold q
+  apply (div_le_div_iff₀ hd0 hd1).2
+  calc
+    (2 * h * (27 - h ^ 2)) * (u ^ 2 + z) ^ 3 ≤
+        (2 * h * (27 - h ^ 2)) * (l ^ 2 + 9) ^ 3 :=
+          mul_le_mul_of_nonpos_left hden hc
+    _ ≤ (2 * u * (3 * z - u ^ 2)) * (l ^ 2 + 9) ^ 3 :=
+          mul_le_mul_of_nonneg_right hnum hd0.le
+
+/-- The small-u contribution has a rational coefficient without requiring
+    concavity: q(u,z) >= u/21 throughout u∈[0,1/2], z∈[9,10]. -/
+theorem q_small_lower_one_over_21 (u z : ℝ)
+    (hu0 : 0 ≤ u) (hu1 : u ≤ 1 / 2) (hz0 : 9 ≤ z) (hz1 : z ≤ 10) :
+    u / 21 ≤ q u z := by
+  have h := q_bin_positive_lower u (1 / 2) u z hu0 le_rfl hu1 hz0 hz1 (by norm_num)
+  have hc : (1 / 21 : ℝ) ≤
+      (2 * (27 - (1 / 2 : ℝ) ^ 2)) / ((1 / 2 : ℝ) ^ 2 + 10) ^ 3 := by
+    norm_num
+  have hnum := mul_le_mul_of_nonneg_left hc hu0
+  have heq : (2 * u * (27 - (1 / 2 : ℝ) ^ 2)) /
+      ((1 / 2 : ℝ) ^ 2 + 10) ^ 3 =
+      u * ((2 * (27 - (1 / 2 : ℝ) ^ 2)) / ((1 / 2 : ℝ) ^ 2 + 10) ^ 3) := by ring
+  rw [heq] at h
+  nlinarith
+
+
+/-- The 16 original q head terms for symmetric H at n=0,...,7. -/
+private def curvatureHead8 (x z : ℝ) : ℝ :=
+  ∑ n ∈ Finset.range 8,
+    (q ((n : ℝ) + x) z + q ((n : ℝ) + (1 / 2 - x)) z)
+
+/-- A fully rational, conservative head certificate on the whole rectangle.
+    Unlike §5.0a, its proof requires neither concavity nor integral tails. -/
+theorem curvature_head8_gt_six_over_49 (x z : ℝ)
+    (hx : 0 < x) (hx1 : x ≤ 1 / 4)
+    (hz0 : 9 ≤ z) (hz1 : z ≤ 10) :
+    (6 / 49 : ℝ) < curvatureHead8 x z := by
+  have ha0 : 0 ≤ x := hx.le
+  have hb0 : 0 ≤ (1 / 2 : ℝ) - x := by linarith
+  have ha1 : x ≤ 1 / 2 := by linarith
+  have hb1 : (1 / 2 : ℝ) - x ≤ 1 / 2 := by linarith
+  have h0 : (1 / 42 : ℝ) ≤ q x z + q ((1 / 2 : ℝ) - x) z := by
+    have h₁ := q_small_lower_one_over_21 x z ha0 ha1 hz0 hz1
+    have h₂ := q_small_lower_one_over_21 ((1 / 2 : ℝ) - x) z hb0 hb1 hz0 hz1
+    linarith
+  have h1 (u : ℝ) (hl : (1 : ℝ) ≤ u) (hh : u ≤ (3 / 2 : ℝ)) :
+      (1 / 38 : ℝ) ≤ q u z := by
+    exact (show (1 / 38 : ℝ) ≤ (2 * (1 : ℝ) * (27 - (3 / 2 : ℝ) ^ 2)) / ((3 / 2 : ℝ) ^ 2 + 10) ^ 3 from by norm_num).trans
+      (q_bin_positive_lower 1 (3 / 2) u z (by norm_num) hl hh hz0 hz1 (by norm_num))
+  have h1a := h1 ((1 : ℝ) + x) (by linarith) (by linarith)
+  have h1b := h1 ((1 : ℝ) + ((1 / 2 : ℝ) - x)) (by linarith) (by linarith)
+  have h2 (u : ℝ) (hl : (2 : ℝ) ≤ u) (hh : u ≤ (5 / 2 : ℝ)) :
+      (1 / 53 : ℝ) ≤ q u z := by
+    exact (show (1 / 53 : ℝ) ≤ (2 * (2 : ℝ) * (27 - (5 / 2 : ℝ) ^ 2)) / ((5 / 2 : ℝ) ^ 2 + 10) ^ 3 from by norm_num).trans
+      (q_bin_positive_lower 2 (5 / 2) u z (by norm_num) hl hh hz0 hz1 (by norm_num))
+  have h2a := h2 ((2 : ℝ) + x) (by linarith) (by linarith)
+  have h2b := h2 ((2 : ℝ) + ((1 / 2 : ℝ) - x)) (by linarith) (by linarith)
+  have h3 (u : ℝ) (hl : (3 : ℝ) ≤ u) (hh : u ≤ (7 / 2 : ℝ)) :
+      (1 / 125 : ℝ) ≤ q u z := by
+    exact (show (1 / 125 : ℝ) ≤ (2 * (3 : ℝ) * (27 - (7 / 2 : ℝ) ^ 2)) / ((7 / 2 : ℝ) ^ 2 + 10) ^ 3 from by norm_num).trans
+      (q_bin_positive_lower 3 (7 / 2) u z (by norm_num) hl hh hz0 hz1 (by norm_num))
+  have h3a := h3 ((3 : ℝ) + x) (by linarith) (by linarith)
+  have h3b := h3 ((3 : ℝ) + ((1 / 2 : ℝ) - x)) (by linarith) (by linarith)
+  have h4 (u : ℝ) (hl : (4 : ℝ) ≤ u) (hh : u ≤ (9 / 2 : ℝ)) :
+      (1 / 520 : ℝ) ≤ q u z := by
+    exact (show (1 / 520 : ℝ) ≤ (2 * (4 : ℝ) * (27 - (9 / 2 : ℝ) ^ 2)) / ((9 / 2 : ℝ) ^ 2 + 10) ^ 3 from by norm_num).trans
+      (q_bin_positive_lower 4 (9 / 2) u z (by norm_num) hl hh hz0 hz1 (by norm_num))
+  have h4a := h4 ((4 : ℝ) + x) (by linarith) (by linarith)
+  have h4b := h4 ((4 : ℝ) + ((1 / 2 : ℝ) - x)) (by linarith) (by linarith)
+  have h5 (u : ℝ) (hl : (5 : ℝ) ≤ u) (hh : u ≤ (11 / 2 : ℝ)) :
+      (- (1 / 1000) : ℝ) ≤ q u z := by
+    exact (show (- (1 / 1000) : ℝ) ≤ (2 * (11 / 2 : ℝ) * (27 - (11 / 2 : ℝ) ^ 2)) / ((5 : ℝ) ^ 2 + 9) ^ 3 from by norm_num).trans
+      (q_bin_negative_lower 5 (11 / 2) u z (by norm_num) hl hh hz0 hz1 (by norm_num))
+  have h5a := h5 ((5 : ℝ) + x) (by linarith) (by linarith)
+  have h5b := h5 ((5 : ℝ) + ((1 / 2 : ℝ) - x)) (by linarith) (by linarith)
+  have h6 (u : ℝ) (hl : (6 : ℝ) ≤ u) (hh : u ≤ (13 / 2 : ℝ)) :
+      (- (1 / 450) : ℝ) ≤ q u z := by
+    exact (show (- (1 / 450) : ℝ) ≤ (2 * (13 / 2 : ℝ) * (27 - (13 / 2 : ℝ) ^ 2)) / ((6 : ℝ) ^ 2 + 9) ^ 3 from by norm_num).trans
+      (q_bin_negative_lower 6 (13 / 2) u z (by norm_num) hl hh hz0 hz1 (by norm_num))
+  have h6a := h6 ((6 : ℝ) + x) (by linarith) (by linarith)
+  have h6b := h6 ((6 : ℝ) + ((1 / 2 : ℝ) - x)) (by linarith) (by linarith)
+  have h7 (u : ℝ) (hl : (7 : ℝ) ≤ u) (hh : u ≤ (15 / 2 : ℝ)) :
+      (- (1 / 440) : ℝ) ≤ q u z := by
+    exact (show (- (1 / 440) : ℝ) ≤ (2 * (15 / 2 : ℝ) * (27 - (15 / 2 : ℝ) ^ 2)) / ((7 : ℝ) ^ 2 + 9) ^ 3 from by norm_num).trans
+      (q_bin_negative_lower 7 (15 / 2) u z (by norm_num) hl hh hz0 hz1 (by norm_num))
+  have h7a := h7 ((7 : ℝ) + x) (by linarith) (by linarith)
+  have h7b := h7 ((7 : ℝ) + ((1 / 2 : ℝ) - x)) (by linarith) (by linarith)
+  have hconst : (6 / 49 : ℝ) <
+      (1 / 42 : ℝ) + 2 * ((1 / 38 : ℝ) + (1 / 53 : ℝ) +
+        (1 / 125 : ℝ) + (1 / 520 : ℝ) - (1 / 1000 : ℝ) -
+        (1 / 450 : ℝ) - (1 / 440 : ℝ)) := by norm_num
+  unfold curvatureHead8
+  simp only [Finset.sum_range_succ, Finset.sum_range_zero,
+    Nat.cast_ofNat, Nat.cast_zero, zero_add, zero_mul, add_zero]
+  linarith
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -2063,3 +2220,9 @@ end H50
 #print axioms H50.curvature_q_tail8_summable
 #print axioms H50.curvature_q_tail8_tsum_lower
 #print axioms H50.curvature_q_two_tail8_lower
+
+#print axioms H50.q_bin_positive_lower
+#print axioms H50.q_bin_negative_lower
+#print axioms H50.q_small_lower_one_over_21
+
+#print axioms H50.curvature_head8_gt_six_over_49
