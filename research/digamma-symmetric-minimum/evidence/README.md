@@ -531,3 +531,21 @@ The telescope is the same accepted rational cubic bound from P19, independent of
 - [Original compiler and axiom diagnostics](lean-h50-finite-cubic-tail8-41070660843.txt), SHA256 `e203abe0aa9093a27db834d5db628a224d05229a8f10948b5a3f0eaee40452e1`.
 
 **BLOCKED, NOT KERNEL VERIFIED:** PR #131 merged at `70b91715afb35e0ca9877b9114312d0ea68b7cd7` and has native/hosted QA PASS, but the three new lemmas about the actual *infinite* q-tail `>=-3/49` and two tails `>=-6/49` have NOT run in the pinned Lean calculator: two GitHub Actions workflow dispatch attempts returned HTTP 500 and no run was created. The mere presence of candidate code on main does not imply acceptance. Strict positivity of the 15-term finite head above `6/49` on the entire rectangle remains unproved. H50 minimum, special mu-zero existence, and novelty are UNKNOWN/NOT PROVED.
+
+## H50-P26: accepted infinite cubic curvature tail — Lean 41072638803
+
+The pinned [Lean run 41072638803](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41072638803) accepted all THREE declarations `curvature_q_tail8_summable`, `curvature_q_tail8_tsum_lower`, and `curvature_q_two_tail8_lower`. For all nonnegative a,b,z the actual source q infinite series obeys
+
+```text
+sum_{n=8}^infty q(n+a,z) >= -3/49,
+sum_{n=8}^infty [q(n+a,z)+q(n+b,z)] >= -6/49.
+```
+
+The source exact theorem uses P26 finite cutoff, P19 cubic majorant summability, Mathlib `Summable.tendsto_sum_tsum_nat` and the correct lower limit lemma `ge_of_tendsto`. The first pinned run 41072087640 was `LEAN_REJECTED` because `le_of_tendsto` gives an UPPER limit estimate, and PR #133 corrected one tactic only; theorem statements and assumptions unchanged. GitHub Actions earlier returned transient HTTP 500 on workflow dispatch, but later recovered; historic BLOCKED status is superseded by the accepted run.
+
+- Accepted original Zeta23 `anthropics/formal-math@fbdc36bbf17d20af3fd0447c6d1a8a02773c9844`, pinned Lean 4.33.0-rc2, accepted main `74df7fd803973f3197db0a04150ed7db44e29c4c`, exact probe SHA256 `472f7f18eb5ac4458f261633a5b35639b99e70807fb3efdac21403dac534056a`.
+- [Original raw JSON](lean-h50-infinite-cubic-tail8-41072638803.json), SHA256 `fca3d4a73d9f1851a59f7c7f4c001d6d11a67ae9f317fdf10ba365c2369e369d`.
+- [Original compiler/axiom trace](lean-h50-infinite-cubic-tail8-41072638803.txt), SHA256 `bad819058a60dd024d72fde3f1ab9614f7ca04d148728fc5b6b62dfa63eb9fbe`.
+- `PASS/ELABORATES/exit0`; all three theorem axiom inventories `[propext, Classical.choice, Quot.sound]`, **NO sorryAx**.
+
+**Open mathematical seam:** formally split P25's original symmetric H'' into 15 rational q head terms plus the two tails, prove the finite head exceeds `6/49` uniformly on `z∈[(157/50)^2,(63/20)^2]` and `0<x<=1/4`. The infinite bound alone cannot prove positive H'' or H50 minimum. The existence of a nonnegative μ zero and scientific novelty remain UNKNOWN.
