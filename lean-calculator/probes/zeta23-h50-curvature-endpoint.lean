@@ -1251,35 +1251,50 @@ theorem rational_f_hasDerivAt_r (u z : ℝ) (hz : 0 < z) :
     HasDerivAt (fun t : ℝ => t / (t ^ 2 + z)) (r u z) u := by
   have hden : u ^ 2 + z ≠ 0 := ne_of_gt (by positivity : 0 < u ^ 2 + z)
   have hnum : HasDerivAt (fun t : ℝ => t) 1 u := by
-    simpa using hasDerivAt_id u
+    exact hasDerivAt_id u
+  have hpow : HasDerivAt (fun t : ℝ => t ^ 2) (2 * u) u := by
+    simpa only [id_eq, Nat.reduceSub, pow_one, mul_one, one_mul] using
+      ((hasDerivAt_id u).pow 2)
   have hdenDeriv : HasDerivAt (fun t : ℝ => t ^ 2 + z) (2 * u) u := by
-    convert ((hasDerivAt_id u).pow 2).add_const z using 1 <;> ring
-  have hquot := hnum.div hdenDeriv hden
-  convert hquot using 1
-  · ext t
-    rfl
-  · simp only [r]
-    field_simp
+    simpa only [Pi.add_apply] using hpow.add_const z
+  have hquot : HasDerivAt (fun t : ℝ => t / (t ^ 2 + z))
+      ((u ^ 2 + z - u * (2 * u)) / (u ^ 2 + z) ^ 2) u := by
+    simpa only [Pi.div_apply, one_mul] using hnum.div hdenDeriv hden
+  have hEq : (u ^ 2 + z - u * (2 * u)) / (u ^ 2 + z) ^ 2 = r u z := by
+    unfold r
+    congr 1
     ring
+  rw [hEq] at hquot
+  exact hquot
 
 /-- The second rational source derivative is exactly negative q(u,z). -/
 theorem rational_r_hasDerivAt_neg_q (u z : ℝ) (hz : 0 < z) :
     HasDerivAt (fun t : ℝ => r t z) (-q u z) u := by
   have hden : u ^ 2 + z ≠ 0 := ne_of_gt (by positivity : 0 < u ^ 2 + z)
+  have hpow : HasDerivAt (fun t : ℝ => t ^ 2) (2 * u) u := by
+    simpa only [id_eq, Nat.reduceSub, pow_one, mul_one, one_mul] using
+      ((hasDerivAt_id u).pow 2)
   have hnum : HasDerivAt (fun t : ℝ => z - t ^ 2) (-2 * u) u := by
-    convert ((hasDerivAt_id u).pow 2).const_sub z using 1 <;> ring
+    simpa only [Pi.sub_apply] using hpow.const_sub z
   have hbase : HasDerivAt (fun t : ℝ => t ^ 2 + z) (2 * u) u := by
-    convert ((hasDerivAt_id u).pow 2).add_const z using 1 <;> ring
+    simpa only [Pi.add_apply] using hpow.add_const z
   have hdenDeriv : HasDerivAt (fun t : ℝ => (t ^ 2 + z) ^ 2)
       (2 * (u ^ 2 + z) * (2 * u)) u := by
-    convert hbase.pow 2 using 1 <;> ring
-  have hquot := hnum.div hdenDeriv (pow_ne_zero 2 hden)
-  convert hquot using 1
-  · ext t
-    simp only [r]
-  · simp only [q]
-    field_simp
+    simpa only [Nat.reduceSub, pow_one, mul_one] using hbase.pow 2
+  have hquot : HasDerivAt (fun t : ℝ => (z - t ^ 2) / (t ^ 2 + z) ^ 2)
+      ((-2 * u * (u ^ 2 + z) ^ 2 -
+          (z - u ^ 2) * (2 * (u ^ 2 + z) * (2 * u))) /
+            ((u ^ 2 + z) ^ 2) ^ 2) u := by
+    simpa only [Pi.div_apply] using hnum.div hdenDeriv (pow_ne_zero 2 hden)
+  have hEq : ((-2 * u * (u ^ 2 + z) ^ 2 -
+          (z - u ^ 2) * (2 * (u ^ 2 + z) * (2 * u))) /
+            ((u ^ 2 + z) ^ 2) ^ 2) = -q u z := by
+    unfold q
+    field_simp [hden]
     ring
+  rw [hEq] at hquot
+  change HasDerivAt (fun t : ℝ => r t z) (-q u z) u at hquot
+  exact hquot
 
 /-- The pointwise second derivative of u/(u²+z) is -q(u,z).
     This is not yet the derivative of the *infinite digamma series*. -/
