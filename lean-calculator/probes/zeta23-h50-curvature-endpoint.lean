@@ -2206,6 +2206,37 @@ theorem symmetric_real_digamma_midpoint_eq_two_log_pi (tau : ℝ)
   rw [hvalue]
   ring
 
+
+/-- H50, conditional on any actual NONNEGATIVE zero of the original Zeta23 μ.
+    This statement refers directly to the original Complex.digamma, and
+    does not postulate existence of that zero or any RH consequence. -/
+theorem symmetric_digamma_H50_of_nonnegative_mu_zero (tau x : ℝ)
+    (htau : 0 ≤ tau) (hzero : Zeta23.mu tau = 0)
+    (hx : 0 < x) (hx1 : x ≤ 1 / 4) :
+    2 * Real.log Real.pi ≤
+      (Complex.digamma ((x : ℂ) + Complex.I * ((tau / 2 : ℝ) : ℂ))).re +
+      (Complex.digamma ((((1 / 2 : ℝ) - x : ℝ) : ℂ) +
+        Complex.I * ((tau / 2 : ℝ) : ℂ))).re := by
+  obtain ⟨hylo, hyhi⟩ :=
+    nonnegative_mu_zero_in_corridor_unconditional tau htau hzero
+  have hy0 : (0 : ℝ) ≤ tau / 2 := by linarith
+  have hlo : 0 ≤ ((tau / 2) - 3) * ((tau / 2) + 3) := by
+    apply mul_nonneg <;> linarith
+  have hzlo : (9 : ℝ) ≤ (tau / 2) ^ 2 := by nlinarith
+  have hhi : 0 ≤ ((63 / 20 : ℝ) - tau / 2) *
+      ((63 / 20 : ℝ) + tau / 2) := by
+    apply mul_nonneg <;> linarith
+  have hzhi : (tau / 2) ^ 2 ≤ (10 : ℝ) := by nlinarith
+  have hmin := symmetric_real_digamma_midpoint_minimum
+    x ((tau / 2) ^ 2) hx hx1 hzlo hzhi
+  have hmid := symmetric_real_digamma_midpoint_eq_two_log_pi tau htau hzero
+  have hresult : 2 * Real.log Real.pi ≤
+      sourceSymmetricRealDigamma ((tau / 2) ^ 2) x := by
+    linarith
+  have hsqrt : Real.sqrt ((tau / 2) ^ 2) = tau / 2 := Real.sqrt_sq hy0
+  simpa only [sourceSymmetricRealDigamma, sourceRealDigammaVertical,
+    hsqrt] using hresult
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -2356,3 +2387,5 @@ end H50
 #print axioms H50.symmetric_real_digamma_deriv_midpoint_zero
 #print axioms H50.symmetric_real_digamma_midpoint_minimum
 #print axioms H50.symmetric_real_digamma_midpoint_eq_two_log_pi
+
+#print axioms H50.symmetric_digamma_H50_of_nonnegative_mu_zero
