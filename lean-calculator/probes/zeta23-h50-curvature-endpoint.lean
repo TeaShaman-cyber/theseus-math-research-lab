@@ -1517,7 +1517,7 @@ theorem curvature_square_majorant_summable :
     Summable (fun n : ℕ => (1 : ℝ) / (((n : ℝ) + 1) ^ 2)) := by
   have hs : Summable (fun n : ℕ => (1 : ℝ) / ((n : ℝ) ^ 2)) :=
     Real.summable_one_div_nat_pow.mpr (by norm_num)
-  simpa only [Nat.cast_add, Nat.cast_one] using hs.nat_add 1
+  simpa only [Nat.cast_add, Nat.cast_one] using (summable_nat_add_iff 1).2 hs
 
 /-- One canonical digamma source summand is differentiable in abscissa. -/
 theorem digamma_source_term_hasDerivAt (n : ℕ) (a z : ℝ) (hz : 0 < z) :
