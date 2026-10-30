@@ -1947,7 +1947,6 @@ theorem q_bin_positive_lower (l h u z : ℝ)
       _ ≤ 2 * u * (3 * z - u ^ 2) := by gcongr
   have hden : (u ^ 2 + z) ^ 3 ≤ (h ^ 2 + 10) ^ 3 := by
     gcongr
-    nlinarith
   have hd0 : 0 < (h ^ 2 + 10) ^ 3 := by positivity
   have hd1 : 0 < (u ^ 2 + z) ^ 3 := by positivity
   have hc : 0 ≤ 2 * l * (27 - h ^ 2) := by positivity
@@ -1981,7 +1980,6 @@ theorem q_bin_negative_lower (l h u z : ℝ)
       _ ≤ 2 * u * (3 * z - u ^ 2) := by gcongr
   have hden : (l ^ 2 + 9) ^ 3 ≤ (u ^ 2 + z) ^ 3 := by
     gcongr
-    nlinarith
   have hd0 : 0 < (l ^ 2 + 9) ^ 3 := by positivity
   have hd1 : 0 < (u ^ 2 + z) ^ 3 := by positivity
   have hc : 2 * h * (27 - h ^ 2) ≤ 0 := by
