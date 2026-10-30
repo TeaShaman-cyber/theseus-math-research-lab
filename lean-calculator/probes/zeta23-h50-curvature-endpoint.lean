@@ -1605,6 +1605,62 @@ theorem curvature_source_neg_r_tsum_hasDerivAt_q (a z : ℝ)
         curvature_source_q_abs_le_majorant n t z (le_of_lt ht) hz.le)
     (by norm_num : (1 / 4 : ℝ) ∈ Set.Ioi 0) h0 ha
 
+
+/-! H50-P23: assemble the full original real digamma source formula,
+including its standalone rational term and Euler constant. -/
+
+/-- The exact real digamma vertical formula before composing its
+    derivative with the symmetric H_y expression. -/
+def sourceDigammaFormula (z : ℝ) (a : ℝ) : ℝ :=
+  -Real.eulerMascheroniConstant - a / (a ^ 2 + z) +
+    ∑' n : ℕ, digammaTerm ((n : ℝ) + 1) a z
+
+/-- The exact Zeta23 source theorem identifies this function with the
+    real part of complex digamma for 0<a<1 and positive squared height. -/
+theorem sourceDigammaFormula_eq_real_digamma (a z : ℝ)
+    (ha : 0 < a) (ha1 : a < 1) (hz : 0 < z) :
+    sourceDigammaFormula z a =
+      (Complex.digamma ((a : ℂ) + Complex.I * (Real.sqrt z : ℂ))).re := by
+  have hs := Zeta23.MuFields.re_digamma_vertical ha ha1 (Real.sqrt z)
+  rw [Real.sq_sqrt hz.le] at hs
+  simpa only [sourceDigammaFormula, digammaTerm] using hs.symm
+
+/-- First derivative of the full exact source expression, including the
+    isolated rational term -a/(a²+z). -/
+theorem sourceDigammaFormula_hasDerivAt_first (a z : ℝ)
+    (ha : 0 < a) (hz : 0 < z) :
+    HasDerivAt (sourceDigammaFormula z)
+      (-r a z + ∑' n : ℕ, -r (((n : ℝ) + 1) + a) z) a := by
+  have hc : HasDerivAt (fun _ : ℝ => -Real.eulerMascheroniConstant) 0 a :=
+    hasDerivAt_const a _
+  have hhead := (rational_f_hasDerivAt_r a z hz)
+  have htail := digamma_source_tsum_hasDerivAt_first a z ha hz
+  simpa only [sourceDigammaFormula, zero_sub] using (hc.sub hhead).add htail
+
+/-- The explicit first-derivative source expression has derivative
+    the full exact q-series, including the isolated rational head q(a,z). -/
+theorem sourceDigammaFirst_hasDerivAt_second (a z : ℝ)
+    (ha : 0 < a) (hz : 0 < z) :
+    HasDerivAt
+      (fun t : ℝ => -r t z + ∑' n : ℕ, -r (((n : ℝ) + 1) + t) z)
+      (q a z + ∑' n : ℕ, q (((n : ℝ) + 1) + a) z) a := by
+  have hhead := (rational_r_hasDerivAt_neg_q a z hz).neg
+  have htail := curvature_source_neg_r_tsum_hasDerivAt_q a z ha hz
+  simpa only [neg_neg] using hhead.add htail
+
+/-- Two derivatives of the full canonical digamma source expression,
+    in the original abscissa parameter, are exactly the q head plus q-series. -/
+theorem sourceDigammaFormula_hasSecondDeriv (a z : ℝ)
+    (ha : 0 < a) (hz : 0 < z) :
+    HasDerivAt (fun t : ℝ => deriv (sourceDigammaFormula z) t)
+      (q a z + ∑' n : ℕ, q (((n : ℝ) + 1) + a) z) a := by
+  have hneigh : (fun t : ℝ => deriv (sourceDigammaFormula z) t) =ᶠ[nhds a]
+      (fun t : ℝ => -r t z + ∑' n : ℕ, -r (((n : ℝ) + 1) + t) z) := by
+    filter_upwards [isOpen_Ioi.mem_nhds ha] with t ht
+    exact (sourceDigammaFormula_hasDerivAt_first t z ht hz).deriv
+  exact (sourceDigammaFirst_hasDerivAt_second a z ha hz).congr_of_eventuallyEq
+    hneigh.symm
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -1722,3 +1778,8 @@ end H50
 
 #print axioms H50.curvature_source_neg_r_hasDerivAt_q
 #print axioms H50.curvature_source_neg_r_tsum_hasDerivAt_q
+
+#print axioms H50.sourceDigammaFormula_eq_real_digamma
+#print axioms H50.sourceDigammaFormula_hasDerivAt_first
+#print axioms H50.sourceDigammaFirst_hasDerivAt_second
+#print axioms H50.sourceDigammaFormula_hasSecondDeriv
