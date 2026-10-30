@@ -515,3 +515,19 @@ Both applications of the chain rule were formalized, including the sign cancella
 - `PASS / ELABORATES / exit0`, all four theorem axiom lists only `[propext, Classical.choice, Quot.sound]`, **NO sorryAx**.
 
 **Next proof gate:** prove the exact combined q head+tail expression strictly positive for the distinguished ordinate corridor throughout the required abscissa domain using the finite-head/integral-tail estimates. This theorem does NOT prove curvature positivity, H50 global minimum, mu-zero existence or scientific novelty.
+
+## H50-P26: conservative finite curvature-tail bound — Lean 41070660843
+
+The pinned [Lean run 41070660843](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41070660843) accepted THREE finite-tail theorems: `curvature_cubic_tail8_partial_le_three_over_49`, `curvature_source_q_tail8_abs_majorant`, and `curvature_q_tail8_finite_lower`. For any k∈ℕ and a,z≥0:
+
+```text
+sum_{n<k} 6/(n+8)^3 <= 3/49
+sum_{n<k} q(n+8+a,z) >= -3/49.
+```
+
+The telescope is the same accepted rational cubic bound from P19, independent of any integral comparison. P26 finite accepted main `f5e1dadf279833ae39789b6d2dc1a2ae7a3078c4`, exact probe SHA256 `55078afb72de6bb5b2949552bfc0ebf79cbcc7c657478642ea9e3027a82c58df`, pinned Zeta23 `fbdc36bbf17d20af3fd0447c6d1a8a02773c9844`, Lean 4.33.0-rc2, `PASS/ELABORATES/exit0`, all new axioms `[propext, Classical.choice, Quot.sound]`, **NO sorryAx**.
+
+- [Original JSON](lean-h50-finite-cubic-tail8-41070660843.json), SHA256 `8535926b36c50ce8e20a59dbc5432bf70c0650b52db10e2c5e045ab3d46f539f`.
+- [Original compiler and axiom diagnostics](lean-h50-finite-cubic-tail8-41070660843.txt), SHA256 `e203abe0aa9093a27db834d5db628a224d05229a8f10948b5a3f0eaee40452e1`.
+
+**BLOCKED, NOT KERNEL VERIFIED:** PR #131 merged at `70b91715afb35e0ca9877b9114312d0ea68b7cd7` and has native/hosted QA PASS, but the three new lemmas about the actual *infinite* q-tail `>=-3/49` and two tails `>=-6/49` have NOT run in the pinned Lean calculator: two GitHub Actions workflow dispatch attempts returned HTTP 500 and no run was created. The mere presence of candidate code on main does not imply acceptance. Strict positivity of the 15-term finite head above `6/49` on the entire rectangle remains unproved. H50 minimum, special mu-zero existence, and novelty are UNKNOWN/NOT PROVED.

@@ -1,0 +1,181 @@
+Lean (version 4.33.0-rc2, x86_64-unknown-linux-gnu, commit d8b18978322de05a8f3dba51ef03cf5461676c17, Release)
+.theseus-lean-calculator-probe.lean:63:5: warning: Variable name `ht0` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ht0
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+.theseus-lean-calculator-probe.lean:70:5: warning: Variable name `ht0` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ht0
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+.theseus-lean-calculator-probe.lean:154:62: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+.theseus-lean-calculator-probe.lean:158:61: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+.theseus-lean-calculator-probe.lean:257:15: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+.theseus-lean-calculator-probe.lean:268:15: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+.theseus-lean-calculator-probe.lean:307:43: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+.theseus-lean-calculator-probe.lean:434:23: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+.theseus-lean-calculator-probe.lean:532:46: warning: This simp argument is unused:
+  Nat.add_assoc
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [sourceFiniteBlock, Nat.zero_add] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+.theseus-lean-calculator-probe.lean:813:43: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+.theseus-lean-calculator-probe.lean:915:30: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+.theseus-lean-calculator-probe.lean:982:64: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+.theseus-lean-calculator-probe.lean:1094:54: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+.theseus-lean-calculator-probe.lean:1108:38: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+'H50.lowerBound_upper_endpoint_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.lowerBound_upper_endpoint_gt_lipschitz_loss' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.tiny_first_poly_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.small_second_poly_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.middle_first_poly_neg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.tail_first_poly_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.nonnegative_mu_zero_in_corridor' depends on axioms: [propext, Classical.choice, Quot.sound]
+Real.eulerMascheroniSeq_lt_eulerMascheroniConstant (n : ℕ) : Real.eulerMascheroniSeq n < Real.eulerMascheroniConstant
+Real.eulerMascheroniConstant_lt_eulerMascheroniSeq' (n : ℕ) : Real.eulerMascheroniConstant < Real.eulerMascheroniSeq' n
+Real.pi_gt_d20 : 3.14159265358979323846 < Real.pi
+Real.pi_lt_d20 : Real.pi < 3.14159265358979323847
+'H50.mu_twice_ordinate_identity' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.nonnegative_mu_zero_in_corridor_of_digamma_signs' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_term_decompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_term_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_term_le_majorant' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_source_term_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_source_term_le_majorant' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.recip_sq_le_telescoping' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.recip_cube_le_telescoping' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_term_le_telescoping' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_source_finite_tail_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_source_tail_summable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_source_infinite_tail_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_source_prefix_tail_split' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_left_sign_of_finite_bounds' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_right_sign_of_finite_bounds' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_prefix_eight_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_prefix_eight_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.source_finite_block_split' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_second_eight_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_second_eight_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.source_prefix_split_eight_eight' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_prefix_sixteen_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_prefix_sixteen_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_third_eight_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_third_eight_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_fourth_eight_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_fourth_eight_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.source_prefix_split_sixteen_eight_eight' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_prefix_thirtytwo_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_prefix_thirtytwo_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_fifth_eight_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_fifth_eight_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_sixth_eight_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_sixth_eight_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_seventh_eight_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_seventh_eight_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_eighth_eight_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_eighth_eight_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.source_prefix_split_thirtytwo_four_eights' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_prefix_sixtyfour_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.finite_source_prefix_sixtyfour_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.source_tail64_finite_upper' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.source_tail64_summable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.source_tail64_infinite_upper' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_term_ge_telescoping_base' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.source_tail64_base_lower' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.source_tail64_first8_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.source_tail64_infinite_right_lower' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.source_prefix64_tail_split' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_left_sign64_of_constants' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_right_sign64_of_constants' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.log_pi_lower_short' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.log_pi_upper_short' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_left_sign64_of_gamma_only' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_right_sign64_of_gamma_only' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.harmonic1024_rational_interval' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.log1024_eq_ten_logtwo' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.gamma_lower_from_h1024' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.gamma_upper_from_h1024' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.gamma_original_interval' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_left_sign64_unconditional' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_right_sign64_unconditional' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.nonnegative_mu_zero_in_corridor_unconditional' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.rational_f_hasDerivAt_r' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.rational_r_hasDerivAt_neg_q' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.rational_f_second_derivative_eq_neg_q' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.rational_r_abs_le_recip_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.rational_q_abs_le_six_recip_cube' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.curvature_source_q_abs_le_majorant' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.curvature_cubic_shifted_partial_le_three' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.curvature_cubic_partial_le_nine' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.curvature_cubic_majorant_summable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.curvature_source_q_abs_summable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.curvature_q_series_uniform_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.curvature_source_r_abs_le_majorant' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.curvature_square_majorant_summable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_source_term_hasDerivAt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.digamma_source_tsum_hasDerivAt_first' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.curvature_source_neg_r_hasDerivAt_q' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.curvature_source_neg_r_tsum_hasDerivAt_q' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.sourceDigammaFormula_eq_real_digamma' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.sourceDigammaFormula_hasDerivAt_first' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.sourceDigammaFirst_hasDerivAt_second' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.sourceDigammaFormula_hasSecondDeriv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.real_digamma_vertical_hasSecondDeriv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.real_digamma_vertical_hasDerivAt_first' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.symmetric_real_digamma_hasDerivAt_first' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.symmetric_real_digamma_first_hasDerivAt_second' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.symmetric_real_digamma_hasSecondDeriv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.curvature_cubic_tail8_partial_le_three_over_49' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.curvature_source_q_tail8_abs_majorant' depends on axioms: [propext, Classical.choice, Quot.sound]
+'H50.curvature_q_tail8_finite_lower' depends on axioms: [propext, Classical.choice, Quot.sound]

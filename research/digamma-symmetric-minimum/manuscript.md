@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.24, 2026-10-30.**
+**WORKING MATHEMATICAL DRAFT — v0.25, 2026-10-30.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -87,6 +87,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Complete original digamma source formula, standalone rational head, and exact second source derivative | [Lean P23 receipt](evidence/lean-h50-full-source-second-41050325732.json) | **LEAN_ACCEPTED_FULL_SOURCE_FORMULA_SECOND_DERIVATIVE**; derivative transfer verified in P24; symmetric `H_y` and global inequality still pending |
 | Direct second derivative of `Re digamma(a+i sqrt z)` for `0<a<1,z>0` | [Lean P24 receipt](evidence/lean-h50-real-digamma-41052957695.json) | **LEAN_ACCEPTED_ORIGINAL_REAL_DIGAMMA_CURVATURE**; symmetric `H_y` identity accepted in P25; strict positivity pending |
 | Original symmetric digamma H second derivative identity on `0<x<1/2,z>0` | [Lean P25 receipt](evidence/lean-h50-symmetric-second-41053665168.json) | **LEAN_ACCEPTED_SYMMETRIC_CURVATURE_IDENTITY**; strict positivity and global H50 still unproved |
+| Conservative finite q-tail from index 8, uniform in shifts a,z≥0 | [Lean P26 finite receipt](evidence/lean-h50-finite-cubic-tail8-41070660843.json) | **LEAN_ACCEPTED_FINITE_TAIL_BOUND** `-3/49`; infinite tsum theorem on current main **BLOCKED** by Actions HTTP 500, not accepted |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -688,6 +689,19 @@ The script's correctness and the preservation of its assumptions
 must not be replaced by a bare GREEN CI status. The mathematical
 proof obligation is to compose the rational inequality, finite
 head/tail bounds, and §3 in a verifiable common context.
+
+### 5.2 Alternative conservative cubic tail — partial formal proof (H50-P26)
+
+A simpler tail bound may eliminate the integral comparison in §5.0a. Already-accepted P19 source-independent estimates imply, for every finite k and a,z≥0,
+
+```text
+sum_{n=8}^{7+k} 6/n³ <= 3/49,
+sum_{n=8}^{7+k} q(n+a,z) >= -3/49.
+```
+
+These two **finite** inequalities, plus the original shifted pointwise bound, are kernel accepted by [Lean run 41070660843](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41070660843). The two original H-curvature tails would therefore contribute at worst `-6/49`, provided the finite-to-infinite limit is justified. This is weaker than §5.0a's integral-tail estimate but may allow a much shorter proof if the 15-term finite head can be uniformly bounded below by a value strictly exceeding `6/49`.
+
+**Formal boundary:** The subsequent infinite-tail lemmas are present on main via PR #131, but source-pinned Lean acceptance is **BLOCKED** because GitHub Actions returned HTTP 500 and no run was created. The finite head inequality and final H'' positivity are also unproved in Lean. No H50 conclusion follows yet from this subsection. [Original finite-tail receipts](evidence/lean-h50-finite-cubic-tail8-41070660843.json) are archived unchanged.
 
 ## 6. Conditional conclusion and remaining obligations
 
