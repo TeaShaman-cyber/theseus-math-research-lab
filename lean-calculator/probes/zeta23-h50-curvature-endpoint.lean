@@ -1324,7 +1324,7 @@ theorem rational_r_abs_le_recip_sq (u z : ℝ) (hu : 0 < u) (hz : 0 ≤ z) :
   calc
     |r u z| = |z - u ^ 2| / (u ^ 2 + z) ^ 2 := hf
     _ ≤ (u ^ 2 + z) / (u ^ 2 + z) ^ 2 := by gcongr
-    _ = 1 / (u ^ 2 + z) := by field_simp [ne_of_gt hd]; ring
+    _ = 1 / (u ^ 2 + z) := by field_simp [ne_of_gt hd]
     _ ≤ 1 / u ^ 2 := by
       apply (div_le_div_iff₀ hd (pow_pos hu 2)).2
       nlinarith
@@ -1358,7 +1358,13 @@ theorem curvature_source_q_abs_le_majorant (n : ℕ) (a z : ℝ)
   have hm : 0 < (n : ℝ) + 1 := by positivity
   have hu : 0 < ((n : ℝ) + 1) + a := by linarith
   have hle : ((n : ℝ) + 1) ^ 3 ≤ (((n : ℝ) + 1) + a) ^ 3 := by
-    gcongr
+    have hbase : 0 ≤ (n : ℝ) + 1 := by positivity
+    have h1 : 0 ≤ ((n : ℝ) + 1) ^ 2 * a :=
+      mul_nonneg (sq_nonneg _) ha
+    have h2 : 0 ≤ ((n : ℝ) + 1) * a ^ 2 :=
+      mul_nonneg hbase (sq_nonneg a)
+    have h3 : 0 ≤ a ^ 3 := pow_nonneg ha 3
+    nlinarith [h1, h2, h3]
   have hdiv : 6 / ((((n : ℝ) + 1) + a) ^ 3) ≤
       6 / (((n : ℝ) + 1) ^ 3) := by
     apply (div_le_div_iff₀ (pow_pos hu 3) (pow_pos hm 3)).2
