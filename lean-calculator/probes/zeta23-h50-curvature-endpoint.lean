@@ -1818,6 +1818,88 @@ theorem symmetric_real_digamma_hasSecondDeriv (x z : ℝ)
   exact (symmetric_real_digamma_first_hasDerivAt_second x z hx hxhalf hz).congr_of_eventuallyEq
     hneigh
 
+
+/-! H50-P26: a conservative *elementary cubic* bound on the original
+    curvature series tail from index 8. It avoids integral-test machinery;
+    its weaker constant must still be absorbed by the finite head. -/
+
+/-- The absolute 6/n³ envelope from n=8 has a finite uniform bound
+    3/49, by the same rational cubic telescope accepted in P19. -/
+theorem curvature_cubic_tail8_partial_le_three_over_49 (k : ℕ) :
+    (∑ n ∈ Finset.range k, (6 : ℝ) / (((n : ℝ) + 8) ^ 3)) ≤ 3 / 49 := by
+  let pot : ℕ → ℝ := fun n => (3 : ℝ) / (((n : ℝ) + 7) ^ 2)
+  have hstrong : ∀ j : ℕ,
+      (∑ n ∈ Finset.range j, (6 : ℝ) / (((n : ℝ) + 8) ^ 3)) +
+        pot j ≤ pot 0 := by
+    intro j
+    induction j with
+    | zero => simp
+    | succ j ih =>
+      rw [Finset.sum_range_succ]
+      have hm : (2 : ℝ) ≤ (j : ℝ) + 8 := by
+        have hj : (0 : ℝ) ≤ j := Nat.cast_nonneg j
+        linarith
+      have htel := mul_le_mul_of_nonneg_left
+        (recip_cube_le_telescoping ((j : ℝ) + 8) hm)
+        (by norm_num : (0 : ℝ) ≤ 6)
+      have hstep : (6 : ℝ) / (((j : ℝ) + 8) ^ 3) ≤
+          pot j - pot (j + 1) := by
+        have heq : (((j + 1 : ℕ) : ℝ) + 7) = (j : ℝ) + 8 := by
+          push_cast
+          ring
+        change (6 : ℝ) / (((j : ℝ) + 8) ^ 3) ≤
+          (3 : ℝ) / (((j : ℝ) + 7) ^ 2) -
+          (3 : ℝ) / ((((j + 1 : ℕ) : ℝ) + 7) ^ 2)
+        rw [heq]
+        calc
+          (6 : ℝ) / (((j : ℝ) + 8) ^ 3) =
+              6 * (1 / (((j : ℝ) + 8) ^ 3)) := by ring
+          _ ≤ 6 * ((1 / 2 : ℝ) *
+                (1 / (((j : ℝ) + 8 - 1) ^ 2) -
+                  1 / (((j : ℝ) + 8) ^ 2))) := htel
+          _ = (3 : ℝ) / (((j : ℝ) + 7) ^ 2) -
+                3 / (((j : ℝ) + 8) ^ 2) := by
+                  have heq : ((j : ℝ) + 8 - 1) = (j : ℝ) + 7 := by ring
+                  rw [heq]
+                  ring
+      linarith
+  have hpot : 0 ≤ pot k := by dsimp [pot]; positivity
+  have hpot0 : pot 0 = (3 : ℝ) / 49 := by norm_num [pot]
+  have h := hstrong k
+  linarith
+
+/-- The n>=8 curvature terms obey the same cubic bound at every
+    nonnegative abscissa shift and nonnegative squared ordinate. -/
+theorem curvature_source_q_tail8_abs_majorant (n : ℕ) (a z : ℝ)
+    (ha : 0 ≤ a) (hz : 0 ≤ z) :
+    |q (((n : ℝ) + 8) + a) z| ≤ 6 / (((n : ℝ) + 8) ^ 3) := by
+  have h := curvature_source_q_abs_le_majorant (n + 7) a z ha hz
+  convert h using 1 <;> push_cast <;> ring
+
+/-- Uniform lower bound for every finite tail cutoff of the original
+    q series, starting from the true index n=8. -/
+theorem curvature_q_tail8_finite_lower (k : ℕ) (a z : ℝ)
+    (ha : 0 ≤ a) (hz : 0 ≤ z) :
+    -(3 / 49 : ℝ) ≤
+      ∑ n ∈ Finset.range k, q (((n : ℝ) + 8) + a) z := by
+  have hpoint : ∀ n : ℕ,
+      -((6 : ℝ) / (((n : ℝ) + 8) ^ 3)) ≤
+        q (((n : ℝ) + 8) + a) z := by
+    intro n
+    have h := curvature_source_q_tail8_abs_majorant n a z ha hz
+    have hn := neg_abs_le (q (((n : ℝ) + 8) + a) z)
+    linarith
+  calc
+    -(3 / 49 : ℝ) ≤
+        -(∑ n ∈ Finset.range k, (6 : ℝ) / (((n : ℝ) + 8) ^ 3)) :=
+          neg_le_neg (curvature_cubic_tail8_partial_le_three_over_49 k)
+    _ = ∑ n ∈ Finset.range k, -((6 : ℝ) / (((n : ℝ) + 8) ^ 3)) := by
+          rw [Finset.sum_neg_distrib]
+    _ ≤ ∑ n ∈ Finset.range k, q (((n : ℝ) + 8) + a) z := by
+          apply Finset.sum_le_sum
+          intro n hn
+          exact hpoint n
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -1947,3 +2029,7 @@ end H50
 #print axioms H50.symmetric_real_digamma_hasDerivAt_first
 #print axioms H50.symmetric_real_digamma_first_hasDerivAt_second
 #print axioms H50.symmetric_real_digamma_hasSecondDeriv
+
+#print axioms H50.curvature_cubic_tail8_partial_le_three_over_49
+#print axioms H50.curvature_source_q_tail8_abs_majorant
+#print axioms H50.curvature_q_tail8_finite_lower
