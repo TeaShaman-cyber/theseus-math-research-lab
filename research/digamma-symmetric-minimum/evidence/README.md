@@ -367,3 +367,23 @@ There are **no auxiliary numerical premises** on `γ`, `log pi`, a finite source
 - `PASS / ELABORATES / returncode 0`; the new theorem has only `[propext, Classical.choice, Quot.sound]` in its axiom list, **no sorryAx**.
 
 **Next independent gate:** formalize the real/complex second derivative of the symmetric digamma function and the uniform curvature series representation, then the head/integral-tail positivity argument. P16 only finishes the **ordinate-enclosure component**; `H50_NOT_YET_LEAN_PROVED / NOVELTY_UNKNOWN` remains unchanged.
+
+## H50-P17: source-exact rational curvature derivatives — Lean 40996280696
+
+[Pinned Lean calculator run 40996280696](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40996280696) accepted all three corrected rational curvature derivative theorems `H50.rational_f_hasDerivAt_r`, `H50.rational_r_hasDerivAt_neg_q`, and `H50.rational_f_second_derivative_eq_neg_q` for **every real u and every z>0**. They assert, using the manuscript's exact `r` and `q`,
+
+```
+f_z(u) = u / (u²+z),
+f_z'(u) = r(u,z) = (z-u²)/(u²+z)²,
+r'(u,z) = f_z''(u) = -q(u,z),
+q(u,z) = 2u(3z-u²)/(u²+z)³.
+```
+
+The preceding pinned runs 40994276507, 40995095957, 40995517945 and 40995865538 **rejected** earlier proof tactics (with `sorryAx` in all three new axiom lists); these runs are NOT acceptance evidence. Success required explicit rational identities, Mathlib `HasDerivAt.fun_div`, and conversion with `rfl` of field-specific power derivative instances. PR #102 supplied the theorem statements; targeted PR #103–#106 refined only proof tactics and did not weaken statements or positivity assumptions.
+
+- [Raw JSON](lean-h50-curvature-deriv-40996280696.json): SHA-256 `57662b688edb349682b614ef942def5de77d3515fe6409cf7a401bc1d12039a8`.
+- [Raw Lean diagnostics](lean-h50-curvature-deriv-40996280696.txt): SHA-256 `3e37e6cb610bf3c306606ee9a0481e5bfc6997acac8fdcf9ecf8d890c9265b0e`.
+- Accepted proof SHA-256 `2ec9067e3b6cdcb8618a361dc70f7b6d8b80c2d71f3089bd13da5d7d6300132d`, canonical main `4c1f5b4428c318378c5f4fd28752957e7a29c63a`.
+- Result **PASS / ELABORATES / returncode 0**. Each new declaration uses only axioms `[propext, Classical.choice, Quot.sound]`; **no sorryAx**.
+
+**Boundary:** These are *pointwise derivatives of the rational source kernel*, NOT differentiated sums of the digamma source series. Exchange of differentiation with infinite summation, the exact symmetric `H_y''` series and the full curvature positivity and minimum theorem are still open. No novelty conclusion.
