@@ -1307,6 +1307,64 @@ theorem rational_f_second_derivative_eq_neg_q (u z : ℝ) (hz : 0 < z) :
   rw [hfirst]
   exact (rational_r_hasDerivAt_neg_q u z hz).deriv
 
+/-! H50-P18: z-independent rational derivative bounds. These are
+    the pointwise M-test majorants needed before differentiating the
+    exact infinite source digamma series, not an interchange theorem. -/
+
+/-- The first rational curvature kernel decays uniformly as u^-2. -/
+theorem rational_r_abs_le_recip_sq (u z : ℝ) (hu : 0 < u) (hz : 0 ≤ z) :
+    |r u z| ≤ 1 / u ^ 2 := by
+  have hs : 0 ≤ u ^ 2 := sq_nonneg u
+  have hd : 0 < u ^ 2 + z := by positivity
+  have hb : |z - u ^ 2| ≤ u ^ 2 + z :=
+    abs_le.mpr ⟨by nlinarith, by nlinarith⟩
+  have hf : |r u z| = |z - u ^ 2| / (u ^ 2 + z) ^ 2 := by
+    unfold r
+    rw [abs_div, abs_pow, abs_of_pos hd]
+  calc
+    |r u z| = |z - u ^ 2| / (u ^ 2 + z) ^ 2 := hf
+    _ ≤ (u ^ 2 + z) / (u ^ 2 + z) ^ 2 := by gcongr
+    _ = 1 / (u ^ 2 + z) := by field_simp [ne_of_gt hd]; ring
+    _ ≤ 1 / u ^ 2 := by
+      apply (div_le_div_iff₀ hd (pow_pos hu 2)).2
+      nlinarith
+
+/-- The second rational curvature kernel decays uniformly as 6u^-3. -/
+theorem rational_q_abs_le_six_recip_cube (u z : ℝ) (hu : 0 < u) (hz : 0 ≤ z) :
+    |q u z| ≤ 6 / u ^ 3 := by
+  have hs : 0 ≤ u ^ 2 := sq_nonneg u
+  have hd : 0 < u ^ 2 + z := by positivity
+  have hb : |3 * z - u ^ 2| ≤ 3 * (u ^ 2 + z) :=
+    abs_le.mpr ⟨by nlinarith, by nlinarith⟩
+  have hf : |q u z| = (2 * u) * |3 * z - u ^ 2| / (u ^ 2 + z) ^ 3 := by
+    unfold q
+    rw [abs_div, abs_mul, abs_of_pos (show 0 < 2 * u by positivity),
+      abs_pow, abs_of_pos hd]
+  have hu4 : u ^ 4 ≤ (u ^ 2 + z) ^ 2 := by
+    nlinarith [sq_nonneg z, mul_nonneg hs hz]
+  calc
+    |q u z| = (2 * u) * |3 * z - u ^ 2| / (u ^ 2 + z) ^ 3 := hf
+    _ ≤ (2 * u) * (3 * (u ^ 2 + z)) / (u ^ 2 + z) ^ 3 := by gcongr
+    _ = 6 * u / (u ^ 2 + z) ^ 2 := by field_simp [ne_of_gt hd]; ring
+    _ ≤ 6 / u ^ 3 := by
+      apply (div_le_div_iff₀ (pow_pos hd 2) (pow_pos hu 3)).2
+      nlinarith [hu4]
+
+/-- Every shifted source curvature summand has an a,z-independent
+    cubic denominator bound for all a,z>=0. -/
+theorem curvature_source_q_abs_le_majorant (n : ℕ) (a z : ℝ)
+    (ha : 0 ≤ a) (hz : 0 ≤ z) :
+    |q (((n : ℝ) + 1) + a) z| ≤ 6 / (((n : ℝ) + 1) ^ 3) := by
+  have hm : 0 < (n : ℝ) + 1 := by positivity
+  have hu : 0 < ((n : ℝ) + 1) + a := by linarith
+  have hle : ((n : ℝ) + 1) ^ 3 ≤ (((n : ℝ) + 1) + a) ^ 3 := by
+    gcongr
+  have hdiv : 6 / ((((n : ℝ) + 1) + a) ^ 3) ≤
+      6 / (((n : ℝ) + 1) ^ 3) := by
+    apply (div_le_div_iff₀ (pow_pos hu 3) (pow_pos hm 3)).2
+    nlinarith [hle]
+  exact (rational_q_abs_le_six_recip_cube _ _ hu hz).trans hdiv
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -1405,3 +1463,7 @@ end H50
 #print axioms H50.rational_f_hasDerivAt_r
 #print axioms H50.rational_r_hasDerivAt_neg_q
 #print axioms H50.rational_f_second_derivative_eq_neg_q
+
+#print axioms H50.rational_r_abs_le_recip_sq
+#print axioms H50.rational_q_abs_le_six_recip_cube
+#print axioms H50.curvature_source_q_abs_le_majorant
