@@ -1900,6 +1900,32 @@ theorem curvature_q_tail8_finite_lower (k : ℕ) (a z : ℝ)
           intro n hn
           exact hpoint n
 
+
+/-! H50-P26: pass the original q cubic tail estimate to its infinite sum. -/
+theorem curvature_q_tail8_summable (a z : ℝ) (ha : 0 ≤ a) (hz : 0 ≤ z) :
+    Summable (fun n : ℕ => q (((n : ℝ) + 8) + a) z) := by
+  apply curvature_cubic_majorant_summable.of_norm_bounded
+  intro n
+  have h := curvature_source_q_abs_le_majorant n (a + 7) z (by linarith) hz
+  have heq : (((n : ℝ) + 1) + (a + 7)) = (((n : ℝ) + 8) + a) := by ring
+  rw [heq] at h
+  simpa only [Real.norm_eq_abs] using h
+
+theorem curvature_q_tail8_tsum_lower (a z : ℝ) (ha : 0 ≤ a) (hz : 0 ≤ z) :
+    -(3 / 49 : ℝ) ≤ ∑' n : ℕ, q (((n : ℝ) + 8) + a) z := by
+  have hs := curvature_q_tail8_summable a z ha hz
+  apply le_of_tendsto hs.tendsto_sum_tsum_nat
+  exact Filter.Eventually.of_forall (fun k => curvature_q_tail8_finite_lower k a z ha hz)
+
+theorem curvature_q_two_tail8_lower (a b z : ℝ)
+    (ha : 0 ≤ a) (hb : 0 ≤ b) (hz : 0 ≤ z) :
+    -(6 / 49 : ℝ) ≤
+      (∑' n : ℕ, q (((n : ℝ) + 8) + a) z) +
+      (∑' n : ℕ, q (((n : ℝ) + 8) + b) z) := by
+  have h₁ := curvature_q_tail8_tsum_lower a z ha hz
+  have h₂ := curvature_q_tail8_tsum_lower b z hb hz
+  linarith
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -2033,3 +2059,7 @@ end H50
 #print axioms H50.curvature_cubic_tail8_partial_le_three_over_49
 #print axioms H50.curvature_source_q_tail8_abs_majorant
 #print axioms H50.curvature_q_tail8_finite_lower
+
+#print axioms H50.curvature_q_tail8_summable
+#print axioms H50.curvature_q_tail8_tsum_lower
+#print axioms H50.curvature_q_two_tail8_lower
