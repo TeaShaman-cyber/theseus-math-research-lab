@@ -442,3 +442,20 @@ The pinned [Lean run 41008796392](https://github.com/TeaShaman-cyber/theseus-mat
 - Initial run 41008407625 is **LEAN_REJECTED** due to the incorrect API method `.nat_add` for `Summable`; narrow Mathlib fix in PR #115 used `summable_nat_add_iff 1`, changing no theorem statements.
 
 **Next proof gate:** differentiate the new sum of `-r` terms using the already verified q cubic majorant and rational `r'=-q`, then compose the standalone `-f_z(a)` term, the exact Zeta23 digamma source identity, and the symmetric chain rule to obtain `H_y''`. Global positivity and minimum are not yet kernel accepted. Novelty remains UNKNOWN.
+
+## H50-P22: original negative-r first-derivative series differentiates to q — Lean 41014036669
+
+The source-pinned [Lean 4.33.0-rc2 run 41014036669](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41014036669) accepted both new declarations: `H50.curvature_source_neg_r_hasDerivAt_q` (individual exact source rational term) and `H50.curvature_source_neg_r_tsum_hasDerivAt_q` (the infinite source series derivative, for `a>0,z>0`). It combines the previously accepted `r'=-q`, square-series summability at `a=1/4`, the global summable cubic q majorant P19, and Mathlib `hasDerivAt_tsum_of_isPreconnected`:
+
+```text
+d/da (sum_{n>=0} -r(n+1+a,z)) = sum_{n>=0} q(n+1+a,z).
+```
+
+- Source pin: `anthropics/formal-math@fbdc36bbf17d20af3fd0447c6d1a8a02773c9844`, pinned Lean `v4.33.0-rc2`.
+- Accepted exact Git main `f7f685cea453c13b11fce6129a17a8cb819dffba`, original source probe SHA-256 `3ec460b1635803a7c52b7354550aa11ecbf6f02a40cf8e64596cba2d52d6e0cf`.
+- [Original raw JSON](lean-h50-second-series-41014036669.json), SHA-256 `3902baedf87e0eeb89b051669daa70e68a5e9af528b875931c7573f4faf2e397`.
+- [Original compiler/axiom trace](lean-h50-second-series-41014036669.txt), SHA-256 `415f9845f680574d9c1a1a22f97a09cd22ba3cd620f3ed5ab042b7e16e022e30`.
+- `PASS / ELABORATES / returncode0`, both theorem axiom lists only `[propext, Classical.choice, Quot.sound]`, **NO sorryAx**.
+- Initial runs 41012712700, 41013272944, 41013638938 were **LEAN_REJECTED** and not proof receipts. Narrow tactic normalization repairs in PR #118–#120 preserved the exact theorem statements from PR #117.
+
+**Boundary:** This accepts the second derivative interchange at the canonical rational source-series level. It does **not** yet assemble the twice differentiated full digamma vertical function, its standalone `-f_z(a)` contribution, the symmetry-chain-rule `H_y''` theorem, the finite-head/tail curvature positivity inequality or the H50 symmetric minimum. Mu-zero existence and scientific novelty are not claimed. Next single gate: explicit composition of P21/P22 for the canonical source digamma and its isolated rational head.
