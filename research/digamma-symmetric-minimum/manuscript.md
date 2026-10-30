@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.26, 2026-10-30.**
+**WORKING MATHEMATICAL DRAFT — v0.27, 2026-10-30.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -20,9 +20,11 @@ convexity: a uniformly twice-differentiable digamma series, a rational
 bracket for the distinguished ordinate, and a positive finite-head
 plus analytic-tail lower bound. The rational lower bound is now shown positive throughout the ordinate corridor by a short Lipschitz argument (§5.1). The original exact-rational certificates are preserved with this draft
 and were independently rerun with byte-identical JSON in Python/SymPy.
-The exact rational endpoint margin and four bounded polynomial sign
-sublemmas have now been independently checked in Lean; the full
-digamma inequality and its scientific novelty remain unverified.
+The actual original symmetric digamma second derivative is now formally
+proved **strictly positive** on the entire rectangle `0<x<=1/4,9<=z<=10`
+(H50-P27), by an exact rational head bound and source-accepted infinite-tail
+bounds. The global minimum and its midpoint value are not yet combined into
+a Lean theorem, and scientific novelty remains UNKNOWN.
 This draft distinguishes an ordinary-analysis proof argument from
 a kernel-checked formal proof and leaves the exact prior-art novelty
 assessment **UNKNOWN**. No assertion about the Riemann hypothesis follows.
@@ -88,6 +90,8 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Direct second derivative of `Re digamma(a+i sqrt z)` for `0<a<1,z>0` | [Lean P24 receipt](evidence/lean-h50-real-digamma-41052957695.json) | **LEAN_ACCEPTED_ORIGINAL_REAL_DIGAMMA_CURVATURE**; symmetric `H_y` identity accepted in P25; strict positivity pending |
 | Original symmetric digamma H second derivative identity on `0<x<1/2,z>0` | [Lean P25 receipt](evidence/lean-h50-symmetric-second-41053665168.json) | **LEAN_ACCEPTED_SYMMETRIC_CURVATURE_IDENTITY**; strict positivity and global H50 still unproved |
 | Conservative finite and *infinite* q-tail from index 8, uniform in a,z≥0 | [Lean finite receipt](evidence/lean-h50-finite-cubic-tail8-41070660843.json) and [infinite receipt](evidence/lean-h50-infinite-cubic-tail8-41072638803.json) | **LEAN_ACCEPTED_FINITE_AND_INFINITE_TAIL_BOUND**, each actual infinite tail ≥`-3/49`; two tails ≥`-6/49`; finite-head strict margin still pending |
+| Original 16-term q-head strictly above `6/49` on `0<x<=1/4,9<=z<=10` | [Lean P27 head receipt](evidence/lean-h50-head-positive-41082289649.json) | **LEAN_ACCEPTED_STRICT_FINITE_HEAD** |
+| Strict positive second derivative of original symmetric `Re digamma` on that entire rectangle | [Lean P27 composition receipt](evidence/lean-h50-symmetric-curvature-positive-41083554157.json) | **LEAN_ACCEPTED_ORIGINAL_SYMMETRIC_POSITIVE_CURVATURE**; midpoint minimum and special μ-zero substitution still pending |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -701,7 +705,21 @@ sum_{n=8}^{7+k} q(n+a,z) >= -3/49.
 
 These two **finite** inequalities, plus the original shifted pointwise bound, are kernel accepted by [Lean run 41070660843](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41070660843). The two original H-curvature tails would therefore contribute at worst `-6/49`, provided the finite-to-infinite limit is justified. This is weaker than §5.0a's integral-tail estimate but may allow a much shorter proof if the 15-term finite head can be uniformly bounded below by a value strictly exceeding `6/49`.
 
-**Formal progress:** Both the finite and actual infinite q-tail bounds are now **kernel accepted**; [P26 finite run 41070660843](evidence/lean-h50-finite-cubic-tail8-41070660843.json) and [P26 infinite run 41072638803](evidence/lean-h50-infinite-cubic-tail8-41072638803.json) are archived unchanged. The infinite proof uses P19 summability and the limit of finite q-tail sums, with the source-exact result for two tails ≥`-6/49`. **Formal boundary:** the finite-head lower bound >`6/49` uniformly on the full rectangle and its composition with P25 are still unproved in Lean. No H50 conclusion follows yet from the tail bound alone.
+**Formal progress:** Both the finite and actual infinite q-tail bounds are now **kernel accepted**; [P26 finite run 41070660843](evidence/lean-h50-finite-cubic-tail8-41070660843.json) and [P26 infinite run 41072638803](evidence/lean-h50-infinite-cubic-tail8-41072638803.json) are archived unchanged. The infinite proof uses P19 summability and the limit of finite q-tail sums, with the source-exact result for two tails ≥`-6/49`. **Historical boundary, superseded by P27 (§5.3):** at v0.26, the finite-head lower bound and its composition were not accepted. P27 now verifies both in Lean, obtaining strictly positive original symmetric curvature. The global minimum and special ordinate midpoint value remain pending.
+
+### 5.3 Fully kernel-verified uniform original symmetric curvature (H50-P27)
+
+The main analytic inequality is no longer only an informal or ordinary-analysis argument. [Lean run 41082289649](evidence/lean-h50-head-positive-41082289649.json) proves the 16 actual original q head terms strictly exceed `6/49` uniformly for `0<x<=1/4,9<=z<=10`. It uses an exact coarse interval-rational lower bound, avoiding §5.0a's concavity/integral-test argument. P26 source-verified infinite q-tail bounds give two tails jointly `>=-6/49`. Their exact decomposition and composition with P25 original complex-digamma second derivative are proven in [Lean run 41083554157](evidence/lean-h50-symmetric-curvature-positive-41083554157.json):
+
+```text
+0 < H_z''(x),
+H_z(x)=Re digamma(x+i sqrt z)+Re digamma(1/2-x+i sqrt z),
+0<x<=1/4, 9<=z<=10.
+```
+
+Both runs are pinned Lean 4.33.0-rc2 with only standard axioms and no `sorryAx`. [Original finite-head trace](evidence/lean-h50-head-positive-41082289649.txt) and [original composition trace](evidence/lean-h50-symmetric-curvature-positive-41083554157.txt) record the accepted declarations and source hashes. The target conditional ordinate corridor satisfies `9<z<10`, so it is contained in the proved rectangle.
+
+**Remaining Lean obligations:** deduce the global midpoint minimum from the positive second derivative and reflection symmetry, then establish `H_{y_*}(1/4)=2 log π` for any *assumed* nonnegative canonical μ-zero using the separately accepted source identity and enclosure. Mu-zero existence, RH consequences, external review and scientific novelty are not claimed.
 
 ## 6. Conditional conclusion and remaining obligations
 

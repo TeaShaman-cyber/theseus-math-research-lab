@@ -549,3 +549,32 @@ The source exact theorem uses P26 finite cutoff, P19 cubic majorant summability,
 - `PASS/ELABORATES/exit0`; all three theorem axiom inventories `[propext, Classical.choice, Quot.sound]`, **NO sorryAx**.
 
 **Open mathematical seam:** formally split P25's original symmetric H'' into 15 rational q head terms plus the two tails, prove the finite head exceeds `6/49` uniformly on `z∈[(157/50)^2,(63/20)^2]` and `0<x<=1/4`. The infinite bound alone cannot prove positive H'' or H50 minimum. The existence of a nonnegative μ zero and scientific novelty remain UNKNOWN.
+
+## H50-P27: uniform positive finite head + original symmetric digamma curvature — Lean 41082289649 / 41083554157
+
+**The original symmetric complex digamma curvature is now a source-bound kernel theorem.** [Pinned Lean run 41082289649](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41082289649) accepted four declarations: `q_bin_positive_lower`, `q_bin_negative_lower`, `q_small_lower_one_over_21`, and `curvature_head8_gt_six_over_49`. For all `0<x<=1/4` and `9<=z<=10`, the 16 actual original q head terms from n=0 through 7 satisfy
+
+```text
+sum_{n=0}^7 [q(n+x,z)+q(n+1/2-x,z)] > 6/49.
+```
+
+The proof requires only rational interval bounds on each bin (not integral comparison or curvature monotonicity). An explicit conservative lower margin is `1/42 + 2*(1/38+1/53+1/125+1/520-1/1000-1/450-1/440) > 6/49`; this inequality is checked exactly by Lean, without floating-point premises. The preliminary grid checks are not part of the proof. Initial Lean run 41081664570 rejected two redundant tactics after `gcongr` had solved the goals; PR #136 removed these while preserving all statements.
+
+- P27 finite-head accepted math-lab main `8dba9602c8c81e7e4d04668f3f6a170bcecd7cb7`, probe source SHA256 `da2e74d707aa91d71498a4b82a07f3b1088386ed7405e0fb744bbaa5fe2ee1b6`.
+- [Original raw JSON](lean-h50-head-positive-41082289649.json) SHA256 `5ad1127466424e91c780e007b1923f453c95be8d5c176cc4bf54157348978dbf`.
+- [Original compiler/axiom trace](lean-h50-head-positive-41082289649.txt) SHA256 `d90b482e094c0cd793cb911a7ed975cfa3a40124f98886f69e60b10931b10c9a`.
+
+**Composition:** [Pinned Lean run 41083554157](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41083554157) accepts `curvature_full_q_split8` and `symmetric_real_digamma_second_derivative_pos`. The first splits the actual original digamma q series with Mathlib `Summable.sum_add_tsum_nat_add` and `Summable.tsum_eq_zero_add`, not a surrogate finite model. The second uses the P25 original complex-digamma symmetric second-derivative identity, P26 accepted two infinite tails >=-6/49, and P27 strict finite head >6/49, yielding:
+
+```text
+0 < deriv (fun t => deriv (sourceSymmetricRealDigamma z) t) x,
+   for all real 0<x<=1/4, 9<=z<=10.
+```
+
+- Accepted math-lab main `fb0f907c304445270cc996d0658eaff263a4780b`, exact probe SHA256 `1a0cb3f24e750a8178af33fe5ce2b98a9c24f5a8e5b363bf5484dccc04b54c36`.
+- [Original raw JSON](lean-h50-symmetric-curvature-positive-41083554157.json) SHA256 `4f1899d734f929d214f615731d6c557114a215844bc57eb7594ed3fe0084b8ac`.
+- [Original compiler/axiom trace](lean-h50-symmetric-curvature-positive-41083554157.txt) SHA256 `498e5c4d2ba3c33640e654837a94969fe1ce676b0ae15a4309ae22c3735ff2e1`.
+- Both runs `PASS/ELABORATES/exit0` at exact `anthropics/formal-math@fbdc36bbf17d20af3fd0447c6d1a8a02773c9844`, Lean 4.33.0-rc2. Each new theorem depends on only `[propext, Classical.choice, Quot.sound]`, **NO sorryAx**. Original archived hashes are readback-confirmed upon promotion.
+- First composition run 41083033935 was LEAN_REJECTED on Mathlib API naming (`tsum_eq_zero_add` instead of `Summable.tsum_eq_zero_add`); PR #138 repaired only the call. No statement weakened. Hosted QA/witness passed all merged PRs after one transient external Wolfram witness transport failure on initial PR #135.
+
+**Scientific boundary:** This establishes strictly positive curvature of the original symmetric `Re digamma` on a rectangle broader than the target ordinate corridor, **but not yet the Lean theorem on global minimum** or midpoint value at a nonnegative canonical μ-zero. The remaining proof gates are (1) derive `H_z(x)>=H_z(1/4)` from strict curvature and reflection symmetry with exact endpoints, then (2) connect midpoint to `2 log π` under `Zeta23.mu tau=0` and the accepted ordinate enclosure. Existence of the zero and original scientific novelty remain UNKNOWN; no RH result or peer-reviewed publication is claimed.
