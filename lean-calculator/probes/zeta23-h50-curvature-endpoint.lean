@@ -1,4 +1,5 @@
 import Zeta23.GammaFacts.Mu
+import Mathlib.Analysis.Normed.Group.FunctionSeries
 
 /-!
 # H50: exact-rational endpoint certificate (one bounded arithmetic seam)
@@ -1471,6 +1472,26 @@ theorem curvature_source_q_abs_summable (a z : ℝ) (ha : 0 ≤ a) (hz : 0 ≤ z
             exact curvature_source_q_abs_le_majorant n a z ha hz
       _ ≤ 9 := curvature_cubic_partial_le_nine k
 
+
+/-! H50-P20: Weierstrass M-test applied to the actual curvature q-family.
+    This proves uniform convergence of the q-series on the full nonnegative
+    parameter quadrant. It does NOT justify either derivative interchange
+    or establish the global symmetric-digamma inequality. -/
+
+/-- The exact source q-series converges uniformly in both nonnegative
+    parameters, by the previously accepted summable cubic majorant. -/
+theorem curvature_q_series_uniform_nonneg :
+    TendstoUniformlyOn
+      (fun k : ℕ => fun p : ℝ × ℝ =>
+        ∑ n ∈ Finset.range k, q (((n : ℝ) + 1) + p.1) p.2)
+      (fun p : ℝ × ℝ =>
+        ∑' n : ℕ, q (((n : ℝ) + 1) + p.1) p.2)
+      Filter.atTop {p : ℝ × ℝ | 0 ≤ p.1 ∧ 0 ≤ p.2} := by
+  apply tendstoUniformlyOn_tsum_nat curvature_cubic_majorant_summable
+  intro n p hp
+  simpa only [Real.norm_eq_abs] using
+    curvature_source_q_abs_le_majorant n p.1 p.2 hp.1 hp.2
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -1578,3 +1599,5 @@ end H50
 #print axioms H50.curvature_cubic_partial_le_nine
 #print axioms H50.curvature_cubic_majorant_summable
 #print axioms H50.curvature_source_q_abs_summable
+
+#print axioms H50.curvature_q_series_uniform_nonneg
