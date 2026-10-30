@@ -32,3 +32,7 @@ Sources found via targeted Exa and Parallel Search, with primary-reference check
 **FACT:** psi series, theta derivative and approximate first theta extremum are known. **FACT:** reviewed horizontal |Gamma| monotonicity is not the claimed H50 symmetric convexity. **INFERENCE:** the formal rectangular positive-curvature bound is the plausible distinctive contribution, but whether another published theorem implies it is **UNKNOWN**. **NO RH BRIDGE:** a Gamma-factor-only inequality does not, by itself, constrain the independent arithmetic zeta factor or imply OpenAI's zero-free theorem.
 
 **Next:** independent theorem-to-theorem review of Srinivasan–Zvengrowski's references and complex trigamma/tetragamma positivity/Schur-convexity criteria. No bulk ingestion of `openai/math` into the specialized Lean Repo Search until a concrete source dependency is identified. Keep Issue #50 open and `NOVELTY_UNKNOWN`; no release or publication.
+
+## Follow-up: theorem-to-theorem checks
+
+[Round 2: original Gamma horizontal proof, real-domain Alzer results, and the complex Hurwitz-zeta equivalent of H50](prior-art-followup-2026-10-30.md). Verdict remains `NOVELTY_UNKNOWN`; the finite-head/tail method predates H50.
