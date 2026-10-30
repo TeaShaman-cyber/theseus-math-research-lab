@@ -27,4 +27,28 @@ issues is not a prerequisite to finishing a finite discovery campaign.
 
 Wolfram is the first confirmed CI provider. The runner does not install Wolfram Engine; mcporter calls the official Wolfram Cloud MCP.
 
+### Independent witness is advisory, not a proof-acceptance gate
+
+The network lane is deliberately separate from mandatory deterministic `Research QA`.
+This follows the already implemented `nakama-test` network-advisory contract
+([PR #19](https://github.com/TeaShaman-cyber/nakama-test/pull/19),
+[PR #20](https://github.com/TeaShaman-cyber/nakama-test/pull/20)) and the
+original math-lab design in [Issue #21](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/21).
+
+| Source-bound witness receipt `result` | Advisory exit | Meaning |
+| --- | --- | --- |
+| `PASS` | 0 | The exact external probe reported `pass:true`; not a mathematical theorem certificate |
+| `FAIL_ASSERTION` | 1 | Actual valid `pass:false` from Wolfram: independent invariant failed, do not promote |
+| `DEGRADED_EXTERNAL_WITNESS` | 0 | Transport/provider/mcporter unavailable or response malformed: **no Wolfram verification** |
+
+On a provider timeout/503 or missing mcporter installation, the adapter still
+writes the exact-rendered probe/input SHA bindings, JSON disposition and original
+`.raw.txt` evidence; the workflow uploads them even when the assertion fails.
+The PR job may show `SUCCESS` when its receipt says `DEGRADED_EXTERNAL_WITNESS`:
+that means **the advisory lane completed its reporting contract only**. It does
+not substitute for the deterministic baseline, a real `PASS` witness, the
+source-pinned Lean calculator, or independent scientific review.
+The GitHub Actions step summary explicitly displays the receipt verdict.
+Changes to this acceptance policy are coordinated under [Issue #9](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/9).
+
 Precise Special Functions is directly verified as a ChatGPT capability, but its public mcporter endpoint is currently unknown, so it is registered as non-CI-eligible until transport is confirmed. This distinction prevents capability in one runtime from being misreported as capability in another.

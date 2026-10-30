@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse, hashlib, json, pathlib, re, subprocess, sys, tempfile
+import argparse, hashlib, json, os, pathlib, re, subprocess, sys, tempfile
 ROOT=pathlib.Path(__file__).resolve().parents[2]
 HERE=pathlib.Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
@@ -84,7 +84,19 @@ def run(args):
     out.write_text(json.dumps(receipt,indent=2,sort_keys=True)+'\n')
     out.with_suffix('.raw.txt').write_text(raw+'\n')
     print(json.dumps(receipt,sort_keys=True,separators=(',',':')))
-    return {'PASS':0,'FAIL_ASSERTION':1,'DEGRADED_EXTERNAL_WITNESS':2}[result]
+    # The job reports advisory *execution*, not an independent proof result.
+    # The signed receipt remains DEGRADED when the external provider is absent.
+    summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
+    if summary_path:
+        with open(summary_path, 'a', encoding='utf-8') as summary:
+            summary.write('### Independent Wolfram witness (advisory)\n\n')
+            summary.write(f'- Result: `{result}`\n')
+            summary.write(f'- Probe: `{args.probe}`\n')
+            summary.write(f'- Source hash: `{receipt["witness_sha256"]}`\n')
+            summary.write('- A successful advisory job is **not** Wolfram verification when the receipt is degraded.\n')
+    if result == 'DEGRADED_EXTERNAL_WITNESS':
+        print('::warning title=External Wolfram witness unavailable::DEGRADED_EXTERNAL_WITNESS; see source-bound JSON and raw receipt')
+    return {'PASS':0,'FAIL_ASSERTION':1,'DEGRADED_EXTERNAL_WITNESS':0}[result]
 
 def main():
     ap=argparse.ArgumentParser()
