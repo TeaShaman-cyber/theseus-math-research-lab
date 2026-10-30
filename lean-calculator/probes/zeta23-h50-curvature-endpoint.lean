@@ -1709,6 +1709,115 @@ theorem real_digamma_vertical_hasSecondDeriv (a z : ℝ)
     exact horig.deriv.trans hsource.deriv.symm
   exact (sourceDigammaFormula_hasSecondDeriv a z ha hz).congr_of_eventuallyEq hderiv
 
+
+/-! H50-P25: second derivative of the ORIGINAL symmetric real digamma
+    function on the open half interval, with exact chain-rule signs. -/
+
+/-- The symmetric digamma at squared ordinate z (corresponds to H_y for
+    y=sqrt(z)), using the original Complex.digamma on both sides. -/
+def sourceSymmetricRealDigamma (z : ℝ) (x : ℝ) : ℝ :=
+  sourceRealDigammaVertical z x +
+    sourceRealDigammaVertical z ((1 / 2 : ℝ) - x)
+
+/-- First source real-digamma derivative, transferred by equality on
+    the open abscissa interval. -/
+theorem real_digamma_vertical_hasDerivAt_first (a z : ℝ)
+    (ha : 0 < a) (ha1 : a < 1) (hz : 0 < z) :
+    HasDerivAt (sourceRealDigammaVertical z)
+      (-r a z + ∑' n : ℕ, -r (((n : ℝ) + 1) + a) z) a := by
+  have hloc : (sourceRealDigammaVertical z) =ᶠ[nhds a]
+      (sourceDigammaFormula z) := by
+    filter_upwards [isOpen_Ioo.mem_nhds (show a ∈ Set.Ioo (0 : ℝ) 1 from
+      ⟨ha, ha1⟩)] with t ht
+    exact (sourceDigammaFormula_eq_real_digamma t z ht.1 ht.2 hz).symm
+  exact (sourceDigammaFormula_hasDerivAt_first a z ha hz).congr_of_eventuallyEq hloc
+
+/-- First derivative of H is G'(x)-G'(1/2-x) on its open domain. -/
+theorem symmetric_real_digamma_hasDerivAt_first (x z : ℝ)
+    (hx : 0 < x) (hxhalf : x < 1 / 2) (hz : 0 < z) :
+    HasDerivAt (sourceSymmetricRealDigamma z)
+      (deriv (sourceRealDigammaVertical z) x -
+        deriv (sourceRealDigammaVertical z) ((1 / 2 : ℝ) - x)) x := by
+  have hright0 : 0 < (1 / 2 : ℝ) - x := by linarith
+  have hright1 : (1 / 2 : ℝ) - x < 1 := by linarith
+  have hleft := real_digamma_vertical_hasDerivAt_first x z hx (by linarith) hz
+  have hright := real_digamma_vertical_hasDerivAt_first
+    ((1 / 2 : ℝ) - x) z hright0 hright1 hz
+  have hleft' : HasDerivAt (sourceRealDigammaVertical z)
+      (deriv (sourceRealDigammaVertical z) x) x := by
+    rw [hleft.deriv]
+    exact hleft
+  have hright' : HasDerivAt (sourceRealDigammaVertical z)
+      (deriv (sourceRealDigammaVertical z) ((1 / 2 : ℝ) - x))
+      ((1 / 2 : ℝ) - x) := by
+    rw [hright.deriv]
+    exact hright
+  have hflip : HasDerivAt (fun t : ℝ => (1 / 2 : ℝ) - t) (-1) x :=
+    (hasDerivAt_id x).const_sub (1 / 2 : ℝ)
+  have hsum := hleft'.add (hright'.comp x hflip)
+  have hfun : (sourceSymmetricRealDigamma z) =
+      (sourceRealDigammaVertical z) +
+        ((sourceRealDigammaVertical z) ∘ (fun t : ℝ => (1 / 2 : ℝ) - t)) := by
+    funext t
+    rfl
+  have hscalar : deriv (sourceRealDigammaVertical z) x +
+      deriv (sourceRealDigammaVertical z) ((1 / 2 : ℝ) - x) * (-1) =
+      deriv (sourceRealDigammaVertical z) x -
+        deriv (sourceRealDigammaVertical z) ((1 / 2 : ℝ) - x) := by ring
+  rw [hfun, ← hscalar]
+  exact hsum
+
+/-- Applying the chain rule twice produces a PLUS between the q kernels. -/
+theorem symmetric_real_digamma_first_hasDerivAt_second (x z : ℝ)
+    (hx : 0 < x) (hxhalf : x < 1 / 2) (hz : 0 < z) :
+    HasDerivAt
+      (fun t : ℝ => deriv (sourceRealDigammaVertical z) t -
+        deriv (sourceRealDigammaVertical z) ((1 / 2 : ℝ) - t))
+      ((q x z + ∑' n : ℕ, q (((n : ℝ) + 1) + x) z) +
+        (q ((1 / 2 : ℝ) - x) z +
+          ∑' n : ℕ, q (((n : ℝ) + 1) + ((1 / 2 : ℝ) - x)) z)) x := by
+  have hright0 : 0 < (1 / 2 : ℝ) - x := by linarith
+  have hright1 : (1 / 2 : ℝ) - x < 1 := by linarith
+  have hleft := real_digamma_vertical_hasSecondDeriv x z hx (by linarith) hz
+  have hright := real_digamma_vertical_hasSecondDeriv
+    ((1 / 2 : ℝ) - x) z hright0 hright1 hz
+  have hflip : HasDerivAt (fun t : ℝ => (1 / 2 : ℝ) - t) (-1) x :=
+    (hasDerivAt_id x).const_sub (1 / 2 : ℝ)
+  have hdiff := hleft.sub (hright.comp x hflip)
+  have hfun : (fun t : ℝ => deriv (sourceRealDigammaVertical z) t -
+      deriv (sourceRealDigammaVertical z) ((1 / 2 : ℝ) - t)) =
+      (fun t : ℝ => deriv (sourceRealDigammaVertical z) t) -
+        ((fun t : ℝ => deriv (sourceRealDigammaVertical z) t) ∘
+          (fun t : ℝ => (1 / 2 : ℝ) - t)) := by
+    funext t
+    rfl
+  have hscalar :
+      (q x z + ∑' n : ℕ, q (((n : ℝ) + 1) + x) z) -
+        (q ((1 / 2 : ℝ) - x) z +
+          ∑' n : ℕ, q (((n : ℝ) + 1) + ((1 / 2 : ℝ) - x)) z) * (-1) =
+      (q x z + ∑' n : ℕ, q (((n : ℝ) + 1) + x) z) +
+        (q ((1 / 2 : ℝ) - x) z +
+          ∑' n : ℕ, q (((n : ℝ) + 1) + ((1 / 2 : ℝ) - x)) z) := by ring
+  rw [hfun, ← hscalar]
+  exact hdiff
+
+/-- The exact original H_y second derivative is a symmetric pair of
+    source q kernels, for the full continuous open domain 0<x<1/2. -/
+theorem symmetric_real_digamma_hasSecondDeriv (x z : ℝ)
+    (hx : 0 < x) (hxhalf : x < 1 / 2) (hz : 0 < z) :
+    HasDerivAt (fun t : ℝ => deriv (sourceSymmetricRealDigamma z) t)
+      ((q x z + ∑' n : ℕ, q (((n : ℝ) + 1) + x) z) +
+        (q ((1 / 2 : ℝ) - x) z +
+          ∑' n : ℕ, q (((n : ℝ) + 1) + ((1 / 2 : ℝ) - x)) z)) x := by
+  have hneigh : (fun t : ℝ => deriv (sourceSymmetricRealDigamma z) t) =ᶠ[nhds x]
+      (fun t : ℝ => deriv (sourceRealDigammaVertical z) t -
+        deriv (sourceRealDigammaVertical z) ((1 / 2 : ℝ) - t)) := by
+    filter_upwards [isOpen_Ioo.mem_nhds (show x ∈ Set.Ioo (0 : ℝ) (1 / 2) from
+      ⟨hx, hxhalf⟩)] with t ht
+    exact (symmetric_real_digamma_hasDerivAt_first t z ht.1 ht.2 hz).deriv
+  exact (symmetric_real_digamma_first_hasDerivAt_second x z hx hxhalf hz).congr_of_eventuallyEq
+    hneigh
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -1833,3 +1942,8 @@ end H50
 #print axioms H50.sourceDigammaFormula_hasSecondDeriv
 
 #print axioms H50.real_digamma_vertical_hasSecondDeriv
+
+#print axioms H50.real_digamma_vertical_hasDerivAt_first
+#print axioms H50.symmetric_real_digamma_hasDerivAt_first
+#print axioms H50.symmetric_real_digamma_first_hasDerivAt_second
+#print axioms H50.symmetric_real_digamma_hasSecondDeriv
