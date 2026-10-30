@@ -1914,7 +1914,7 @@ theorem curvature_q_tail8_summable (a z : ℝ) (ha : 0 ≤ a) (hz : 0 ≤ z) :
 theorem curvature_q_tail8_tsum_lower (a z : ℝ) (ha : 0 ≤ a) (hz : 0 ≤ z) :
     -(3 / 49 : ℝ) ≤ ∑' n : ℕ, q (((n : ℝ) + 8) + a) z := by
   have hs := curvature_q_tail8_summable a z ha hz
-  apply le_of_tendsto hs.tendsto_sum_tsum_nat
+  apply ge_of_tendsto hs.tendsto_sum_tsum_nat
   exact Filter.Eventually.of_forall (fun k => curvature_q_tail8_finite_lower k a z ha hz)
 
 theorem curvature_q_two_tail8_lower (a b z : ℝ)
