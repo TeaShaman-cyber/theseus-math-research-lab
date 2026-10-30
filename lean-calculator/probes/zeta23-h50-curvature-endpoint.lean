@@ -2136,7 +2136,9 @@ theorem symmetric_real_digamma_deriv_midpoint_zero (z : ℝ) (hz : 0 < z) :
     deriv (sourceSymmetricRealDigamma z) (1 / 4) = 0 := by
   have h := (symmetric_real_digamma_hasDerivAt_first
       (1 / 4 : ℝ) z (by norm_num) (by norm_num) hz).deriv
-  simpa [show (1 / 2 : ℝ) - 1 / 4 = 1 / 4 by norm_num] using h
+  have hval : (1 / 2 : ℝ) - 1 / 4 = 1 / 4 := by norm_num
+  rw [hval, sub_self] at h
+  exact h
 
 /-- For all original complex-digamma ordinates in the larger proven
     rectangle, H(x)>H(1/4) to the left of its center. -/
@@ -2154,7 +2156,7 @@ theorem symmetric_real_digamma_midpoint_minimum (x z : ℝ)
       have ht1 : t < 1 / 2 := by linarith [ht.2]
       exact (symmetric_real_digamma_hasSecondDeriv t z ht0 ht1 hz).continuousAt.continuousWithinAt
     have hmono : StrictMonoOn (fun t : ℝ => deriv (sourceSymmetricRealDigamma z) t) D := by
-      apply strictMonoOn_of_deriv_pos (convex_Icc) hcont_deriv
+      apply strictMonoOn_of_deriv_pos (convex_Icc x (1 / 4 : ℝ)) hcont_deriv
       intro t ht
       have htt : t ∈ Set.Ioo x (1 / 4) := by
         simpa only [D, interior_Icc] using ht
@@ -2175,7 +2177,7 @@ theorem symmetric_real_digamma_midpoint_minimum (x z : ℝ)
       have ht0 : 0 < t := lt_of_lt_of_le hx ht.1
       have ht1 : t < 1 / 2 := by linarith [ht.2]
       exact (symmetric_real_digamma_hasDerivAt_first t z ht0 ht1 hz).continuousAt.continuousWithinAt
-    have hanti := strictAntiOn_of_deriv_neg (convex_Icc) hcont hneg
+    have hanti := strictAntiOn_of_deriv_neg (convex_Icc x (1 / 4 : ℝ)) hcont hneg
     exact le_of_lt (hanti (show x ∈ D from ⟨le_rfl, hx1⟩)
       (show (1 / 4 : ℝ) ∈ D from ⟨hx1, le_rfl⟩) hxlt)
   · rw [hxeq]
