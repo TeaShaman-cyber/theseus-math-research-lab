@@ -578,3 +578,32 @@ The proof requires only rational interval bounds on each bin (not integral compa
 - First composition run 41083033935 was LEAN_REJECTED on Mathlib API naming (`tsum_eq_zero_add` instead of `Summable.tsum_eq_zero_add`); PR #138 repaired only the call. No statement weakened. Hosted QA/witness passed all merged PRs after one transient external Wolfram witness transport failure on initial PR #135.
 
 **Scientific boundary:** This establishes strictly positive curvature of the original symmetric `Re digamma` on a rectangle broader than the target ordinate corridor, **but not yet the Lean theorem on global minimum** or midpoint value at a nonnegative canonical μ-zero. The remaining proof gates are (1) derive `H_z(x)>=H_z(1/4)` from strict curvature and reflection symmetry with exact endpoints, then (2) connect midpoint to `2 log π` under `Zeta23.mu tau=0` and the accepted ordinate enclosure. Existence of the zero and original scientific novelty remain UNKNOWN; no RH result or peer-reviewed publication is claimed.
+
+## H50-P28: original symmetric digamma midpoint minimum and full conditional theorem — Lean 41087290637 / 41087925734
+
+The main H50 inequality is now source-pinned **kernel accepted conditional on a nonnegative canonical μ-zero**. [Lean run 41087290637](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41087290637) accepts three theorems on the ORIGINAL symmetric Complex.digamma, not a source surrogate:
+
+- `symmetric_real_digamma_deriv_midpoint_zero`: `H'_z(1/4)=0` whenever `z>0`.
+- `symmetric_real_digamma_midpoint_minimum`: `H_z(1/4) <= H_z(x)` for every `0<x<=1/4`, `9<=z<=10`, using the P27 strictly positive second derivative, Mathlib derivative monotonicity/antitonicity and reflection symmetry.
+- `symmetric_real_digamma_midpoint_eq_two_log_pi`: `H_{(tau/2)^2}(1/4)=2 log(pi)` for every ASSUMED `tau>=0` satisfying `Zeta23.mu tau=0`. No zero existence assertion.
+
+- Accepted midpoint source main `955a890f85c2165d4710c92819c8b4323db22537`, source SHA256 `17e835547215874bd5dac3b685cff676bc148bf8a7b10561f8b539801f729592`.
+- [Original midpoint JSON](lean-h50-midpoint-41087290637.json) SHA256 `68f8fb75573f5a12f80e4fc527197f411391e2a394f6ab90f5a263e9c80834d9`.
+- [Original midpoint diagnostics](lean-h50-midpoint-41087290637.txt) SHA256 `a22044e6a85d1a6a3fd331fc22a214a2db35639ab4c11f0db6295946c48bc893`.
+
+[Pinned final Lean run 41087925734](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41087925734) accepts **one full conditional theorem** `H50.symmetric_digamma_H50_of_nonnegative_mu_zero`, on the original `Complex.digamma` arguments:
+
+```text
+For any tau>=0 with Zeta23.mu tau=0, for every real 0<x<=1/4,
+  Re digamma(x+i tau/2) + Re digamma(1/2-x+i tau/2) >= 2 log(pi).
+```
+
+This composes the P16 unconditional (given the zero) source-bound ordinate enclosure, the P28 midpoint minimum and midpoint equality, and elementary exact square bounds `9 <= (tau/2)^2 <= 10`. It does not use a numerical root approximation or postulate the existence of a zero.
+
+- Accepted final source main `1870f6b5e227ec4c72acfa61519712b776a0c4a9`, probe SHA256 `e0bb462ffe01a38d40bbb8cfa1d10c739d9af310abb9c47a5ae605c93ce6ffe4`.
+- [Original final JSON](lean-h50-conditional-theorem-41087925734.json) SHA256 `11c76c76a4fcc6e7c163a7bc75b89a01bb42e9a5c475f30394344bb5a092700e`.
+- [Original final diagnostics](lean-h50-conditional-theorem-41087925734.txt) SHA256 `3331c32ebe761a5fb1b02c2a44bcf47758e9f19a096853dbfdf10cd3dcae44bc`.
+- All four new theorem axiom inventories on the two accepted runs: ONLY `[propext, Classical.choice, Quot.sound]`, **no `sorryAx`**. `PASS / ELABORATES / exit0`, source-pinned exact Zeta23 `anthropics/formal-math@fbdc36bbf17d20af3fd0447c6d1a8a02773c9844`, Lean `4.33.0-rc2`.
+- Initial P28 runs 41085606310, 41086169782, 41086681406 were **LEAN_REJECTED** by proof-syntax/Mathlib goal shape only. PR #140–#143 changed tactic structure without changing theorems. PR #144 added the final conditional theorem; no existence premise was erased.
+
+**Scientific boundary:** `H50_CONDITIONAL_THEOREM_KERNEL_PROVED` / `MU_ZERO_EXISTENCE_UNPROVED` / `SCHOLARLY_NOVELTY_UNKNOWN` / `NOT_PEER_REVIEWED` / `NO_RH_CLAIM`. The conditional theorem being proved does not make a publication-level prior-art assessment, prove an actual zero exists, or imply RH. Next work should be a focused independent mathematics/prior-art audit and manuscript framing, not additional proof infrastructure for its own sake.
