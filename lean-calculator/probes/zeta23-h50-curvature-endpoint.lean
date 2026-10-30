@@ -2171,7 +2171,8 @@ theorem symmetric_real_digamma_midpoint_minimum (x z : ℝ)
       have htD : t ∈ D := ⟨le_of_lt htt.1, le_of_lt htt.2⟩
       have hcD : (1 / 4 : ℝ) ∈ D := ⟨hx1, le_rfl⟩
       have h := hmono htD hcD htt.2
-      simpa [hcenter] using h
+      rw [hcenter] at h
+      exact h
     have hcont : ContinuousOn (sourceSymmetricRealDigamma z) D := by
       intro t ht
       have ht0 : 0 < t := lt_of_lt_of_le hx ht.1
