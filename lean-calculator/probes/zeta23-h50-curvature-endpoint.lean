@@ -1371,6 +1371,106 @@ theorem curvature_source_q_abs_le_majorant (n : ℕ) (a z : ℝ)
     nlinarith [hle]
   exact (rational_q_abs_le_six_recip_cube _ _ hu hz).trans hdiv
 
+/-! H50-P19: a source-independent summable majorant for second
+    derivative kernels, using the already accepted cubic telescope. -/
+
+/-- A 6/m³ tail beginning at m=2 is bounded by 3, for any cutoff. -/
+theorem curvature_cubic_shifted_partial_le_three (k : ℕ) :
+    (∑ n ∈ Finset.range k, (6 : ℝ) / (((n : ℝ) + 2) ^ 3)) ≤ 3 := by
+  let pot : ℕ → ℝ := fun n => (3 : ℝ) / (((n : ℝ) + 1) ^ 2)
+  have hstrong : ∀ j : ℕ,
+      (∑ n ∈ Finset.range j, (6 : ℝ) / (((n : ℝ) + 2) ^ 3)) +
+        pot j ≤ pot 0 := by
+    intro j
+    induction j with
+    | zero => simp
+    | succ j ih =>
+      rw [Finset.sum_range_succ]
+      have hm : (2 : ℝ) ≤ (j : ℝ) + 2 := by
+        have hj : (0 : ℝ) ≤ j := Nat.cast_nonneg j
+        linarith
+      have htel := mul_le_mul_of_nonneg_left
+        (recip_cube_le_telescoping ((j : ℝ) + 2) hm)
+        (by norm_num : (0 : ℝ) ≤ 6)
+      have hstep : (6 : ℝ) / (((j : ℝ) + 2) ^ 3) ≤
+          pot j - pot (j + 1) := by
+        have heq : (((j + 1 : ℕ) : ℝ) + 1) = (j : ℝ) + 2 := by
+          push_cast
+          ring
+        change (6 : ℝ) / (((j : ℝ) + 2) ^ 3) ≤
+          (3 : ℝ) / (((j : ℝ) + 1) ^ 2) -
+          (3 : ℝ) / ((((j + 1 : ℕ) : ℝ) + 1) ^ 2)
+        rw [heq]
+        calc
+          (6 : ℝ) / (((j : ℝ) + 2) ^ 3) =
+              6 * (1 / (((j : ℝ) + 2) ^ 3)) := by ring
+          _ ≤ 6 * ((1 / 2 : ℝ) *
+                (1 / (((j : ℝ) + 2 - 1) ^ 2) -
+                  1 / (((j : ℝ) + 2) ^ 2))) := htel
+          _ = (3 : ℝ) / (((j : ℝ) + 1) ^ 2) -
+                3 / (((j : ℝ) + 2) ^ 2) := by
+                  have heq : ((j : ℝ) + 2 - 1) = (j : ℝ) + 1 := by ring
+                  rw [heq]
+                  ring
+      linarith
+  have hpot : 0 ≤ pot k := by dsimp [pot]; positivity
+  have hpot0 : pot 0 = 3 := by norm_num [pot]
+  have h := hstrong k
+  linarith
+
+/-- Adding the m=1 term gives a universal bound 9 on every finite
+    cubic source majorant sum. -/
+theorem curvature_cubic_partial_le_nine (k : ℕ) :
+    (∑ n ∈ Finset.range k, (6 : ℝ) / (((n : ℝ) + 1) ^ 3)) ≤ 9 := by
+  let f : ℕ → ℝ := fun n => (6 : ℝ) / (((n : ℝ) + 1) ^ 3)
+  change (∑ n ∈ Finset.range k, f n) ≤ 9
+  cases k with
+  | zero => simp
+  | succ k =>
+    have hsplit : (∑ n ∈ Finset.range (k + 1), f n) =
+        f 0 + ∑ n ∈ Finset.range k, f (n + 1) := by
+      simpa [Finset.sum_range_one, Nat.add_comm] using
+        (Finset.sum_range_add f 1 k)
+    have hshift : (fun n : ℕ => f (n + 1)) =
+        (fun n : ℕ => (6 : ℝ) / (((n : ℝ) + 2) ^ 3)) := by
+      funext n
+      dsimp [f]
+      have hcast : (((n + 1 : ℕ) : ℝ) + 1) = (n : ℝ) + 2 := by
+        push_cast
+        ring
+      rw [hcast]
+    have htail : (∑ n ∈ Finset.range k, f (n + 1)) ≤ 3 := by
+      rw [hshift]
+      exact curvature_cubic_shifted_partial_le_three k
+    have hhead : f 0 = 6 := by norm_num [f]
+    rw [hsplit, hhead]
+    linarith
+
+/-- A positive summable numerical M-test bound independent of a,z. -/
+theorem curvature_cubic_majorant_summable :
+    Summable (fun n : ℕ => (6 : ℝ) / (((n : ℝ) + 1) ^ 3)) := by
+  apply summable_of_sum_range_le
+  · intro n
+    positivity
+  · intro k
+    exact curvature_cubic_partial_le_nine k
+
+/-- Every q derivative source series converges absolutely when a,z≥0.
+    The same accepted 6/(n+1)³ bound is uniform in both parameters. -/
+theorem curvature_source_q_abs_summable (a z : ℝ) (ha : 0 ≤ a) (hz : 0 ≤ z) :
+    Summable (fun n : ℕ => |q (((n : ℝ) + 1) + a) z|) := by
+  apply summable_of_sum_range_le
+  · intro n
+    exact abs_nonneg _
+  · intro k
+    calc
+      (∑ n ∈ Finset.range k, |q (((n : ℝ) + 1) + a) z|) ≤
+          (∑ n ∈ Finset.range k, (6 : ℝ) / (((n : ℝ) + 1) ^ 3)) := by
+            apply Finset.sum_le_sum
+            intro n hn
+            exact curvature_source_q_abs_le_majorant n a z ha hz
+      _ ≤ 9 := curvature_cubic_partial_le_nine k
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -1473,3 +1573,8 @@ end H50
 #print axioms H50.rational_r_abs_le_recip_sq
 #print axioms H50.rational_q_abs_le_six_recip_cube
 #print axioms H50.curvature_source_q_abs_le_majorant
+
+#print axioms H50.curvature_cubic_shifted_partial_le_three
+#print axioms H50.curvature_cubic_partial_le_nine
+#print axioms H50.curvature_cubic_majorant_summable
+#print axioms H50.curvature_source_q_abs_summable
