@@ -1,8 +1,8 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.27, 2026-10-30.**
-**Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
-Lean proof nor a claim of scientific originality, peer review, or publication.
+**WORKING MATHEMATICAL DRAFT — v0.28, 2026-10-30.**
+**Research disposition:** `H50_CONDITIONAL_KERNEL_PROVED / MU_ZERO_EXISTENCE_UNPROVED / NOVELTY_UNKNOWN`.
+A source-pinned Lean theorem now proves the stated inequality **for every assumed nonnegative zero** of canonical `Zeta23.mu`. The theorem does not establish the existence of such a zero, a claim of originality, peer review, RH, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
 Parent mathematical seam: [#49](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/49).
 
@@ -23,8 +23,9 @@ and were independently rerun with byte-identical JSON in Python/SymPy.
 The actual original symmetric digamma second derivative is now formally
 proved **strictly positive** on the entire rectangle `0<x<=1/4,9<=z<=10`
 (H50-P27), by an exact rational head bound and source-accepted infinite-tail
-bounds. The global minimum and its midpoint value are not yet combined into
-a Lean theorem, and scientific novelty remains UNKNOWN.
+bounds. The center minimum and its value under a nonnegative canonical μ-zero
+are now combined into a fully kernel-accepted conditional theorem (H50-P28).
+Zero existence and scientific novelty remain UNKNOWN/UNPROVED.
 This draft distinguishes an ordinary-analysis proof argument from
 a kernel-checked formal proof and leaves the exact prior-art novelty
 assessment **UNKNOWN**. No assertion about the Riemann hypothesis follows.
@@ -46,7 +47,7 @@ historical numerical location is
 `y_* ≈ 3.14491799441845`; this numerical value is **not**
 the definition or a proof of its enclosure.
 
-**Conjectured result (H50):** for every `0 < x <= 1/4`,
+**Formally proved conditional result (H50-P28):** for any assumed `t_* >= 0` with `Zeta23.mu t_* = 0`, and every `0 < x <= 1/4`,
 
 ```text
 H_{y_*}(x) >= H_{y_*}(1/4) = 2 log(π).
@@ -92,6 +93,8 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Conservative finite and *infinite* q-tail from index 8, uniform in a,z≥0 | [Lean finite receipt](evidence/lean-h50-finite-cubic-tail8-41070660843.json) and [infinite receipt](evidence/lean-h50-infinite-cubic-tail8-41072638803.json) | **LEAN_ACCEPTED_FINITE_AND_INFINITE_TAIL_BOUND**, each actual infinite tail ≥`-3/49`; two tails ≥`-6/49`; finite-head strict margin still pending |
 | Original 16-term q-head strictly above `6/49` on `0<x<=1/4,9<=z<=10` | [Lean P27 head receipt](evidence/lean-h50-head-positive-41082289649.json) | **LEAN_ACCEPTED_STRICT_FINITE_HEAD** |
 | Strict positive second derivative of original symmetric `Re digamma` on that entire rectangle | [Lean P27 composition receipt](evidence/lean-h50-symmetric-curvature-positive-41083554157.json) | **LEAN_ACCEPTED_ORIGINAL_SYMMETRIC_POSITIVE_CURVATURE**; midpoint minimum and special μ-zero substitution still pending |
+| Symmetry midpoint `H_z'(1/4)=0`, global midpoint minimum on the rectangle and center value at an assumed μ-zero | [P28 midpoint Lean receipt](evidence/lean-h50-midpoint-41087290637.json) | **LEAN_ACCEPTED_MIDPOINT_MINIMUM_AND_CONDITIONAL_VALUE** |
+| Full original `Complex.digamma` H50 inequality for every assumed nonnegative canonical μ-zero and `0<x<=1/4` | [P28 complete Lean theorem](evidence/lean-h50-conditional-theorem-41087925734.json) | **LEAN_KERNEL_PROVED_CONDITIONAL_H50**; existence of μ-zero unproved, novelty unknown |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -721,54 +724,27 @@ Both runs are pinned Lean 4.33.0-rc2 with only standard axioms and no `sorryAx`.
 
 **Remaining Lean obligations:** deduce the global midpoint minimum from the positive second derivative and reflection symmetry, then establish `H_{y_*}(1/4)=2 log π` for any *assumed* nonnegative canonical μ-zero using the separately accepted source identity and enclosure. Mu-zero existence, RH consequences, external review and scientific novelty are not claimed.
 
-## 6. Conditional conclusion and remaining obligations
+## 6. Conditional H50 theorem: fully kernel accepted (P28)
 
-**Theorem, conditional only on the distinguished-ordinate enclosure.**
-Assume that the target ordinate y_*=t_*/2 determined by
-Re ψ(1/4+i*y_*)=log(π) lies in
-[157/50,63/20]. Sections 3, 5.0a and 5.1 give
-
-```text
-H_{y_*}''(x) >= L(y_*) > 0   for 0<x<=1/4.
-```
-
-The symmetry of H implies H'_{y_*}(1/4)=0.
-Strict convexity on (0,1/4] then gives H'_{y_*}(x)<0
-for x<1/4 and hence
+**Theorem (source-pinned Lean 4.33.0-rc2, conditional on a canonical μ-zero).**
+Let `tau` be any real number such that `tau >= 0` and `Zeta23.mu tau = 0`.
+Then for every real `0<x<=1/4`:
 
 ```text
-H_{y_*}(x) >= H_{y_*}(1/4) = 2 log(π)
-             for 0<x<=1/4.
+Re digamma(x + i*tau/2) + Re digamma(1/2-x + i*tau/2)
+  >= 2 log(pi).
 ```
 
-Thus the head/tail comparison and positivity steps have **complete
-ordinary-analysis proofs** on the entire two-variable rectangle.
-The Euler gamma and log-pi numerical intervals and both *source-digamma endpoint
-signs* are now **Lean-kernel-accepted** (H50-P13–P15). The previously accepted
-source-to-root bridge applies to any **assumed nonnegative mu-zero**. This does
-not mean that the full analytic curvature/symmetric-minimum argument has been
-assembled into one kernel-checked proof.
+The theorem concerns the original `Complex.digamma`, not a finite rational approximation. It is [Lean `H50.symmetric_digamma_H50_of_nonnegative_mu_zero`](evidence/lean-h50-conditional-theorem-41087925734.json), accepted in [run 41087925734](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41087925734), with only standard axioms and no `sorryAx`. Its fully verified dependencies establish:
 
-**Formal evidence still missing:**
+1. Any **assumed** nonnegative `Zeta23.mu`-zero lies strictly inside `157/50 < tau/2 < 63/20` (P16, with source-derived endpoint certificates), hence `9 <= (tau/2)^2 <= 10`.
+2. The original symmetric `Complex.digamma` has strictly positive second derivative for `0<x<=1/4` on the entire larger squared-height rectangle `9<=z<=10` (P25–P27).
+3. Symmetry yields `H'_z(1/4)=0`, and positive curvature plus standard Mathlib calculus implies `H_z(x)>=H_z(1/4)` (P28 midpoint theorem).
+4. By the *same canonical mu-zero equation*, `H_{tau/2}(1/4)=2 log(pi)` (P28 source identity).
 
-1. Lean/kernel acceptance of the analytic derivative/concavity,
-   finite-head, integral-tail, and full comparison proof.
-   The exact rational endpoint margin and four finite-polynomial
-   sign lemmas are accepted by Lean 4.33.0-rc2; this remains
-   strictly weaker than Lean acceptance of the functional comparison.
-2. For downstream specialization to a designated ordinate, identify the
-   exact theorem or retained hypothesis establishing existence of its
-   nonnegative canonical mu-zero. The **direct source-bound corridor
-   implication is already kernel-accepted** (H50-P16), not outstanding.
-3. A targeted prior-art check for the precise special-function
-   statement, before any claim of scientific novelty.
+The three newly accepted P28 midpoint declarations and the final conditional theorem are archived with original [midpoint receipts](evidence/lean-h50-midpoint-41087290637.json), [final receipt](evidence/lean-h50-conditional-theorem-41087925734.json) and exact [compiler/axiom traces](evidence/lean-h50-conditional-theorem-41087925734.txt). Earlier rejected tactic runs are diagnostic history, not proofs.
 
-The conditional mathematics result is substantive but must
-not be confused with those three independent acceptance steps.
-
-The publication decision and authorship are unassigned.
-**A manuscript is a record of mathematical work, not evidence that
-its target is new or proven.**
+**Boundaries that remain open:** The Lean theorem has an explicit `mu tau=0` assumption and **does not prove that such a nonnegative zero exists**. Nor has the precise conditional special-function inequality been cleared by a comprehensive scholarly prior-art review. Consequently, neither a claim of original discovery, peer-reviewed publication, a Riemann hypothesis result nor an unconditional existence-based specialization is justified. The research target as a **conditional mathematical implication** is kernel proved; the subsequent scientific task is independent mathematical review, novelty assessment, and publication-quality exposition. No external release has occurred.
 
 ## 7. Tool and corpus boundary
 
@@ -778,15 +754,7 @@ relevant theorem does not exist. For this work the pinned Zeta23 source
 was inspected **directly**. Wolfram, SymPy, Lean CI and Repo Search are
 verification and retrieval tools, not separate scientific study arms.
 
-The existing math lab
-[Lean calculator](https://github.com/TeaShaman-cyber/theseus-math-research-lab/blob/main/.github/workflows/lean-calculator.yml)
-now has pinned Zeta23 source checks and independently executed
-Lean proofs for the rational endpoint, the endpoint loss budget, and
-four polynomial sign conditions (latest run
-[40907184557](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40907184557)).
-The proof code, raw JSON and axiom diagnostics are source-bound in
-[evidence](evidence/README.md). These proofs do **not** establish
-the analytic differentiation or infinite-tail comparison inside Lean.
+The existing math lab [pinned Lean calculator](https://github.com/TeaShaman-cyber/theseus-math-research-lab/blob/main/.github/workflows/lean-calculator.yml) runs against an exact Zeta23 source commit and Lean 4.33.0-rc2. The source-original digamma series differentiation, complete symmetric curvature identity, strict curvature positivity, midpoint minimum and full conditional H50 implication are **all kernel accepted** (P17–P28). The original JSON, compiler traces and source SHA-256s are archived in [evidence](evidence/README.md). These receipts do not certify root existence or the originality of the theorem.
 
 ## References and raw materials
 
