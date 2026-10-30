@@ -1253,8 +1253,7 @@ theorem rational_f_hasDerivAt_r (u z : ℝ) (hz : 0 < z) :
   have hnum : HasDerivAt (fun t : ℝ => t) 1 u := by
     exact hasDerivAt_id u
   have hpow : HasDerivAt (fun t : ℝ => t ^ 2) (2 * u) u := by
-    simpa only [id_eq, Nat.reduceSub, pow_one, mul_one, one_mul] using
-      ((hasDerivAt_id u).fun_pow 2)
+    simpa only [Nat.reduceSub, pow_one] using (hasDerivAt_pow 2 u)
   have hdenDeriv : HasDerivAt (fun t : ℝ => t ^ 2 + z) (2 * u) u := by
     simpa only [Pi.add_apply] using hpow.add_const z
   have hquot : HasDerivAt (fun t : ℝ => t / (t ^ 2 + z))
@@ -1272,15 +1271,15 @@ theorem rational_r_hasDerivAt_neg_q (u z : ℝ) (hz : 0 < z) :
     HasDerivAt (fun t : ℝ => r t z) (-q u z) u := by
   have hden : u ^ 2 + z ≠ 0 := ne_of_gt (by positivity : 0 < u ^ 2 + z)
   have hpow : HasDerivAt (fun t : ℝ => t ^ 2) (2 * u) u := by
-    simpa only [id_eq, Nat.reduceSub, pow_one, mul_one, one_mul] using
-      ((hasDerivAt_id u).fun_pow 2)
+    simpa only [Nat.reduceSub, pow_one] using (hasDerivAt_pow 2 u)
   have hnum : HasDerivAt (fun t : ℝ => z - t ^ 2) (-2 * u) u := by
     simpa only [neg_mul] using hpow.const_sub z
   have hbase : HasDerivAt (fun t : ℝ => t ^ 2 + z) (2 * u) u := by
     simpa only [Pi.add_apply] using hpow.add_const z
   have hdenDeriv : HasDerivAt (fun t : ℝ => (t ^ 2 + z) ^ 2)
       (2 * (u ^ 2 + z) * (2 * u)) u := by
-    simpa only [Nat.reduceSub, pow_one, mul_one] using hbase.fun_pow 2
+    simpa only [Function.comp_def, Nat.reduceSub, pow_one] using
+      (hasDerivAt_pow 2 (u ^ 2 + z)).comp u hbase
   have hquot : HasDerivAt (fun t : ℝ => (z - t ^ 2) / (t ^ 2 + z) ^ 2)
       ((-2 * u * (u ^ 2 + z) ^ 2 -
           (z - u ^ 2) * (2 * (u ^ 2 + z) * (2 * u))) /
