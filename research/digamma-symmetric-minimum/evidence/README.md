@@ -497,3 +497,21 @@ The proof transfers the P23 full source formula's second derivative by pointwise
 - `PASS / ELABORATES / exit 0`, theorem axioms only `[propext, Classical.choice, Quot.sound]`, **NO sorryAx**. Hosted QA and witness PASS on exact PR #126 head.
 
 **Boundary:** Symmetric `H_y(x)=G_y(x)+G_y(1/2-x)` second derivative and global positivity/minimum are NOT yet kernel accepted, special ordinate zero is only a conditional parameter, scientific novelty UNKNOWN. Next step: assemble symmetric chain rule and the two original complex-digamma q-series.
+
+## H50-P25: original symmetric Re digamma curvature — Lean 41053665168
+
+The pinned [Lean 4.33.0-rc2 run 41053665168](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41053665168) kernel-accepted four declarations: `real_digamma_vertical_hasDerivAt_first`, `symmetric_real_digamma_hasDerivAt_first`, `symmetric_real_digamma_first_hasDerivAt_second`, and `symmetric_real_digamma_hasSecondDeriv`. For the ORIGINAL complex digamma function `H_z(x)=Re digamma(x+i sqrt(z))+Re digamma(1/2-x+i sqrt(z))`, for all `0<x<1/2,z>0`, it proves the explicit second derivative:
+
+```text
+H_z''(x) = [q(x,z) + sum_{n>=0} q(n+1+x,z)]
+          +[q(1/2-x,z) + sum_{n>=0} q(n+1+1/2-x,z)].
+```
+
+Both applications of the chain rule were formalized, including the sign cancellation. The mathematically equivalent reindexed `sum_{n>=0}[q(n+x,z)+q(n+1/2-x,z)]` is notation only, not a separately submitted Lean theorem.
+
+- Accepted main `774473d81e713a007e065fe3bc8dd738e27de063`, probe SHA256 `8552b4f938d2f54dcf7624d0b976557078c6c6a92e71fab8f90f1c5d7dc123c1`, pinned formal source `anthropics/formal-math@fbdc36bbf17d20af3fd0447c6d1a8a02773c9844` and Lean 4.33.0-rc2.
+- [Raw JSON](lean-h50-symmetric-second-41053665168.json), SHA256 `b45a1e2e7657d4c311445d61e016b8c99e3f4c384c6b9e63807f0442058cd1f0`.
+- [Raw compiler/axiom trace](lean-h50-symmetric-second-41053665168.txt), SHA256 `0971318112845e18505d5505741c6e3b92f790ed1892291742470c34cd64f9f9`.
+- `PASS / ELABORATES / exit0`, all four theorem axiom lists only `[propext, Classical.choice, Quot.sound]`, **NO sorryAx**.
+
+**Next proof gate:** prove the exact combined q head+tail expression strictly positive for the distinguished ordinate corridor throughout the required abscissa domain using the finite-head/integral-tail estimates. This theorem does NOT prove curvature positivity, H50 global minimum, mu-zero existence or scientific novelty.
