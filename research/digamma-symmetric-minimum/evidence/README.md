@@ -459,3 +459,24 @@ d/da (sum_{n>=0} -r(n+1+a,z)) = sum_{n>=0} q(n+1+a,z).
 - Initial runs 41012712700, 41013272944, 41013638938 were **LEAN_REJECTED** and not proof receipts. Narrow tactic normalization repairs in PR #118–#120 preserved the exact theorem statements from PR #117.
 
 **Boundary:** This accepts the second derivative interchange at the canonical rational source-series level. It does **not** yet assemble the twice differentiated full digamma vertical function, its standalone `-f_z(a)` contribution, the symmetry-chain-rule `H_y''` theorem, the finite-head/tail curvature positivity inequality or the H50 symmetric minimum. Mu-zero existence and scientific novelty are not claimed. Next single gate: explicit composition of P21/P22 for the canonical source digamma and its isolated rational head.
+
+## H50-P23: full Zeta23 digamma source formula and its second derivative — Lean 41050325732
+
+The pinned [Lean run 41050325732](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41050325732) accepted four new theorems: `sourceDigammaFormula_eq_real_digamma` (source equality for `0<a<1, z>0` against `Re digamma(a+i sqrt(z))`); `sourceDigammaFormula_hasDerivAt_first`; `sourceDigammaFirst_hasDerivAt_second`; and `sourceDigammaFormula_hasSecondDeriv`. The exact full source formula is
+
+```text
+G_z(a) = -EulerMascheroniConstant - a/(a²+z)
+        + sum_{n>=0} digammaTerm(n+1,a,z)
+G_z''(a) = q(a,z) + sum_{n>=0} q(n+1+a,z), for a>0,z>0.
+```
+
+The source equality is established from pinned Zeta23 `re_digamma_vertical`, and the second derivative of `G_z` incorporates the previously missing isolated rational term via accepted `f'=r`, `r'=-q` and P21/P22 source-series interchanges. The theorem asserts `HasDerivAt (fun t => deriv (sourceDigammaFormula z) t)` of the full q head+series; it does not simply differentiate a surrogate finite sum.
+
+- Original source pin `anthropics/formal-math@fbdc36bbf17d20af3fd0447c6d1a8a02773c9844`, pinned Lean 4.33.0-rc2.
+- Accepted canonical math-lab main `9c96cfa2954ee75fec1f391fad80b8ef7f60da07`, probe source SHA-256 `ba459db4ffe2633374240d5ebadcb5837f3b38ceb70c5df878157bb3882b7d22`.
+- [Original JSON](lean-h50-full-source-second-41050325732.json), SHA-256 `f094285ccedfa5faeef168fa24ac69b7cb6a6923dcf1198893694fcd429aa855`.
+- [Original Lean diagnostics](lean-h50-full-source-second-41050325732.txt), SHA-256 `c44f9f9847da62b6a1970da4cfe37ab87d8fba6703698fec23f709378cea4af7`.
+- All four theorem axiom inventories exactly `[propext, Classical.choice, Quot.sound]`; **NO sorryAx**. Full result `PASS / ELABORATES / returncode0`.
+- Previous rejected run 41049407832 and 41049809134 were tactic/source-shape diagnostics and **not** accepted proof. The skipped 41049298076 PR-branch run is not a Lean check: calculator workflow is main-only. PRs #122-#124 preserved all theorem statements during narrow fixes.
+
+**Boundary:** This is a formal second derivative of the *full canonical source formula*, with a kernel-accepted pointwise identification of the formula with `Re digamma(a+i sqrt(z))` on `0<a<1`. A separate Lean theorem transferring its second derivative to the actual `Complex.digamma` function via a neighborhood equality and then composing the symmetric `H_y''` chain rule is **still pending**. Global curvature positivity and H50 minimum are not kernel accepted; scientific novelty remains UNKNOWN. Next gate: direct second-derivative bridge on the interval and symmetric curvature assembly.
