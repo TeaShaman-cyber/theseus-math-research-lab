@@ -429,3 +429,16 @@ The pinned [Lean 4.33.0-rc2 run 41005153298](https://github.com/TeaShaman-cyber/
 - `PASS/ELABORATES/returncode0`; new theorem axiom list `[propext, Classical.choice, Quot.sound]`, **NO sorryAx**. Native deterministic QA and hosted qa/witness PASS on exact candidate head.
 
 **Boundary:** The canonical source digamma series is still not twice differentiated in Lean, and `H_y''` has not been assembled from the source q-series. Finite-head/integral-tail positivity, global H50 minimum and scientific novelty remain **not Lean verified / UNKNOWN**. The differentiated q-series M-test is not a proof of those further statements.
+
+## H50-P21: first derivative interchange for the original digamma series — Lean 41008796392
+
+The pinned [Lean run 41008796392](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41008796392) accepted four new declarations: `curvature_source_r_abs_le_majorant`, `curvature_square_majorant_summable`, `digamma_source_term_hasDerivAt`, and `digamma_source_tsum_hasDerivAt_first`. For every real `a>0,z>0`, the derivative with respect to abscissa of the exact source `digammaTerm` infinite sum equals the infinite sum of `-r(n+1+a,z)`. This uses the existing Mathlib theorem `hasDerivAt_tsum_of_isPreconnected` on the positive open half-line with the source digamma summability at `a=1/4`, the explicit square majorant, and source-exact rational differentiation. It is **not** yet the second derivative or full `H_y''` identity.
+
+- Source-bound Lean 4.33.0-rc2, original Zeta23 source commit `fbdc36bbf17d20af3fd0447c6d1a8a02773c9844`.
+- Verified source probe SHA-256 `5aa02200b79d868aa377d569be11d9272b87d3d19f275c3f5564a873dd5efff4`, accepted canonical main `ba0931e22d22a738355a19354dcd17871155f71b`, merged PRs #114 and #115.
+- [Original raw JSON](lean-h50-first-derivative-41008796392.json), SHA-256 `325551c4caa0d0e46b19170fda5741bbe3343330d555b4bd97730715adc2e20a`.
+- [Original Lean diagnostic and axiom trace](lean-h50-first-derivative-41008796392.txt), SHA-256 `a3b6c4766610f70178cbd3bebccbe632e1830c28b23a4748aa293df0b26d2f8a`.
+- `PASS/ELABORATES/exit0`. All four new axiom inventories contain only `[propext, Classical.choice, Quot.sound]`, no `sorryAx`.
+- Initial run 41008407625 is **LEAN_REJECTED** due to the incorrect API method `.nat_add` for `Summable`; narrow Mathlib fix in PR #115 used `summable_nat_add_iff 1`, changing no theorem statements.
+
+**Next proof gate:** differentiate the new sum of `-r` terms using the already verified q cubic majorant and rational `r'=-q`, then compose the standalone `-f_z(a)` term, the exact Zeta23 digamma source identity, and the symmetric chain rule to obtain `H_y''`. Global positivity and minimum are not yet kernel accepted. Novelty remains UNKNOWN.
