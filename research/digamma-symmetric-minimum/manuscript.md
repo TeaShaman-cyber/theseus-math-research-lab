@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.16, 2026-10-29.**
+**WORKING MATHEMATICAL DRAFT — v0.17, 2026-10-30.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -78,6 +78,7 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Strict `log pi` interval and both gamma-only source-digamma endpoint sign implications | [Lean H50-P14 receipt](evidence/lean-h50-logpi-short-40956565512.json) | **LEAN_ACCEPTED_LOGPI_AND_GAMMA_ONLY_SIGNS**; gamma numerical interval still pending |
 | Exact H1024 rational witness, Euler gamma interval, and source-exact unconditional ordinate endpoint signs | [Lean H50-P15 receipt](evidence/lean-h50-gamma1024-40959547396.json) | **LEAN_ACCEPTED_GAMMA_AND_UNCONDITIONAL_ENDPOINT_SIGNS**; full functional curvature/H50 pending |
 | Directly composed nonnegative `Zeta23.mu` zero corridor (157/50 < tau/2 < 63/20) | [Lean H50-P16 receipt](evidence/lean-h50-corridor-40963278783.json) | **LEAN_ACCEPTED_DIRECT_CORRIDOR**; assumes tau >= 0 and mu(tau) = 0; does not prove zero existence or full H50 |
+| Pointwise rational source curvature derivatives `f' = r`, `r' = -q` and `f'' = -q` for z>0 | [Lean H50-P17 receipt](evidence/lean-h50-curvature-deriv-40996280696.json) | **LEAN_ACCEPTED_RATIONAL_CURVATURE_KERNEL**; differentiation under infinite sum remains open |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -330,6 +331,19 @@ for any tau : ℝ,  0 <= tau  and  Zeta23.mu tau = 0
 This is a **single kernel-accepted theorem** derived from the already proved digamma endpoint signs and the canonical source's mu-to-digamma identity and monotonicity bridge. No numerical interval assumptions remain. The [raw receipt](evidence/lean-h50-corridor-40963278783.json) and [axiom diagnostics](evidence/lean-h50-corridor-40963278783.txt) match the source SHA-256 and have no `sorryAx`.
 
 **Boundary:** the theorem does not construct a nonnegative mu-zero; `Zeta23.mu tau = 0` remains a hypothesis. The real analytic curvature-series, head/integral-tail inequality and global symmetric-minimum H50 statement are **not yet verified as a Lean theorem**. Novelty remains unknown.
+
+### 4.14 Source rational curvature derivatives in Lean (H50-P17)
+
+[Pinned Lean run 40996280696](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40996280696) accepted the **three pointwise differential identities** underlying the manuscript's curvature kernel, valid for any real `u` and `z>0`:
+
+```text
+f_z(u)=u/(u²+z),     f'_z(u)=r(u,z)=(z-u²)/(u²+z)²,
+r'(u,z)=f''_z(u)=-q(u,z),     q(u,z)=2u(3z-u²)/(u²+z)³.
+```
+
+These were independently checked symbolically and subsequently proven by the actual Lean kernel with no `sorryAx`; the raw [JSON receipt](evidence/lean-h50-curvature-deriv-40996280696.json) and [axiom trace](evidence/lean-h50-curvature-deriv-40996280696.txt) match the exact source hash. Earlier Lean runs 40994276507, 40995095957, 40995517945 and 40995865538 were rejected due to proof-tactic/typeclass issues, and are not acceptance evidence.
+
+**The essential next theorem is not this pointwise algebra:** it is a uniform-convergence/differentiation argument connecting the *infinite source digamma series* to the second derivative of `H_y(x)`, with exact `q` summands. Only after that may the finite-head/integral-tail comparison establish global strict curvature. Neither the infinite-series derivative exchange nor the symmetric minimum H50 is yet kernel accepted.
 
 ## 5. Finite head and analytic tail
 
