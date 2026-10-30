@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.17, 2026-10-30.**
+**WORKING MATHEMATICAL DRAFT — v0.18, 2026-10-30.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -79,6 +79,8 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Exact H1024 rational witness, Euler gamma interval, and source-exact unconditional ordinate endpoint signs | [Lean H50-P15 receipt](evidence/lean-h50-gamma1024-40959547396.json) | **LEAN_ACCEPTED_GAMMA_AND_UNCONDITIONAL_ENDPOINT_SIGNS**; full functional curvature/H50 pending |
 | Directly composed nonnegative `Zeta23.mu` zero corridor (157/50 < tau/2 < 63/20) | [Lean H50-P16 receipt](evidence/lean-h50-corridor-40963278783.json) | **LEAN_ACCEPTED_DIRECT_CORRIDOR**; assumes tau >= 0 and mu(tau) = 0; does not prove zero existence or full H50 |
 | Pointwise rational source curvature derivatives `f' = r`, `r' = -q` and `f'' = -q` for z>0 | [Lean H50-P17 receipt](evidence/lean-h50-curvature-deriv-40996280696.json) | **LEAN_ACCEPTED_RATIONAL_CURVATURE_KERNEL**; differentiation under infinite sum remains open |
+| Source-uniform pointwise rational curvature majorants for all a,z≥0 | [Lean P18 receipt](evidence/lean-h50-curvature-majorants-40998423368.json) | **LEAN_ACCEPTED_CURVATURE_QR_MTEST_BOUNDS**; summability checked separately in P19 |
+| Summable cubic curvature majorant and absolute q-series summability | [Lean P19 receipt](evidence/lean-h50-curvature-cubic-summable-40998899290.json) | **LEAN_ACCEPTED_CUBIC_MAJORANT_SUMMABLE**; uniform convergence and differentiated infinite digamma series pending |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -344,6 +346,27 @@ r'(u,z)=f''_z(u)=-q(u,z),     q(u,z)=2u(3z-u²)/(u²+z)³.
 These were independently checked symbolically and subsequently proven by the actual Lean kernel with no `sorryAx`; the raw [JSON receipt](evidence/lean-h50-curvature-deriv-40996280696.json) and [axiom trace](evidence/lean-h50-curvature-deriv-40996280696.txt) match the exact source hash. Earlier Lean runs 40994276507, 40995095957, 40995517945 and 40995865538 were rejected due to proof-tactic/typeclass issues, and are not acceptance evidence.
 
 **The essential next theorem is not this pointwise algebra:** it is a uniform-convergence/differentiation argument connecting the *infinite source digamma series* to the second derivative of `H_y(x)`, with exact `q` summands. Only after that may the finite-head/integral-tail comparison establish global strict curvature. Neither the infinite-series derivative exchange nor the symmetric minimum H50 is yet kernel accepted.
+
+### 4.15 Summable parameter-independent derivative majorant (H50-P18/P19)
+
+The source-pinned [Lean P18 run 40998423368](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40998423368) checked the exact rational source-kernel inequalities, for any `u>0,z>=0`:
+
+```text
+|r(u,z)| <= 1/u²,   |q(u,z)| <= 6/u³,
+|q(n+1+a,z)| <= 6/(n+1)³  for n≥0 and a,z≥0.
+```
+
+The [Lean P19 run 40998899290](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40998899290) then independently proved a finite cubic telescoping partial-sum bound and two genuine infinite summability statements:
+
+```text
+sum_{n=0}^{k-1} 6/(n+1)³ <= 9  for all k,
+Summable (fun n => 6/(n+1)³),
+Summable (fun n => |q(n+1+a,z)|)  for all a,z>=0.
+```
+
+The shared majorant is independent of both parameters, completing the **numerical hypotheses** for a Weierstrass M-test argument. Each of the seven new theorems was kernel accepted with only standard axioms, no `sorryAx`, and exact source matching; the [P18 raw receipt](evidence/lean-h50-curvature-majorants-40998423368.json), [P18 axioms](evidence/lean-h50-curvature-majorants-40998423368.txt), [P19 raw receipt](evidence/lean-h50-curvature-cubic-summable-40998899290.json), and [P19 axioms](evidence/lean-h50-curvature-cubic-summable-40998899290.txt) are preserved separately with their original source hashes.
+
+**Acceptance boundary:** A kernel-accepted lemma explicitly invoking a pinned Mathlib uniform-convergence theorem has **not** yet been assembled. More importantly, source-bound differentiation under the infinite digamma sum and the exact symmetric `H_y''` identity require additional analytic work. Strict global H50 curvature and the minimum at `x=1/4` remain **unproved in Lean**; scientific novelty remains unknown.
 
 ## 5. Finite head and analytic tail
 

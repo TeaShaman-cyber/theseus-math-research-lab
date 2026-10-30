@@ -387,3 +387,34 @@ The preceding pinned runs 40994276507, 40995095957, 40995517945 and 40995865538 
 - Result **PASS / ELABORATES / returncode 0**. Each new declaration uses only axioms `[propext, Classical.choice, Quot.sound]`; **no sorryAx**.
 
 **Boundary:** These are *pointwise derivatives of the rational source kernel*, NOT differentiated sums of the digamma source series. Exchange of differentiation with infinite summation, the exact symmetric `H_y''` series and the full curvature positivity and minimum theorem are still open. No novelty conclusion.
+
+## H50-P18: parameter-independent rational curvature bounds — Lean 40998423368
+
+The source-pinned [Lean run 40998423368](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40998423368) accepted three declarations:
+
+- `H50.rational_r_abs_le_recip_sq`: for all `u>0, z>=0`, `|r(u,z)| <= 1/u²`;
+- `H50.rational_q_abs_le_six_recip_cube`: for all `u>0, z>=0`, `|q(u,z)| <= 6/u³`;
+- `H50.curvature_source_q_abs_le_majorant`: for all `n:ℕ, a>=0, z>=0`, `|q(n+1+a,z)| <= 6/(n+1)³`.
+
+All three statements are inequalities on the **original source rational q/r**. The first pinned attempt 40998100334 accepted the first two, but rejected the shifted-index theorem; its `sorryAx`-contaminated third declaration is NOT evidence. The corrected cubic inequality passed in 40998423368. `PASS/ELABORATES/returncode0`, all three axiom inventories `[propext, Classical.choice, Quot.sound]`, **no sorryAx**. Exact probe source SHA-256 `5f5a591f4094b2c06053835c9afc3ac0d8573d784158b74fd953d61dd392afad` on main `dc1f1b84db69ad5a377309aa13c520f626976220`.
+
+- [Raw JSON](lean-h50-curvature-majorants-40998423368.json): SHA-256 `3b69a71f742e7fe119142d4300100c982c94033bdb7c7caaf0ec07b8184a8530`.
+- [Raw Lean axiom diagnostics](lean-h50-curvature-majorants-40998423368.txt): SHA-256 `d018c50c26870be6203ae4d71278dea49bee78a436b79e5a916aa1f0faac8084`.
+
+## H50-P19: cubic numerical majorant and absolute q-series summability — Lean 40998899290
+
+The source-pinned [Lean run 40998899290](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/40998899290) accepted four further declarations:
+
+- `curvature_cubic_shifted_partial_le_three`: every partial sum of `6/(n+2)³` is at most `3`, by the previously kernel-accepted rational cubic telescope;
+- `curvature_cubic_partial_le_nine`: every partial sum of `6/(n+1)³` is at most `9`;
+- `curvature_cubic_majorant_summable`: `Summable (fun n : ℕ => 6/(n+1)³)`;
+- `curvature_source_q_abs_summable`: for **all** real `a,z>=0`, `Summable (fun n : ℕ => |q(n+1+a,z)|)`.
+
+Combined with P18, this supplies a formally checked **single summable pointwise M-test bound uniform in both parameters**. It does **not yet** provide a kernel-accepted theorem of uniform convergence on a parameter domain, the interchange of differentiation with the source digamma sum, or the exact `H_y''` series.
+
+`PASS/ELABORATES/returncode0`, four new theorem inventories `[propext, Classical.choice, Quot.sound]`, **no sorryAx**. Exact probe SHA-256 `7372b2f09903bbdabb9abe6b796f0df933e852f182b737faba7283c3c591a517` on main `60758689e2aba400d16cf75b8f6e3c922691ba4d`.
+
+- [Raw JSON](lean-h50-curvature-cubic-summable-40998899290.json): SHA-256 `625ecff4a7728407c3f1f7151b0c5751f87197c08d79e40105b5f1677966614e`.
+- [Raw Lean axiom diagnostics](lean-h50-curvature-cubic-summable-40998899290.txt): SHA-256 `ec84845f24a313deb303bd39eaa764f2fc15bf67c7cc5539be98a77da1b74c4a`.
+
+**Next proof gate:** use the pinned Mathlib uniform-convergence theorem for series under a summable pointwise bound, then justify the real first/second derivative interchange on a suitable open parameter interval; separately derive the original symmetric digamma `H_y''` series and prove strict positivity. `H50_NOT_YET_LEAN_PROVED / NOVELTY_UNKNOWN`.
