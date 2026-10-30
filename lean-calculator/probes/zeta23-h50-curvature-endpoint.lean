@@ -2096,7 +2096,7 @@ theorem curvature_full_q_split8 (a z : ℝ)
   have hs : Summable (fun n : ℕ => q ((n : ℝ) + a) z) := by
     apply (summable_nat_add_iff 8).mp
     simpa only [Nat.cast_add, Nat.cast_ofNat, add_assoc] using htail
-  have hzero := tsum_eq_zero_add hs
+  have hzero := hs.tsum_eq_zero_add
   have hsplit := hs.sum_add_tsum_nat_add 8
   calc
     q a z + (∑' n : ℕ, q (((n : ℝ) + 1) + a) z) =
