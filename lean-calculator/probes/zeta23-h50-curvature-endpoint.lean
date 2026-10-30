@@ -1254,12 +1254,12 @@ theorem rational_f_hasDerivAt_r (u z : ℝ) (hz : 0 < z) :
     exact hasDerivAt_id u
   have hpow : HasDerivAt (fun t : ℝ => t ^ 2) (2 * u) u := by
     simpa only [id_eq, Nat.reduceSub, pow_one, mul_one, one_mul] using
-      ((hasDerivAt_id u).pow 2)
+      ((hasDerivAt_id u).fun_pow 2)
   have hdenDeriv : HasDerivAt (fun t : ℝ => t ^ 2 + z) (2 * u) u := by
     simpa only [Pi.add_apply] using hpow.add_const z
   have hquot : HasDerivAt (fun t : ℝ => t / (t ^ 2 + z))
       ((u ^ 2 + z - u * (2 * u)) / (u ^ 2 + z) ^ 2) u := by
-    simpa only [Pi.div_apply, one_mul] using hnum.div hdenDeriv hden
+    simpa only [Pi.div_apply, one_mul] using hnum.fun_div hdenDeriv hden
   have hEq : (u ^ 2 + z - u * (2 * u)) / (u ^ 2 + z) ^ 2 = r u z := by
     unfold r
     congr 1
@@ -1273,19 +1273,19 @@ theorem rational_r_hasDerivAt_neg_q (u z : ℝ) (hz : 0 < z) :
   have hden : u ^ 2 + z ≠ 0 := ne_of_gt (by positivity : 0 < u ^ 2 + z)
   have hpow : HasDerivAt (fun t : ℝ => t ^ 2) (2 * u) u := by
     simpa only [id_eq, Nat.reduceSub, pow_one, mul_one, one_mul] using
-      ((hasDerivAt_id u).pow 2)
+      ((hasDerivAt_id u).fun_pow 2)
   have hnum : HasDerivAt (fun t : ℝ => z - t ^ 2) (-2 * u) u := by
-    simpa only [Pi.sub_apply] using hpow.const_sub z
+    simpa only [neg_mul] using hpow.const_sub z
   have hbase : HasDerivAt (fun t : ℝ => t ^ 2 + z) (2 * u) u := by
     simpa only [Pi.add_apply] using hpow.add_const z
   have hdenDeriv : HasDerivAt (fun t : ℝ => (t ^ 2 + z) ^ 2)
       (2 * (u ^ 2 + z) * (2 * u)) u := by
-    simpa only [Nat.reduceSub, pow_one, mul_one] using hbase.pow 2
+    simpa only [Nat.reduceSub, pow_one, mul_one] using hbase.fun_pow 2
   have hquot : HasDerivAt (fun t : ℝ => (z - t ^ 2) / (t ^ 2 + z) ^ 2)
       ((-2 * u * (u ^ 2 + z) ^ 2 -
           (z - u ^ 2) * (2 * (u ^ 2 + z) * (2 * u))) /
             ((u ^ 2 + z) ^ 2) ^ 2) u := by
-    simpa only [Pi.div_apply] using hnum.div hdenDeriv (pow_ne_zero 2 hden)
+    simpa only [Pi.div_apply] using hnum.fun_div hdenDeriv (pow_ne_zero 2 hden)
   have hEq : ((-2 * u * (u ^ 2 + z) ^ 2 -
           (z - u ^ 2) * (2 * (u ^ 2 + z) * (2 * u))) /
             ((u ^ 2 + z) ^ 2) ^ 2) = -q u z := by
