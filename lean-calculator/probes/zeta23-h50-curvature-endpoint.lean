@@ -1635,7 +1635,14 @@ theorem sourceDigammaFormula_hasDerivAt_first (a z : ℝ)
     hasDerivAt_const a _
   have hhead := (rational_f_hasDerivAt_r a z hz)
   have htail := digamma_source_tsum_hasDerivAt_first a z ha hz
-  simpa only [sourceDigammaFormula, zero_sub] using (hc.sub hhead).add htail
+  have hfun : (sourceDigammaFormula z) =
+      ((fun _ : ℝ => -Real.eulerMascheroniConstant) -
+        (fun t : ℝ => t / (t ^ 2 + z))) +
+        (fun t : ℝ => ∑' n : ℕ, digammaTerm ((n : ℝ) + 1) t z) := by
+    funext t
+    rfl
+  rw [hfun]
+  exact (hc.sub hhead).add htail
 
 /-- The explicit first-derivative source expression has derivative
     the full exact q-series, including the isolated rational head q(a,z). -/
@@ -1646,7 +1653,14 @@ theorem sourceDigammaFirst_hasDerivAt_second (a z : ℝ)
       (q a z + ∑' n : ℕ, q (((n : ℝ) + 1) + a) z) a := by
   have hhead := (rational_r_hasDerivAt_neg_q a z hz).neg
   have htail := curvature_source_neg_r_tsum_hasDerivAt_q a z ha hz
-  simpa only [neg_neg] using hhead.add htail
+  have hfun : (fun t : ℝ => -r t z +
+      ∑' n : ℕ, -r (((n : ℝ) + 1) + t) z) =
+      (-(fun t : ℝ => r t z)) +
+        (fun t : ℝ => ∑' n : ℕ, -r (((n : ℝ) + 1) + t) z) := by
+    funext t
+    rfl
+  rw [hfun]
+  exact hhead.add htail
 
 /-- Two derivatives of the full canonical digamma source expression,
     in the original abscissa parameter, are exactly the q head plus q-series. -/
@@ -1659,7 +1673,7 @@ theorem sourceDigammaFormula_hasSecondDeriv (a z : ℝ)
     filter_upwards [isOpen_Ioi.mem_nhds ha] with t ht
     exact (sourceDigammaFormula_hasDerivAt_first t z ht hz).deriv
   exact (sourceDigammaFirst_hasDerivAt_second a z ha hz).congr_of_eventuallyEq
-    hneigh.symm
+    hneigh
 
 end H50
 
