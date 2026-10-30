@@ -1679,6 +1679,36 @@ theorem sourceDigammaFormula_hasSecondDeriv (a z : ℝ)
   exact (sourceDigammaFirst_hasDerivAt_second a z ha hz).congr_of_eventuallyEq
     hneigh
 
+
+/-! H50-P24: transfer the already kernel-accepted second derivative of the
+    full source formula to the original Complex.digamma's real part. The
+    source equality is used on an open neighborhood, not merely at a point. -/
+
+/-- The original complex digamma real part with squared ordinate z. -/
+def sourceRealDigammaVertical (z : ℝ) (a : ℝ) : ℝ :=
+  (Complex.digamma ((a : ℂ) + Complex.I * (Real.sqrt z : ℂ))).re
+
+/-- The original real digamma function has the full q-curvature derivative,
+    not merely its source series representation, for 0<a<1 and z>0. -/
+theorem real_digamma_vertical_hasSecondDeriv (a z : ℝ)
+    (ha : 0 < a) (ha1 : a < 1) (hz : 0 < z) :
+    HasDerivAt (fun t : ℝ => deriv (sourceRealDigammaVertical z) t)
+      (q a z + ∑' n : ℕ, q (((n : ℝ) + 1) + a) z) a := by
+  have hderiv : (fun t : ℝ => deriv (sourceRealDigammaVertical z) t) =ᶠ[nhds a]
+      (fun t : ℝ => deriv (sourceDigammaFormula z) t) := by
+    filter_upwards [isOpen_Ioo.mem_nhds (show a ∈ Set.Ioo (0 : ℝ) 1 from
+      ⟨ha, ha1⟩)] with t ht
+    have hformula : (sourceRealDigammaVertical z) =ᶠ[nhds t]
+        (sourceDigammaFormula z) := by
+      filter_upwards [isOpen_Ioo.mem_nhds ht] with u hu
+      exact (sourceDigammaFormula_eq_real_digamma u z hu.1 hu.2 hz).symm
+    have hsource := sourceDigammaFormula_hasDerivAt_first t z ht.1 hz
+    have horig : HasDerivAt (sourceRealDigammaVertical z)
+        (-r t z + ∑' n : ℕ, -r (((n : ℝ) + 1) + t) z) t :=
+      hsource.congr_of_eventuallyEq hformula
+    exact horig.deriv.trans hsource.deriv.symm
+  exact (sourceDigammaFormula_hasSecondDeriv a z ha hz).congr_of_eventuallyEq hderiv
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -1801,3 +1831,5 @@ end H50
 #print axioms H50.sourceDigammaFormula_hasDerivAt_first
 #print axioms H50.sourceDigammaFirst_hasDerivAt_second
 #print axioms H50.sourceDigammaFormula_hasSecondDeriv
+
+#print axioms H50.real_digamma_vertical_hasSecondDeriv
