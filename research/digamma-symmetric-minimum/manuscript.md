@@ -1,6 +1,6 @@
 # A rational-corridor approach to a symmetric complex digamma inequality
 
-**WORKING MATHEMATICAL DRAFT — v0.22, 2026-10-30.**
+**WORKING MATHEMATICAL DRAFT — v0.23, 2026-10-30.**
 **Research disposition:** `H50_NOT_YET_PROVED / NOVELTY_UNKNOWN`. Neither a completed
 Lean proof nor a claim of scientific originality, peer review, or publication.
 Coordinating research: [Theseus Mathematics Research #50](https://github.com/TeaShaman-cyber/theseus-math-research-lab/issues/50).
@@ -84,7 +84,8 @@ This is a bounded claim about a special function, **not a proof of RH**.
 | Uniform convergence of the exact original q-series for jointly nonnegative `(a,z)` | [Lean P20 receipt](evidence/lean-h50-q-uniform-41005153298.json) | **LEAN_ACCEPTED_Q_SERIES_UNIFORM_CONVERGENCE**; first derivative exchange verified in P21; second derivative and exact H_y formula pending |
 | Source digamma infinite tsum first-derivative interchange on `a>0,z>0` | [Lean P21 receipt](evidence/lean-h50-first-derivative-41008796392.json) | **LEAN_ACCEPTED_FIRST_DERIVATIVE_EXCHANGE**; negative-r series differentiation verified in P22; standalone rational head and symmetric `H_y` still pending |
 | Infinite source negative-r series second-derivative exchange on `a>0,z>0` | [Lean P22 receipt](evidence/lean-h50-second-series-41014036669.json) | **LEAN_ACCEPTED_SECOND_SOURCE_SERIES_DERIVATIVE**; standalone full-source rational term composed in P23; symmetric H_y still pending |
-| Complete original digamma source formula, standalone rational head, and exact second source derivative | [Lean P23 receipt](evidence/lean-h50-full-source-second-41050325732.json) | **LEAN_ACCEPTED_FULL_SOURCE_FORMULA_SECOND_DERIVATIVE**; derivative transfer to `Re digamma`, symmetric `H_y` and global inequality still pending |
+| Complete original digamma source formula, standalone rational head, and exact second source derivative | [Lean P23 receipt](evidence/lean-h50-full-source-second-41050325732.json) | **LEAN_ACCEPTED_FULL_SOURCE_FORMULA_SECOND_DERIVATIVE**; derivative transfer verified in P24; symmetric `H_y` and global inequality still pending |
+| Direct second derivative of `Re digamma(a+i sqrt z)` for `0<a<1,z>0` | [Lean P24 receipt](evidence/lean-h50-real-digamma-41052957695.json) | **LEAN_ACCEPTED_ORIGINAL_REAL_DIGAMMA_CURVATURE**; symmetric `H_y` and positivity pending |
 | H50 conclusion and publication-level novelty | Depends on independently accepted composition of all steps and prior-art review | **UNVERIFIED** |
 
 The finite observations are independent of proof claims. The formal
@@ -412,6 +413,17 @@ G_z''(a) = q(a,z) + sum_{n>=0} q(n+1+a,z), for a>0,z>0.
 ```
 
 The result explicitly includes the isolated negative rational source head, rather than only the infinite series P21/P22. Four newly declared theorems passed with only standard Lean axioms, no `sorryAx`, and source SHA-256 `ba459db4ffe2633374240d5ebadcb5837f3b38ceb70c5df878157bb3882b7d22`; [original JSON](evidence/lean-h50-full-source-second-41050325732.json) and [compiler axiom trace](evidence/lean-h50-full-source-second-41050325732.txt) are separately archived. The pointwise source equality and the formula second-derivative theorem are accepted, but **the corresponding direct second derivative theorem for the original complex digamma expression is still to be transferred via equality on a neighborhood**. The symmetric H_y chain rule, positivity and global minimum are not kernel proved. NOVELTY_UNKNOWN.
+
+### 4.20 Original real digamma second derivative, via local equality (H50-P24)
+
+The source-bound [Lean run 41052957695](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41052957695) kernel-accepts the exact identity
+
+```text
+d²/da² Re digamma(a+i sqrt(z)) = q(a,z) + sum_{n>=0} q(n+1+a,z),
+                 for 0<a<1 and z>0.
+```
+
+Unlike P23, this theorem directly concerns the original Complex.digamma real-part function. Pointwise identity with the formal source series on the open interval supplies the necessary equality of derivatives on a neighborhood. The theorem uses only standard Lean axioms, no `sorryAx`; the immutable [raw JSON](evidence/lean-h50-real-digamma-41052957695.json) and [compiler trace](evidence/lean-h50-real-digamma-41052957695.txt) have been archived. Still pending: the `H_y` symmetric second-derivative chain rule and proof of strict positivity on the entire constrained domain. No global H50 claim, no novelty claim.
 
 ## 5. Finite head and analytic tail
 
