@@ -1242,6 +1242,57 @@ theorem nonnegative_mu_zero_in_corridor_unconditional (tau : ℝ)
   exact nonnegative_mu_zero_in_corridor_of_digamma_signs tau htau hzero
     digamma_left_sign64_unconditional digamma_right_sign64_unconditional
 
+/-! H50-P17: the rational source's curvature kernel, before exchanging
+    derivatives with the infinite digamma series. These identities are
+    valid throughout the ordinate corridor because z=y²>0. -/
+
+/-- The source summand's rational core has derivative r(u,z). -/
+theorem rational_f_hasDerivAt_r (u z : ℝ) (hz : 0 < z) :
+    HasDerivAt (fun t : ℝ => t / (t ^ 2 + z)) (r u z) u := by
+  have hden : u ^ 2 + z ≠ 0 := ne_of_gt (by positivity : 0 < u ^ 2 + z)
+  have hnum : HasDerivAt (fun t : ℝ => t) 1 u := by
+    simpa using hasDerivAt_id u
+  have hdenDeriv : HasDerivAt (fun t : ℝ => t ^ 2 + z) (2 * u) u := by
+    convert ((hasDerivAt_id u).pow 2).add_const z using 1 <;> ring
+  have hquot := hnum.div hdenDeriv hden
+  convert hquot using 1
+  · ext t
+    rfl
+  · simp only [r]
+    field_simp
+    ring
+
+/-- The second rational source derivative is exactly negative q(u,z). -/
+theorem rational_r_hasDerivAt_neg_q (u z : ℝ) (hz : 0 < z) :
+    HasDerivAt (fun t : ℝ => r t z) (-q u z) u := by
+  have hden : u ^ 2 + z ≠ 0 := ne_of_gt (by positivity : 0 < u ^ 2 + z)
+  have hnum : HasDerivAt (fun t : ℝ => z - t ^ 2) (-2 * u) u := by
+    convert ((hasDerivAt_id u).pow 2).const_sub z using 1 <;> ring
+  have hbase : HasDerivAt (fun t : ℝ => t ^ 2 + z) (2 * u) u := by
+    convert ((hasDerivAt_id u).pow 2).add_const z using 1 <;> ring
+  have hdenDeriv : HasDerivAt (fun t : ℝ => (t ^ 2 + z) ^ 2)
+      (2 * (u ^ 2 + z) * (2 * u)) u := by
+    convert hbase.pow 2 using 1 <;> ring
+  have hquot := hnum.div hdenDeriv (pow_ne_zero 2 hden)
+  convert hquot using 1
+  · ext t
+    simp only [r]
+  · simp only [q]
+    field_simp
+    ring
+
+/-- The pointwise second derivative of u/(u²+z) is -q(u,z).
+    This is not yet the derivative of the *infinite digamma series*. -/
+theorem rational_f_second_derivative_eq_neg_q (u z : ℝ) (hz : 0 < z) :
+    deriv (fun t : ℝ => deriv (fun v : ℝ => v / (v ^ 2 + z)) t) u =
+      -q u z := by
+  have hfirst : (fun t : ℝ =>
+      deriv (fun v : ℝ => v / (v ^ 2 + z)) t) = (fun t : ℝ => r t z) := by
+    funext t
+    exact (rational_f_hasDerivAt_r t z hz).deriv
+  rw [hfirst]
+  exact (rational_r_hasDerivAt_neg_q u z hz).deriv
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -1336,3 +1387,7 @@ end H50
 #print axioms H50.digamma_right_sign64_unconditional
 
 #print axioms H50.nonnegative_mu_zero_in_corridor_unconditional
+
+#print axioms H50.rational_f_hasDerivAt_r
+#print axioms H50.rational_r_hasDerivAt_neg_q
+#print axioms H50.rational_f_second_derivative_eq_neg_q
