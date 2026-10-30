@@ -2081,6 +2081,52 @@ theorem curvature_head8_gt_six_over_49 (x z : ℝ)
     Nat.cast_ofNat, Nat.cast_zero, zero_add, zero_mul, add_zero]
   linarith
 
+
+/-! H50-P27 continuation: compose the accepted symmetric curvature
+    identity with uniform positive eight-term head and two infinite tails. -/
+
+/-- Exact q-series from the original digamma can be split into its first
+    eight terms plus the source-shifted tail without changing any summands. -/
+theorem curvature_full_q_split8 (a z : ℝ)
+    (ha : 0 ≤ a) (hz : 0 ≤ z) :
+    q a z + (∑' n : ℕ, q (((n : ℝ) + 1) + a) z) =
+      (∑ n ∈ Finset.range 8, q ((n : ℝ) + a) z) +
+      (∑' n : ℕ, q (((n : ℝ) + 8) + a) z) := by
+  have htail := curvature_q_tail8_summable a z ha hz
+  have hs : Summable (fun n : ℕ => q ((n : ℝ) + a) z) := by
+    apply (summable_nat_add_iff 8).mp
+    simpa only [Nat.cast_add, Nat.cast_ofNat, add_assoc] using htail
+  have hzero := tsum_eq_zero_add hs
+  have hsplit := hs.sum_add_tsum_nat_add 8
+  calc
+    q a z + (∑' n : ℕ, q (((n : ℝ) + 1) + a) z) =
+        ∑' n : ℕ, q ((n : ℝ) + a) z := by
+          simpa only [Nat.cast_add, Nat.cast_one, Nat.cast_zero,
+            zero_add, add_assoc] using hzero.symm
+    _ = (∑ n ∈ Finset.range 8, q ((n : ℝ) + a) z) +
+        (∑' n : ℕ, q (((n : ℝ) + 8) + a) z) := by
+          simpa only [Nat.cast_add, Nat.cast_ofNat, add_assoc] using hsplit.symm
+
+/-- STRICT curvature positivity for the ORIGINAL symmetric complex digamma
+    on the whole rational rectangle, not merely the source series model. -/
+theorem symmetric_real_digamma_second_derivative_pos (x z : ℝ)
+    (hx : 0 < x) (hx1 : x ≤ 1 / 4)
+    (hz0 : 9 ≤ z) (hz1 : z ≤ 10) :
+    0 < deriv (fun t : ℝ => deriv (sourceSymmetricRealDigamma z) t) x := by
+  have hz : 0 < z := by linarith
+  have hb : 0 ≤ (1 / 2 : ℝ) - x := by linarith
+  have hxhalf : x < 1 / 2 := by linarith
+  have hhead := curvature_head8_gt_six_over_49 x z hx hx1 hz0 hz1
+  have htail := curvature_q_two_tail8_lower x ((1 / 2 : ℝ) - x) z hx.le hb hz.le
+  have hqa := curvature_full_q_split8 x z hx.le hz.le
+  have hqb := curvature_full_q_split8 ((1 / 2 : ℝ) - x) z hb hz.le
+  have hcurv := (symmetric_real_digamma_hasSecondDeriv x z hx hxhalf hz).deriv
+  rw [hqa, hqb] at hcurv
+  unfold curvatureHead8 at hhead
+  rw [Finset.sum_add_distrib] at hhead
+  rw [hcurv]
+  linarith
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -2224,3 +2270,6 @@ end H50
 #print axioms H50.q_small_lower_one_over_21
 
 #print axioms H50.curvature_head8_gt_six_over_49
+
+#print axioms H50.curvature_full_q_split8
+#print axioms H50.symmetric_real_digamma_second_derivative_pos
