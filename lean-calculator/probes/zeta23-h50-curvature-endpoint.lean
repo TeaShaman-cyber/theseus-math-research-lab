@@ -1641,7 +1641,9 @@ theorem sourceDigammaFormula_hasDerivAt_first (a z : ℝ)
         (fun t : ℝ => ∑' n : ℕ, digammaTerm ((n : ℝ) + 1) t z) := by
     funext t
     rfl
-  rw [hfun]
+  have hscalar : (0 - r a z + ∑' n : ℕ, -r (((n : ℝ) + 1) + a) z) =
+      (-r a z + ∑' n : ℕ, -r (((n : ℝ) + 1) + a) z) := by ring
+  rw [hfun, ← hscalar]
   exact (hc.sub hhead).add htail
 
 /-- The explicit first-derivative source expression has derivative
@@ -1659,7 +1661,9 @@ theorem sourceDigammaFirst_hasDerivAt_second (a z : ℝ)
         (fun t : ℝ => ∑' n : ℕ, -r (((n : ℝ) + 1) + t) z) := by
     funext t
     rfl
-  rw [hfun]
+  have hscalar : (- -q a z + ∑' n : ℕ, q (((n : ℝ) + 1) + a) z) =
+      (q a z + ∑' n : ℕ, q (((n : ℝ) + 1) + a) z) := by ring
+  rw [hfun, ← hscalar]
   exact hhead.add htail
 
 /-- Two derivatives of the full canonical digamma source expression,
