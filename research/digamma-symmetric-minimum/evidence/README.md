@@ -480,3 +480,20 @@ The source equality is established from pinned Zeta23 `re_digamma_vertical`, and
 - Previous rejected run 41049407832 and 41049809134 were tactic/source-shape diagnostics and **not** accepted proof. The skipped 41049298076 PR-branch run is not a Lean check: calculator workflow is main-only. PRs #122-#124 preserved all theorem statements during narrow fixes.
 
 **Boundary:** This is a formal second derivative of the *full canonical source formula*, with a kernel-accepted pointwise identification of the formula with `Re digamma(a+i sqrt(z))` on `0<a<1`. A separate Lean theorem transferring its second derivative to the actual `Complex.digamma` function via a neighborhood equality and then composing the symmetric `H_y''` chain rule is **still pending**. Global curvature positivity and H50 minimum are not kernel accepted; scientific novelty remains UNKNOWN. Next gate: direct second-derivative bridge on the interval and symmetric curvature assembly.
+
+## H50-P24: direct second derivative of original real Complex.digamma — Lean 41052957695
+
+Pinned Zeta23 [Lean run 41052957695](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41052957695) kernel-accepted `H50.real_digamma_vertical_hasSecondDeriv` on `0<a<1, z>0`. It establishes directly on `sourceRealDigammaVertical z a = (Complex.digamma(a + I*sqrt(z))).re`:
+
+```text
+d²/da² Re digamma(a + I sqrt z) = q(a,z) + sum_{n>=0} q(n+1+a,z).
+```
+
+The proof transfers the P23 full source formula's second derivative by pointwise source identity on an **open neighborhood**, first identifying the first derivative at every nearby point and then transferring the second derivative. This is the original digamma, not a substitute function.
+
+- Exact accepted source main `6374f366c09c4081d12ae4a5015d7c8f13f03346`, source probe SHA-256 `333321eb98bfe6ed3ceaefcb00f45b92ab57e4e5a49d32006356f507bc24aed2`, pinned original formal source `anthropics/formal-math@fbdc36bbf17d20af3fd0447c6d1a8a02773c9844` and Lean 4.33.0-rc2.
+- [Original raw JSON](lean-h50-real-digamma-41052957695.json), SHA-256 `d0d1b47d6f5fc2cdaa38c70b2881e646e9131bdc8d5ba0b605d3cc594621739f`.
+- [Original compiler/axiom trace](lean-h50-real-digamma-41052957695.txt), SHA-256 `2af7b1a200a863ea9dea5e83916eac83998171888ab75c679e5fa492c1bdf708`.
+- `PASS / ELABORATES / exit 0`, theorem axioms only `[propext, Classical.choice, Quot.sound]`, **NO sorryAx**. Hosted QA and witness PASS on exact PR #126 head.
+
+**Boundary:** Symmetric `H_y(x)=G_y(x)+G_y(1/2-x)` second derivative and global positivity/minimum are NOT yet kernel accepted, special ordinate zero is only a conditional parameter, scientific novelty UNKNOWN. Next step: assemble symmetric chain rule and the two original complex-digamma q-series.
