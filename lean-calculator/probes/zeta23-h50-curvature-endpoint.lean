@@ -2127,6 +2127,80 @@ theorem symmetric_real_digamma_second_derivative_pos (x z : ℝ)
   rw [hcurv]
   linarith
 
+
+/-! H50-P28: the midpoint is a strict minimizer of the ORIGINAL
+    symmetric digamma from the source-verified positive curvature. -/
+
+/-- Reflection makes the derivative vanish at the symmetry center. -/
+theorem symmetric_real_digamma_deriv_midpoint_zero (z : ℝ) (hz : 0 < z) :
+    deriv (sourceSymmetricRealDigamma z) (1 / 4) = 0 := by
+  have h := (symmetric_real_digamma_hasDerivAt_first
+      (1 / 4 : ℝ) z (by norm_num) (by norm_num) hz).deriv
+  simpa [show (1 / 2 : ℝ) - 1 / 4 = 1 / 4 by norm_num] using h
+
+/-- For all original complex-digamma ordinates in the larger proven
+    rectangle, H(x)>H(1/4) to the left of its center. -/
+theorem symmetric_real_digamma_midpoint_minimum (x z : ℝ)
+    (hx : 0 < x) (hx1 : x ≤ 1 / 4)
+    (hz0 : 9 ≤ z) (hz1 : z ≤ 10) :
+    sourceSymmetricRealDigamma z (1 / 4) ≤ sourceSymmetricRealDigamma z x := by
+  rcases lt_or_eq_of_le hx1 with hxlt | hxeq
+  · have hz : 0 < z := by linarith
+    let D : Set ℝ := Set.Icc x (1 / 4)
+    have hcont_deriv : ContinuousOn
+        (fun t : ℝ => deriv (sourceSymmetricRealDigamma z) t) D := by
+      intro t ht
+      have ht0 : 0 < t := lt_of_lt_of_le hx ht.1
+      have ht1 : t < 1 / 2 := by linarith [ht.2]
+      exact (symmetric_real_digamma_hasSecondDeriv t z ht0 ht1 hz).continuousAt.continuousWithinAt
+    have hmono : StrictMonoOn (fun t : ℝ => deriv (sourceSymmetricRealDigamma z) t) D := by
+      apply strictMonoOn_of_deriv_pos (convex_Icc) hcont_deriv
+      intro t ht
+      have htt : t ∈ Set.Ioo x (1 / 4) := by
+        simpa only [D, interior_Icc] using ht
+      exact symmetric_real_digamma_second_derivative_pos t z
+        (lt_trans hx htt.1) (le_of_lt htt.2) hz0 hz1
+    have hcenter := symmetric_real_digamma_deriv_midpoint_zero z hz
+    have hneg : ∀ t ∈ interior D,
+        deriv (sourceSymmetricRealDigamma z) t < 0 := by
+      intro t ht
+      have htt : t ∈ Set.Ioo x (1 / 4) := by
+        simpa only [D, interior_Icc] using ht
+      have htD : t ∈ D := ⟨le_of_lt htt.1, le_of_lt htt.2⟩
+      have hcD : (1 / 4 : ℝ) ∈ D := ⟨hx1, le_rfl⟩
+      have h := hmono htD hcD htt.2
+      simpa [hcenter] using h
+    have hcont : ContinuousOn (sourceSymmetricRealDigamma z) D := by
+      intro t ht
+      have ht0 : 0 < t := lt_of_lt_of_le hx ht.1
+      have ht1 : t < 1 / 2 := by linarith [ht.2]
+      exact (symmetric_real_digamma_hasDerivAt_first t z ht0 ht1 hz).continuousAt.continuousWithinAt
+    have hanti := strictAntiOn_of_deriv_neg (convex_Icc) hcont hneg
+    exact le_of_lt (hanti (show x ∈ D from ⟨le_rfl, hx1⟩)
+      (show (1 / 4 : ℝ) ∈ D from ⟨hx1, le_rfl⟩) hxlt)
+  · rw [hxeq]
+
+/-- Under the canonical μ-zero hypothesis, the original symmetric digamma
+    equals twice log π exactly at its center, with no zero-existence claim. -/
+theorem symmetric_real_digamma_midpoint_eq_two_log_pi (tau : ℝ)
+    (htau : 0 ≤ tau) (hzero : Zeta23.mu tau = 0) :
+    sourceSymmetricRealDigamma ((tau / 2) ^ 2) (1 / 4) =
+      2 * Real.log Real.pi := by
+  have hmid : (0 : ℝ) ≤ tau / 2 := by linarith
+  have hmu := mu_twice_ordinate_identity (tau / 2)
+  have ht : 2 * (tau / 2) = tau := by ring
+  rw [ht, hzero] at hmu
+  have hvalue :
+      (Complex.digamma (((1 / 4 : ℝ) : ℂ) +
+        Complex.I * ((tau / 2 : ℝ) : ℂ))).re = Real.log Real.pi := by
+    linarith
+  have hsqrt : Real.sqrt ((tau / 2) ^ 2) = tau / 2 :=
+    Real.sqrt_sq hmid
+  unfold sourceSymmetricRealDigamma sourceRealDigammaVertical
+  rw [show (1 / 2 : ℝ) - 1 / 4 = 1 / 4 by norm_num, hsqrt]
+  rw [hvalue]
+  ring
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -2273,3 +2347,7 @@ end H50
 
 #print axioms H50.curvature_full_q_split8
 #print axioms H50.symmetric_real_digamma_second_derivative_pos
+
+#print axioms H50.symmetric_real_digamma_deriv_midpoint_zero
+#print axioms H50.symmetric_real_digamma_midpoint_minimum
+#print axioms H50.symmetric_real_digamma_midpoint_eq_two_log_pi
