@@ -1570,10 +1570,14 @@ theorem curvature_source_neg_r_hasDerivAt_q (n : ℕ) (a z : ℝ) (hz : 0 < z) :
   have hshift : HasDerivAt (fun t : ℝ => ((n : ℝ) + 1) + t) 1 a := by
     simpa using (hasDerivAt_id a).const_add ((n : ℝ) + 1)
   have h := (rational_r_hasDerivAt_neg_q _ z hz).comp a hshift
-  convert h.neg using 1
-  · funext t
+  have hfun : (fun t : ℝ => -r (((n : ℝ) + 1) + t) z) =
+      (-(fun t : ℝ => r t z)) ∘ (fun t : ℝ => ((n : ℝ) + 1) + t) := by
+    funext t
     rfl
-  · ring
+  have hscalar : q (((n : ℝ) + 1) + a) z =
+      -(-q (((n : ℝ) + 1) + a) z * 1) := by ring
+  rw [hfun, hscalar]
+  exact h.neg
 
 /-- The series of negative r kernels differentiates to the actual q
     curvature series on the open positive abscissa interval. -/
