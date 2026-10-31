@@ -2307,6 +2307,7 @@ private noncomputable def wGammaFactor (sigma t : ℝ) : ℂ :=
     Complex.Gamma (((sigma : ℂ) + Complex.I * (t : ℂ)) / 2)
 
 open Complex
+open scoped ComplexConjugate
 
 /-- Exact modulus formula for the ORIGINAL W, with the gamma argument
     conjugated so both digammas later use the same positive imaginary
