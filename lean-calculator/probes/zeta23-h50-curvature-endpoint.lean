@@ -2340,6 +2340,47 @@ theorem wGammaFactor_norm_eq (sigma t : ℝ) :
   rw [hreal, hden, hnum, Complex.Gamma_conj, Complex.norm_conj]
 
 
+
+/-! W-bridge #153, precise regularity premise for horizontal logarithmic
+    differentiation. Both Gamma arguments are in the OPEN right half-plane,
+    so no poles or zeros arise; no branch assumption on Complex.log. -/
+
+/-- Both actual W Gamma factors are nonvanishing and holomorphic
+    throughout the open critical strip, for arbitrary real height. -/
+theorem wGammaFactor_gamma_regular (sigma t : ℝ)
+    (hs0 : 0 < sigma) (hs1 : sigma < 1) :
+    Complex.Gamma ((1 - ((sigma : ℂ) + Complex.I * (t : ℂ))) / 2) ≠ 0 ∧
+    Complex.Gamma (((sigma : ℂ) + Complex.I * (t : ℂ)) / 2) ≠ 0 ∧
+    DifferentiableAt ℂ Complex.Gamma
+      ((1 - ((sigma : ℂ) + Complex.I * (t : ℂ))) / 2) ∧
+    DifferentiableAt ℂ Complex.Gamma
+      (((sigma : ℂ) + Complex.I * (t : ℂ)) / 2) := by
+  let s : ℂ := (sigma : ℂ) + Complex.I * (t : ℂ)
+  have hnum : 0 < ((1 - s) / 2).re := by
+    dsimp [s]
+    simp
+    linarith
+  have hden : 0 < (s / 2).re := by
+    dsimp [s]
+    simp
+    linarith
+  have hndiff : DifferentiableAt ℂ Complex.Gamma ((1 - s) / 2) := by
+    apply Complex.differentiableAt_Gamma
+    intro m hm
+    have hre := congrArg Complex.re hm
+    simp at hre
+    have hnat : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
+    linarith
+  have hddiff : DifferentiableAt ℂ Complex.Gamma (s / 2) := by
+    apply Complex.differentiableAt_Gamma
+    intro m hm
+    have hre := congrArg Complex.re hm
+    simp at hre
+    have hnat : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
+    linarith
+  exact ⟨Complex.Gamma_ne_zero_of_re_pos hnum,
+    Complex.Gamma_ne_zero_of_re_pos hden, hndiff, hddiff⟩
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -2495,3 +2536,4 @@ end H50
 #print axioms H50.symmetric_digamma_height_transfer_of_nonnegative_mu_zero
 #print axioms H50.w_horizontal_derivative_expression_nonpos_of_mu_zero
 #print axioms H50.wGammaFactor_norm_eq
+#print axioms H50.wGammaFactor_gamma_regular
