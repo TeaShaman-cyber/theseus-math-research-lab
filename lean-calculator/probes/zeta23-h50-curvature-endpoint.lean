@@ -1,4 +1,5 @@
 import Zeta23.GammaFacts.Mu
+import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.Normed.Group.FunctionSeries
 import Mathlib.Analysis.Calculus.SmoothSeries
 import Mathlib.Analysis.PSeries
@@ -2381,6 +2382,30 @@ theorem wGammaFactor_gamma_regular (sigma t : ℝ)
   exact ⟨Complex.Gamma_ne_zero_of_re_pos hnum,
     Complex.Gamma_ne_zero_of_re_pos hden, hndiff, hddiff⟩
 
+
+/-! W-bridge #153 P3: branch-independent logarithmic modulus calculus.
+    A REAL log of a positive norm is differentiated by using norm-squared,
+    avoiding the invalid assumption that the principal Complex.log of the
+    Gamma function is differentiable across its branch cut. -/
+
+/-- Real horizontal log modulus has a derivative for any nonzero complex
+    differentiable path, expressed in real inner product form. -/
+theorem hasDerivAt_log_norm_complex_of_nonzero
+    {f : ℝ → ℂ} {a : ℝ} {df : ℂ}
+    (hf : HasDerivAt f df a) (hne : f a ≠ 0) :
+    HasDerivAt (fun x : ℝ => Real.log ‖f x‖)
+      (⟪f a, df⟫_ℝ / ‖f a‖ ^ 2) a := by
+  have hn : ‖f a‖ ≠ 0 := norm_ne_zero_iff.mpr hne
+  have hs : ‖f a‖ ^ 2 ≠ 0 := pow_ne_zero _ hn
+  have hlog := hf.norm_sq.log hs
+  have hpoint : (fun x : ℝ => Real.log ‖f x‖) =
+      (fun x : ℝ => (1 / 2 : ℝ) * Real.log (‖f x‖ ^ 2)) := by
+    funext x
+    rw [Real.log_pow]
+    ring
+  rw [hpoint]
+  convert hlog.const_mul (1 / 2 : ℝ) using 1 <;> ring
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -2537,3 +2562,4 @@ end H50
 #print axioms H50.w_horizontal_derivative_expression_nonpos_of_mu_zero
 #print axioms H50.wGammaFactor_norm_eq
 #print axioms H50.wGammaFactor_gamma_regular
+#print axioms H50.hasDerivAt_log_norm_complex_of_nonzero
