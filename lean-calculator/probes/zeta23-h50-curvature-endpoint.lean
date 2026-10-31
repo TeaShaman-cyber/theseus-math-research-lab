@@ -2296,6 +2296,47 @@ theorem w_horizontal_derivative_expression_nonpos_of_mu_zero
   rw [halg] at h
   linarith
 
+
+/-! W-bridge P1 (#153): exact W normalization.  This is the original
+    zeta functional-equation gamma ratio, not the symmetric digamma proxy. -/
+
+/-- The original complex factor W(s) at s = sigma + I*t. -/
+private noncomputable def wGammaFactor (sigma t : ℝ) : ℂ :=
+  ((Real.pi : ℂ) ^ (((sigma : ℂ) + Complex.I * (t : ℂ)) - 1 / 2)) *
+    Complex.Gamma ((1 - ((sigma : ℂ) + Complex.I * (t : ℂ))) / 2) /
+    Complex.Gamma (((sigma : ℂ) + Complex.I * (t : ℂ)) / 2)
+
+/-- Exact modulus formula for the ORIGINAL W, with the gamma argument
+    conjugated so both digammas later use the same positive imaginary
+    ordinate. No derivative or nonzero premise is used in this equality. -/
+theorem wGammaFactor_norm_eq (sigma t : ℝ) :
+    ‖wGammaFactor sigma t‖ =
+      Real.pi ^ (sigma - 1 / 2) *
+        ‖Complex.Gamma (((((1 - sigma) / 2 : ℝ) : ℂ) +
+          Complex.I * (((t / 2 : ℝ)) : ℂ)))‖ /
+        ‖Complex.Gamma ((((sigma / 2 : ℝ) : ℂ) +
+          Complex.I * (((t / 2 : ℝ)) : ℂ)))‖ := by
+  have hreal :
+      (((sigma : ℂ) + Complex.I * (t : ℂ)) - 1 / 2).re =
+        sigma - 1 / 2 := by
+    simp [Complex.sub_re, Complex.add_re, Complex.mul_re]
+  have hden :
+      (((sigma : ℂ) + Complex.I * (t : ℂ)) / 2) =
+      (((sigma / 2 : ℝ) : ℂ) + Complex.I * ((t / 2 : ℝ) : ℂ)) := by
+    push_cast
+    ring
+  have hnum :
+      ((1 - ((sigma : ℂ) + Complex.I * (t : ℂ))) / 2) =
+      Complex.conj ((((1 - sigma) / 2 : ℝ) : ℂ) +
+        Complex.I * ((t / 2 : ℝ) : ℂ)) := by
+    simp only [map_add, map_mul, Complex.conj_ofReal, Complex.conj_I]
+    push_cast
+    ring
+  unfold wGammaFactor
+  rw [norm_div, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos Real.pi_pos]
+  rw [hreal, hden, hnum, Complex.Gamma_conj, Complex.norm_conj]
+
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -2450,3 +2491,4 @@ end H50
 #print axioms H50.symmetric_digamma_H50_of_nonnegative_mu_zero
 #print axioms H50.symmetric_digamma_height_transfer_of_nonnegative_mu_zero
 #print axioms H50.w_horizontal_derivative_expression_nonpos_of_mu_zero
+#print axioms H50.wGammaFactor_norm_eq
