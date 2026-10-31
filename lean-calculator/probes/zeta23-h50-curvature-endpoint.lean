@@ -2390,6 +2390,7 @@ theorem wGammaFactor_gamma_regular (sigma t : ℝ)
     avoiding the invalid assumption that the principal Complex.log of the
     Gamma function is differentiable across its branch cut. -/
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Real horizontal log modulus has a derivative for any nonzero complex
     differentiable path, expressed in real inner product form. -/
 theorem hasDerivAt_log_norm_complex_of_nonzero
