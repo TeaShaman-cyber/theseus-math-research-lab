@@ -2237,6 +2237,65 @@ theorem symmetric_digamma_H50_of_nonnegative_mu_zero (tau x : ℝ)
   simpa only [sourceSymmetricRealDigamma, sourceRealDigammaVertical,
     hsqrt] using hresult
 
+
+/-! H50-P29: the ordinate transfer needed for the W derivative bridge.
+    This does NOT yet identify the real derivative of log |W| in Lean,
+    prove strictness, or establish the existence of a canonical μ-zero. -/
+
+/-- At any height t ≥ τ, the symmetric real digamma sum keeps the
+    H50 lower bound. The reflection handles both halves of 0<x<1/2.
+    The height step reuses the *source* MuFields monotonicity theorem,
+    with no fresh series proof or new axioms. -/
+theorem symmetric_digamma_height_transfer_of_nonnegative_mu_zero
+    (tau t x : ℝ) (htau : 0 ≤ tau) (hzero : Zeta23.mu tau = 0)
+    (ht : tau ≤ t) (hx0 : 0 < x) (hx1 : x < 1 / 2) :
+    2 * Real.log Real.pi ≤
+      (Complex.digamma ((x : ℂ) + Complex.I * ((t / 2 : ℝ) : ℂ))).re +
+      (Complex.digamma ((((1 / 2 : ℝ) - x : ℝ) : ℂ) +
+        Complex.I * ((t / 2 : ℝ) : ℂ))).re := by
+  have hmono_at (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1) :
+      (Complex.digamma ((a : ℂ) + Complex.I * ((tau / 2 : ℝ) : ℂ))).re ≤
+      (Complex.digamma ((a : ℂ) + Complex.I * ((t / 2 : ℝ) : ℂ))).re := by
+    have hmono := Zeta23.MuFields.re_digamma_mono ha0 ha1
+    apply hmono (Set.mem_Ici.mpr (by linarith : (0 : ℝ) ≤ tau / 2))
+      (Set.mem_Ici.mpr (by linarith : (0 : ℝ) ≤ t / 2))
+      (by linarith)
+  have hxl : x < 1 := by linarith
+  have hyr : 0 < (1 / 2 : ℝ) - x := by linarith
+  have hyrl : (1 / 2 : ℝ) - x < 1 := by linarith
+  have hleft := hmono_at x hx0 hxl
+  have hright := hmono_at ((1 / 2 : ℝ) - x) hyr hyrl
+  by_cases hxcenter : x ≤ 1 / 4
+  · have hbase := symmetric_digamma_H50_of_nonnegative_mu_zero
+      tau x htau hzero hx0 hxcenter
+    linarith
+  · have hreverse : (1 / 2 : ℝ) - x ≤ 1 / 4 := by linarith
+    have hbase := symmetric_digamma_H50_of_nonnegative_mu_zero
+      tau ((1 / 2 : ℝ) - x) htau hzero hyr hreverse
+    have hcancel : (1 / 2 : ℝ) - ((1 / 2 : ℝ) - x) = x := by ring
+    rw [hcancel] at hbase
+    linarith
+
+/-- The sign of the exact analytic expression for ∂_σ log|W(σ+it)|,
+    on 0<σ<1 and t≥τ. The identity with the derivative of |W|
+    is a separate (still open) Lean bridge; this theorem only proves
+    the inequality for the right-hand side. -/
+theorem w_horizontal_derivative_expression_nonpos_of_mu_zero
+    (tau t sigma : ℝ) (htau : 0 ≤ tau) (hzero : Zeta23.mu tau = 0)
+    (ht : tau ≤ t) (hs0 : 0 < sigma) (hs1 : sigma < 1) :
+    Real.log Real.pi - (1 / 2 : ℝ) *
+      ((Complex.digamma ((((sigma / 2 : ℝ)) : ℂ) +
+          Complex.I * ((t / 2 : ℝ) : ℂ))).re +
+       (Complex.digamma (((((1 - sigma) / 2 : ℝ)) : ℂ) +
+          Complex.I * ((t / 2 : ℝ) : ℂ))).re) ≤ 0 := by
+  have hx0 : 0 < sigma / 2 := by linarith
+  have hx1 : sigma / 2 < 1 / 2 := by linarith
+  have h := symmetric_digamma_height_transfer_of_nonnegative_mu_zero
+    tau t (sigma / 2) htau hzero ht hx0 hx1
+  have halg : (1 / 2 : ℝ) - sigma / 2 = (1 - sigma) / 2 := by ring
+  rw [halg] at h
+  linarith
+
 end H50
 
 #print axioms H50.lowerBound_upper_endpoint_pos
@@ -2389,3 +2448,5 @@ end H50
 #print axioms H50.symmetric_real_digamma_midpoint_eq_two_log_pi
 
 #print axioms H50.symmetric_digamma_H50_of_nonnegative_mu_zero
+#print axioms H50.symmetric_digamma_height_transfer_of_nonnegative_mu_zero
+#print axioms H50.w_horizontal_derivative_expression_nonpos_of_mu_zero
