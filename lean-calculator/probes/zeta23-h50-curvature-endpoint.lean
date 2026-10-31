@@ -2394,7 +2394,7 @@ theorem hasDerivAt_log_norm_complex_of_nonzero
     {f : ℝ → ℂ} {a : ℝ} {df : ℂ}
     (hf : HasDerivAt f df a) (hne : f a ≠ 0) :
     HasDerivAt (fun x : ℝ => Real.log ‖f x‖)
-      (⟪f a, df⟫_ℝ / ‖f a‖ ^ 2) a := by
+      (⟪f a, df⟫ / ‖f a‖ ^ 2) a := by
   have hn : ‖f a‖ ≠ 0 := norm_ne_zero_iff.mpr hne
   have hs : ‖f a‖ ^ 2 ≠ 0 := pow_ne_zero _ hn
   have hlog := hf.norm_sq.log hs
