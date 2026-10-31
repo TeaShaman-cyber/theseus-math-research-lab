@@ -607,3 +607,41 @@ This composes the P16 unconditional (given the zero) source-bound ordinate enclo
 - Initial P28 runs 41085606310, 41086169782, 41086681406 were **LEAN_REJECTED** by proof-syntax/Mathlib goal shape only. PR #140–#143 changed tactic structure without changing theorems. PR #144 added the final conditional theorem; no existence premise was erased.
 
 **Scientific boundary:** `H50_CONDITIONAL_THEOREM_KERNEL_PROVED` / `MU_ZERO_EXISTENCE_UNPROVED` / `SCHOLARLY_NOVELTY_UNKNOWN` / `NOT_PEER_REVIEWED` / `NO_RH_CLAIM`. The conditional theorem being proved does not make a publication-level prior-art assessment, prove an actual zero exists, or imply RH. Next work should be a focused independent mathematics/prior-art audit and manuscript framing, not additional proof infrastructure for its own sake.
+
+
+## H50-P29: source-pinned height-transfer sign — Lean 41147890622
+
+Following existing Issue #50, PR #151 introduced two source-bound Lean theorems
+in the registered `zeta23-h50-curvature-endpoint` calculator probe. They depend
+only on the previously accepted H50-P28 and the original
+`Zeta23.MuFields.re_digamma_mono` at
+`anthropics/formal-math@fbdc36bbf17d20af3fd0447c6d1a8a02773c9844`.
+
+- `H50.symmetric_digamma_height_transfer_of_nonnegative_mu_zero`: for
+  **assumed** `tau>=0`, `Zeta23.mu tau=0`, `t>=tau` and `0<x<1/2`,
+  `2 log(pi) <= Re digamma(x+i*t/2)+Re digamma((1/2-x)+i*t/2)`.
+- `H50.w_horizontal_derivative_expression_nonpos_of_mu_zero`: for the same
+  assumptions and `0<sigma<1`, the exact analytic expression
+  `log(pi)-(1/2)*(Re digamma(sigma/2+i*t/2)+Re digamma((1-sigma)/2+i*t/2))`
+  is nonpositive.
+
+[Hosted pinned Lean run 41147890622](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41147890622)
+on exact math-lab merged main `b09f7eb6e0f0c76997cabd6bb3ac19be8626fc36`,
+Lean 4.33.0-rc2, verified original source identity and cache hit:
+`PASS / ELABORATES / returncode 0`, both new theorem axiom inventories only
+`[propext, Classical.choice, Quot.sound]`, no `sorryAx`.
+
+- [JSON receipt](lean-h50-height-transfer-41147890622.json),
+  SHA-256 `1d2fd1d6a7ebe87774ffe2c0a68cc639996480836a2fb03a60d4325b4854d43c`.
+- [Raw axiom/diagnostic trace](lean-h50-height-transfer-41147890622.txt),
+  SHA-256 `8dc19a0b1da30dd235926b62dd3974f14cc8e563f6564d272124f5f21c59e0eb`.
+- Compiled registered probe SHA-256:
+  `ac439f71fce90fe0bd1d0789ce78b09bd8bb73d5b426dc5c734e53ffa71c19ab`.
+
+**Boundary:** this is the *sign of the expression* appearing in the
+ordinary-analysis formula for the horizontal derivative of `log|W|`. It is
+NOT a kernel theorem identifying that derivative, proving strict negativity,
+proving the off-critical `|W| != 1` result, covering `sigma=0,1`, or proving
+existence/uniqueness of the mu zero. Manuscript access and novelty remain UNKNOWN.
+Next single formal gate: identify this expression with the actual `W` logarithmic
+modulus derivative on the open strip and establish strict off-center monotonicity.
