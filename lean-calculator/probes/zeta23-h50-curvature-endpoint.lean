@@ -2406,7 +2406,7 @@ theorem hasDerivAt_log_norm_complex_of_nonzero
     rw [Real.log_pow]
     ring
   rw [hpoint]
-  convert hlog.const_mul (1 / 2 : ℝ) using 1 <;> ring
+  convert hlog.const_mul (1 / 2 : ℝ) using 1 <;> try ring
 
 end H50
 
