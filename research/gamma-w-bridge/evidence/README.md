@@ -59,3 +59,39 @@ plus `differentiableAt_Gamma`, not a complex-log branch assumption.
 - New theorem axiom inventory: `[propext, Classical.choice, Quot.sound]`; **NO sorryAx**. First run #41155082569 `LEAN_REJECTED` from excessive real-part `simp` which broke a `linarith` identity; second run source-accepted without changing statement.
 
 **Still unproved:** Lean real-horizontal derivative `d/dsigma log|W(sigma+it)|` equals the P29 symmetric digamma expression; strict height and crossing exclusion, sigma=0/1 endpoints, mu-zero existence. In particular, differentiating the *principal complex logarithm* everywhere is NOT valid without a slit-plane condition; this evidence does not assert that condition. No RH or originality claim.
+
+## W bridge P3 — real log-modulus derivative, Lean source-pinned (2026-10-31)
+
+`H50.hasDerivAt_log_norm_complex_of_nonzero` is the **universal** real log
+modulus derivative theorem: if `f : ℝ → ℂ` has `HasDerivAt f df a` and
+`f a ≠ 0`, then
+
+    HasDerivAt (fun x => Real.log ‖f x‖)
+      (⟪f a, df⟫ / ‖f a‖ ^ 2) a
+
+where the inner product is real. It is NOT YET the specialized
+`Re (Gamma'/Gamma) = Re digamma` or derivative of original W.
+
+**Proof route:** exact pinned Mathlib `HasDerivAt.norm_sq`, Real.log derivative,
+identity `log(‖f‖²) = 2 log(‖f‖)`, algebraic factor cancellation.
+No principal Complex.log or branch-cut assumption. Kernel acceptance after a
+bounded sequence of syntax/instance repairs: PRs #162/#163/#164/#165/#166/#167
+merged; early pinned runs 41184899023, 41185171900, 41185520095,
+41185766211, 41186020056 were Lean-rejected (parser then instance-path
+conversion); not mathematical counterexamples.
+
+**Accepted run:** https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41186290523
+mathlab main `43d5ed6f739947bb79e1526d253302d015f610ff` with pinned source
+`anthropics/formal-math@fbdc36bbf17d20af3fd0447c6d1a8a02773c9844`,
+Lean 4.33.0-rc2: PASS / ELABORATES / returncode0. Theorem has only standard
+`[propext, Classical.choice, Quot.sound]`, **no sorryAx**.
+
+- Probe SHA-256: `cf15583a1ccf2259bcf871650c15bf71ca7fb04dd0718183f6b51469729d7fd7`
+- JSON receipt: `lean-lognorm-41186290523.json`, SHA-256 `d7bbab9aa2493f936d36f40501e9f089ba21893638333fffb4173ffd437dab7a`
+- Compiler diagnostics: `lean-lognorm-41186290523.txt`, SHA-256 `faf43e3b7864273c39a804f2d73d556b82ade0a8448180898721b89b99b5585c`
+
+**Outstanding issue #153:** show `(⟪u,v⟫_ℝ / ‖u‖²) = Re(v/u)` for `u≠0`,
+specialize to Γ by Gamma differentiability/nonzero and `digamma = Γ'/Γ`,
+then compose the exact W norm decomposition and source-pinned H50-P29 sign.
+Strictness, endpoints, μ zero existence, global crossing and novelty remain
+separately open. This is neither RH nor an RH proof.
