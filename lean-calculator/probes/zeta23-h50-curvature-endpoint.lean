@@ -2368,14 +2368,14 @@ theorem wGammaFactor_gamma_regular (sigma t : ℝ)
     apply Complex.differentiableAt_Gamma
     intro m hm
     have hre := congrArg Complex.re hm
-    simp at hre
+    simp only [Complex.neg_re, Complex.natCast_re] at hre
     have hnat : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
     linarith
   have hddiff : DifferentiableAt ℂ Complex.Gamma (s / 2) := by
     apply Complex.differentiableAt_Gamma
     intro m hm
     have hre := congrArg Complex.re hm
-    simp at hre
+    simp only [Complex.neg_re, Complex.natCast_re] at hre
     have hnat : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
     linarith
   exact ⟨Complex.Gamma_ne_zero_of_re_pos hnum,
