@@ -42,3 +42,20 @@ horizontal derivative of `log |W|` on the open strip, with Gamma nonzero
 and differentiability side conditions. Then use P29 height-monotone sign,
 strictness away from the center, and separately the boundary sigma=0,1 and
 μ-zero existence/uniqueness obligations. Ismail full text/novelty independent.
+
+## W-bridge #153 P2: actual Gamma nonzero + differentiability (2026-10-31)
+
+`H50.wGammaFactor_gamma_regular` establishes for **all real heights** `t`
+and `0<sigma<1` that both ORIGINAL gamma factors
+`Gamma((1-(sigma+it))/2)` and `Gamma((sigma+it)/2)` are nonzero and
+complex-differentiable. Thus no Gamma zero or pole in the open strip may be
+silently assumed; this is source-bound mathlib `Gamma_ne_zero_of_re_pos`
+plus `differentiableAt_Gamma`, not a complex-log branch assumption.
+
+- Source proof [PR #159](https://github.com/TeaShaman-cyber/theseus-math-research-lab/pull/159), minimal tactic repair [PR #160](https://github.com/TeaShaman-cyber/theseus-math-research-lab/pull/160), merged math-lab main `3a715f44a9d04bf20ae9136c7149fcc7e0107b55`.
+- [Pinned Lean run #41155362742](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/41155362742): `PASS/ELABORATES/exit 0`, exact upstream `anthropics/formal-math@fbdc36bbf17d20af3fd0447c6d1a8a02773c9844`, Lean `4.33.0-rc2`, probe SHA-256 `64cb4948d768e53b5dcf58a9436b5a6c8998c8973c06a977128473a6fdfc1313`.
+- JSON `lean-w-gamma-regularity-41155362742.json`, SHA-256 `58d471d9da81295c88399abb9c19cc3889798874875f28cb9e695bf0ef2f6e62`.
+- Compiler trace `lean-w-gamma-regularity-41155362742.txt`, SHA-256 `f489eca59269b05cff1087e0540aabf6b2dc626a0a9d601190a27e617f35dc03`.
+- New theorem axiom inventory: `[propext, Classical.choice, Quot.sound]`; **NO sorryAx**. First run #41155082569 `LEAN_REJECTED` from excessive real-part `simp` which broke a `linarith` identity; second run source-accepted without changing statement.
+
+**Still unproved:** Lean real-horizontal derivative `d/dsigma log|W(sigma+it)|` equals the P29 symmetric digamma expression; strict height and crossing exclusion, sigma=0/1 endpoints, mu-zero existence. In particular, differentiating the *principal complex logarithm* everywhere is NOT valid without a slit-plane condition; this evidence does not assert that condition. No RH or originality claim.
