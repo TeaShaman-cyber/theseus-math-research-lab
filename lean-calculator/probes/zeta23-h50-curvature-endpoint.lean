@@ -2306,10 +2306,11 @@ private noncomputable def wGammaFactor (sigma t : ℝ) : ℂ :=
     Complex.Gamma ((1 - ((sigma : ℂ) + Complex.I * (t : ℂ))) / 2) /
     Complex.Gamma (((sigma : ℂ) + Complex.I * (t : ℂ)) / 2)
 
+open Complex
+
 /-- Exact modulus formula for the ORIGINAL W, with the gamma argument
     conjugated so both digammas later use the same positive imaginary
     ordinate. No derivative or nonzero premise is used in this equality. -/
-open Complex in
 theorem wGammaFactor_norm_eq (sigma t : ℝ) :
     ‖wGammaFactor sigma t‖ =
       Real.pi ^ (sigma - 1 / 2) *
