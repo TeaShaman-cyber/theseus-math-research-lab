@@ -2407,7 +2407,11 @@ theorem hasDerivAt_log_norm_complex_of_nonzero
     rw [Real.log_pow]
     ring
   rw [hpoint]
-  convert hlog.const_mul (1 / 2 : ℝ) using 1 <;> try ring
+  have hscaled := hlog.const_mul (1 / 2 : ℝ)
+  have hcoef : (1 / 2 : ℝ) * (2 * ⟪f a, df⟫ / ‖f a‖ ^ 2) =
+      ⟪f a, df⟫ / ‖f a‖ ^ 2 := by ring
+  rw [hcoef] at hscaled
+  exact hscaled
 
 end H50
 
