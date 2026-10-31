@@ -22,6 +22,8 @@ noncomputable section
 
 namespace H50
 
+open scoped RealInnerProductSpace
+
 private def q (u z : ℝ) : ℝ :=
   (2 * u * (3 * z - u ^ 2)) / (u ^ 2 + z) ^ 3
 
