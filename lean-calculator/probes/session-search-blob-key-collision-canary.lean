@@ -1,4 +1,4 @@
-import CDCLean.Main
+import Init
 
 /-!
 Negative canary for Session Search #188: colliding blob keys cannot recover
