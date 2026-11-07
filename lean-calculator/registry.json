@@ -171,6 +171,21 @@
       "intent": "PRESERVE",
       "expected_observation": "ELABORATES",
       "issue": 50
+    },
+    "session-search-event-factorization": {
+      "source": "cdclean",
+      "probe_file": "lean-calculator/probes/session-search-event-factorization.lean",
+      "intent": "PRESERVE",
+      "expected_observation": "ELABORATES",
+      "issue": 169
+    },
+    "session-search-blob-key-collision-canary": {
+      "source": "cdclean",
+      "probe_file": "lean-calculator/probes/session-search-blob-key-collision-canary.lean",
+      "intent": "INVALID",
+      "expected_observation": "LEAN_REJECTED",
+      "issue": 169,
+      "calibration_probe": "session-search-event-factorization"
     }
   }
 }
