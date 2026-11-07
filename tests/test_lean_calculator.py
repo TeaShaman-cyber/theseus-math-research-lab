@@ -32,6 +32,8 @@ class LeanCalculatorContractTests(unittest.TestCase):
                 "cdclean-drop-decidable-eq-edge-assumption",
                 "wang-wein-lemma32-odd-canary",
                 "zeta23-h50-curvature-endpoint",
+                "session-search-event-factorization",
+                "session-search-blob-key-collision-canary",
             },
         )
         for pid, probe in reg["probes"].items():
