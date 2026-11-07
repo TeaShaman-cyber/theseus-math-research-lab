@@ -1,4 +1,4 @@
-import CDCLean.Main
+import Init
 
 /-!
 Session Search #188 / math lab #169: abstract, backend-neutral factorization.
@@ -43,19 +43,22 @@ theorem restore_packRefs {P : Type}
   induction events with
   | nil => rfl
   | cons e rest ih =>
-      simp [packRefs, restore, hresolve, ih]
+      simp only [packRefs, List.map_cons, restore, hresolve]
+      simp only [packRefs] at ih
+      rw [ih]
+      rfl
 
-def candidateIds {P : Type} (matches : String → Bool)
+def candidateIds {P : Type} (accepts : String → Bool)
     (events : List (Event P)) : List P :=
-  (events.filter (fun e => matches e.text)).map (·.provenance)
+  (events.filter (fun e => accepts e.text)).map (·.provenance)
 
 -- One fixed lexical predicate: candidate EVENT identities, not BM25 ranks.
 theorem candidateIds_preserved {P : Type}
     (key : String → Nat) (resolve : Nat → Option String)
     (hresolve : ∀ text : String, resolve (key text) = some text)
-    (matches : String → Bool) (events : List (Event P)) :
-    (restore resolve (packRefs key events)).map (candidateIds matches) =
-      some (candidateIds matches events) := by
+    (accepts : String → Bool) (events : List (Event P)) :
+    (restore resolve (packRefs key events)).map (candidateIds accepts) =
+      some (candidateIds accepts events) := by
   rw [restore_packRefs key resolve hresolve events]
   rfl
 

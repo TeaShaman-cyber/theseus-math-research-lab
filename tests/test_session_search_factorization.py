@@ -20,7 +20,7 @@ class SessionSearchFactorizationProbeTests(unittest.TestCase):
         self.assertEqual((good["issue"], bad["issue"]), (169, 169))
         for probe in (good, bad):
             source = (ROOT / probe["probe_file"]).read_text()
-            self.assertTrue(source.startswith("import CDCLean.Main"))
+            self.assertTrue(source.startswith("import Init"))
             self.assertNotIn("sorry", source)
             self.assertNotIn("admit", source)
         for name in ("lean-calculator.yml", "lean-calculator-seed.yml"):
