@@ -1,0 +1,16 @@
+{
+  "diagnostics": "",
+  "expected_observation": "ELABORATES",
+  "generated_at": "2026-11-22T02:42:39.577176+00:00",
+  "lean": "Lean (version 4.33.1, x86_64-unknown-linux-gnu, commit 819816b2e0a3bf405af45ae5c7af2491d8f5bee6, Release)",
+  "not_claimed": [
+    "This checks the abstract model, not the Python implementation.",
+    "No cache or lake project is involved; the probe is import Init only."
+  ],
+  "observation": "ELABORATES",
+  "probe_file": "/home/runner/work/theseus-math-research-lab/theseus-math-research-lab/lean-calculator/probes/hermes-livestore-lifecycle.lean",
+  "probe_sha256": "8e7022e949a233ace490308ba766d816f107961e73f0a8e5907feb40cbf9101c",
+  "returncode": 0,
+  "schema": "theseus.lean-livestore-probe-receipt.v1",
+  "status": "PASS"
+}

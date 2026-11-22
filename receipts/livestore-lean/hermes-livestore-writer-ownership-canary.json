@@ -1,0 +1,16 @@
+{
+  "diagnostics": "/home/runner/work/theseus-math-research-lab/theseus-math-research-lab/lean-calculator/probes/hermes-livestore-writer-ownership-canary.lean:20:2: error: Tactic `decide` proved that the proposition\n  writerCount WriterState.twoWriters \u2264 1\nis false\n",
+  "expected_observation": "LEAN_REJECTED",
+  "generated_at": "2026-11-22T02:43:55.807769+00:00",
+  "lean": "Lean (version 4.33.1, x86_64-unknown-linux-gnu, commit 819816b2e0a3bf405af45ae5c7af2491d8f5bee6, Release)",
+  "not_claimed": [
+    "This checks the abstract model, not the Python implementation.",
+    "No cache or lake project is involved; the probe is import Init only."
+  ],
+  "observation": "LEAN_REJECTED",
+  "probe_file": "/home/runner/work/theseus-math-research-lab/theseus-math-research-lab/lean-calculator/probes/hermes-livestore-writer-ownership-canary.lean",
+  "probe_sha256": "382f88bddfd8ba11a0fb86abe6c30ab3e3c9d15946a11d5d836a8b76624526e5",
+  "returncode": 1,
+  "schema": "theseus.lean-livestore-probe-receipt.v1",
+  "status": "PASS"
+}
