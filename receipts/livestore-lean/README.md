@@ -6,10 +6,15 @@ Runner: `ubuntu-24.04`, elan `v4.2.3` (SHA-256 verified in the workflow)
 
 | Probe | Run | Observation | Status | Probe SHA-256 |
 |---|---|---|---|---|
-| `hermes-livestore-lifecycle` | [44977310866](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/44977310866) | `ELABORATES` | `PASS` | `8e7022e949a233ace490308ba766d816f107961e73f0a8e5907feb40cbf9101c` |
+| `hermes-livestore-lifecycle` | [44979831832](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/44979831832) | `ELABORATES` | `PASS` | `47e6b2518f792a3308ee1c005260c24014d1934721f086a9a6d2c82759f1c174` |
 | `hermes-livestore-writer-ownership-canary` | [44977403047](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/44977403047) | `LEAN_REJECTED` | `PASS` | `382f88bddfd8ba11a0fb86abe6c30ab3e3c9d15946a11d5d836a8b76624526e5` |
 | `hermes-livestore-pipeline-retry-canary` | [44977410406](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/44977410406) | `LEAN_REJECTED` | `PASS` | `e8dad8bd4b2b04a6da27a755eeda84441fa48d4b5098de55c0fcb4e1a3087eee` |
+| `hermes-livestore-close-window-witness` | [44980130757](https://github.com/TeaShaman-cyber/theseus-math-research-lab/actions/runs/44980130757) | `LEAN_REJECTED` | `PASS` | `8a16992a2e7f8cdb26f23fd6021d3fbd51dceecf73c88a25893aec2a57e951b3` |
 
-Calibration: the canaries are negative controls, and their authority rests on the positive probe elaborating under the same pinned toolchain in the same runner image. That positive run is the first row above. Rejections are genuine kernel diagnostics at the deliberately false claim (`hermes-livestore-writer-ownership-canary.lean:20:2`, `hermes-livestore-pipeline-retry-canary.lean:20:2`).
+Calibration: the canaries are negative controls, and their authority rests on the positive probe elaborating under the same pinned toolchain in the same runner image. That positive run is the first row above.
 
-Boundary: this checks the abstract lifecycle model, not the Python implementation. Python binding is held by the regression tests and the mutation killers (`M1..M9` in the `hermes-otel` candidate), not by these Lean files.
+- Writer canary rejects `writerCount .twoWriters ≤ 1` (`:20:2`).
+- Pipeline canary rejects `pipelineOwnsStore .closeFailedOwnerDropped = true` (`:20:2`).
+- Close-window witness proves the two readings diverge on the trace `close; add 7`, then rejects `(addDuringClose implAdd).pending = [7]` with `decide` reporting the proposition is false (`:51:2`).
+
+Boundary: this checks the abstract lifecycle model, not the Python implementation. Python binding is held by the regression tests and the mutation killers (`M1..M9` in the `hermes-otel` candidate). The close-window divergence is a candidate durability gap in the implementation reading and still needs a Python reproduction before it is treated as a defect.
