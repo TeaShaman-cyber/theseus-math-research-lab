@@ -31,8 +31,8 @@ class HermesLiveStoreLeanContractTests(unittest.TestCase):
         text = (ROOT / "lean-calculator" / "probes" / f"{POSITIVE}.lean").read_text()
         for declaration in (
             "closed_is_absorbing",
-            "failed_terminal_flush_is_retryable",
-            "writerSafe",
+            "failed_terminal_flush_keeps_retryable",
+            "writer_steps_preserve_single_writer",
             "Invariant",
             "Step",
             "step?",
