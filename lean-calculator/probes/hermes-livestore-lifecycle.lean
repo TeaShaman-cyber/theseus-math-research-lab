@@ -90,16 +90,17 @@ theorem step_preserves_invariant {s : State} {e : Event} {t : State}
   obtain ⟨hW, hNC, hCR⟩ := hInv
   cases hStep with
   | add hClosed hIdle =>
-      exact ⟨hW, by intro hc; simpa using hNC hc, by intro hc; simpa using hCR hc⟩
+      exact ⟨hW, by intro hc; simpa using hNC hc,
+             by intro hc; obtain ⟨a, b, c⟩ := hCR hc; simp [a, b, c]⟩
   | flush hIdle hClosed =>
-      exact ⟨hW, by intro hc; simpa using hNC hc, by intro hc; simpa using hCR hc⟩
-  | close hClosed =>
-      exact ⟨hW, by intro hc; simp, by intro hc; simpa using hCR hc⟩
+      exact ⟨hW, by intro hc; simpa using hNC hc,
+             by intro hc; obtain ⟨a, b, c⟩ := hCR hc; simp [a, b, c]⟩
+  | close hClosed => exact ⟨hW, by intro hc; simp, by intro hc; simp⟩
   | terminalOk hClosing => constructor <;> simp
   | terminalFail hClosing =>
-      exact ⟨hW, by intro hc; simpa using hNC hc, by intro hc; simpa using hCR hc⟩
-  | retry hClosed hRegistered =>
-      exact ⟨hW, by intro hc; simp, by intro hc; simpa using hCR hc⟩
+      exact ⟨hW, by intro hc; simpa using hNC hc,
+             by intro hc; obtain ⟨a, b, c⟩ := hCR hc; simp [a, b, c]⟩
+  | retry hClosed hRegistered => exact ⟨hW, by intro hc; simp, by intro hc; simp⟩
 
 /-- Executable projection and initial state. -/
 def run (s : State) (events : List Event) : State :=
