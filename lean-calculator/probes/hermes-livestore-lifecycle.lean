@@ -96,7 +96,7 @@ theorem step_preserves_invariant {s : State} {e : Event} {t : State}
   | close hClosed => exact ⟨hW, by simp [hClosed], by simp [hClosed]⟩
   | terminalOk hClosing => constructor <;> simp
   | terminalFail hClosing =>
-      exact ⟨hW, by intro hc; simpa using hNC hc, by simp [hClosed]⟩
+      exact ⟨hW, by intro hc; simpa using hNC hc, by intro hc; simpa using hCR hc⟩
   | retry hClosed hRegistered => exact ⟨hW, by simp [hClosed], by simp [hClosed]⟩
 
 /-- Executable projection and initial state. -/
@@ -137,7 +137,7 @@ theorem failed_terminal_flush_keeps_retryable :
             registered := true, liveWriters := 1 },
           { pending := [], closing := false, closed := true,
             registered := false, liveWriters := 0 }, ?_, ?_, rfl, rfl, ?_, ?_, rfl⟩
-  · constructor <;> simp [Invariant]
+  · constructor <;> simp
   · exact Step.terminalFail rfl
   · exact Step.retry rfl rfl
   · exact Step.terminalOk rfl
