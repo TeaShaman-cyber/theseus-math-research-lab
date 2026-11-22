@@ -109,7 +109,7 @@ theorem pre_fix_writer_counterexample :
     preFixWriterStep .joinTimedOutUntracked .retryUntracked = true ∧
     preFixWriterStep .retryUntracked .twoWriters = true ∧
     ¬ writerSafe .twoWriters := by
-  decide
+  simp [preFixWriterStep, writerSafe, writerCount]
 
 inductive PipelineState where
   | running
