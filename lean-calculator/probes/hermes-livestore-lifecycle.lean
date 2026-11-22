@@ -78,21 +78,23 @@ def step? (s : State) (e : Event) : Option State :=
 
 /-- The closed state is absorbing. -/
 theorem closed_is_absorbing {s t : State} (hInv : Invariant s)
-    (hClosed : s.closed = true) : ¬ Step s t := by
+    (hClosed : s.closed = true) : ¬ ∃ e : Event, Step s e t := by
   intro hStep
+  obtain ⟨e, hStep⟩ := hStep
   have hNotClosing : s.closing = false := hInv.closedNotClosing hClosed
   cases hStep <;> simp_all
 
 /-- Every transition preserves the representation assumptions. -/
 theorem step_preserves_invariant {s : State} {e : Event} {t : State}
     (hInv : Invariant s) (hStep : Step s e t) : Invariant t := by
+  obtain ⟨hW, hNC, hCR⟩ := hInv
   cases hStep with
-  | add hClosed hIdle => constructor <;> simp_all [Invariant]
-  | flush hIdle hClosed => constructor <;> simp_all [Invariant]
-  | close hClosed => constructor <;> simp_all [Invariant]
-  | terminalOk hClosing => constructor <;> simp_all [Invariant]
-  | terminalFail hClosing => constructor <;> simp_all [Invariant]
-  | retry hClosed hRegistered => constructor <;> simp_all [Invariant]
+  | add hClosed hIdle => exact ⟨hW, fun hc => hNC hc, fun hc => hCR hc⟩
+  | flush hIdle hClosed => exact ⟨hW, fun hc => hNC hc, fun hc => hCR hc⟩
+  | close hClosed => exact ⟨hW, fun hc => hNC hc, fun hc => hCR hc⟩
+  | terminalOk hClosing => constructor <;> simp
+  | terminalFail hClosing => exact ⟨hW, fun hc => hNC hc, fun hc => hCR hc⟩
+  | retry hClosed hRegistered => exact ⟨hW, fun hc => hNC hc, fun hc => hCR hc⟩
 
 /-- Executable projection and initial state. -/
 def run (s : State) (events : List Event) : State :=
