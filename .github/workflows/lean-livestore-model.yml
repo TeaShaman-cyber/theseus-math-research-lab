@@ -64,6 +64,7 @@ jobs:
         run: |
           set -euo pipefail
           elan toolchain install leanprover/lean4:v4.33.1
+          elan default leanprover/lean4:v4.33.1
           lean --version
           lake --version
 
