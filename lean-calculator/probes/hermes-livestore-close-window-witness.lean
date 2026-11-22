@@ -45,8 +45,9 @@ theorem readings_diverge_on_close_window :
     (addDuringClose implAdd).pending ≠ (addDuringClose contractAdd).pending := by
   simp [addDuringClose, contractAdd, implAdd, closingState]
 
-/-- Deliberately false: the implemented reading does not preserve the row. -/
+/-- Deliberately false: the implemented reading does not preserve the row.
+The kernel rejects it. -/
 example : (addDuringClose implAdd).pending = [7] := by
-  simp [addDuringClose, implAdd, closingState]
+  decide
 
 end LiveStoreCloseWindow
