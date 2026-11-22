@@ -1,0 +1,87 @@
+name: Lean LiveStore lifecycle probe
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        required: true
+        type: choice
+        options:
+          - hermes-livestore-lifecycle
+          - hermes-livestore-writer-ownership-canary
+          - hermes-livestore-pipeline-retry-canary
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lean-livestore-${{ inputs.probe }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  elaborate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout math lab
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Resolve probe expectations
+        id: expect
+        shell: bash
+        run: |
+          set -euo pipefail
+          case '${{ inputs.probe }}' in
+            hermes-livestore-lifecycle)
+              printf 'expected=%s\n' 'ELABORATES' >> "$GITHUB_OUTPUT"
+              ;;
+            hermes-livestore-writer-ownership-canary|hermes-livestore-pipeline-retry-canary)
+              printf 'expected=%s\n' 'LEAN_REJECTED' >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "unknown probe: ${{ inputs.probe }}" >&2
+              exit 2
+              ;;
+          esac
+
+      - name: Install pinned elan
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --proto '=https' --tlsv1.2 \
+            --output "$RUNNER_TEMP/elan.tar.gz" \
+            "https://github.com/leanprover/elan/releases/download/v4.2.3/elan-x86_64-unknown-linux-gnu.tar.gz"
+          echo "df0b2b3a439961ffcbb3985214365ffe40f49bc871df04dff268c7d8e21ca8b2  $RUNNER_TEMP/elan.tar.gz" | sha256sum --check
+          mkdir -p "$RUNNER_TEMP/elan"
+          tar -xzf "$RUNNER_TEMP/elan.tar.gz" -C "$RUNNER_TEMP/elan"
+          "$RUNNER_TEMP/elan/elan-init" -y --no-modify-path --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Install Lean toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          elan toolchain install leanprover/lean4:v4.33.1
+          lean --version
+          lake --version
+
+      - name: Elaborate probe
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p receipts
+          python3 tools/research/run_standalone_lean_probe.py \
+            --probe-file "lean-calculator/probes/${{ inputs.probe }}.lean" \
+            --expected "${{ steps.expect.outputs.expected }}" \
+            --out "receipts/lean-livestore.json"
+
+      - name: Upload probe receipt
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa0
+        with:
+          name: lean-livestore-${{ inputs.probe }}
+          path: receipts
+          if-no-files-found: warn
+          retention-days: 30
