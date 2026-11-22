@@ -89,12 +89,17 @@ theorem step_preserves_invariant {s : State} {e : Event} {t : State}
     (hInv : Invariant s) (hStep : Step s e t) : Invariant t := by
   obtain ⟨hW, hNC, hCR⟩ := hInv
   cases hStep with
-  | add hClosed hIdle => exact ⟨hW, fun hc => hNC hc, fun hc => hCR hc⟩
-  | flush hIdle hClosed => exact ⟨hW, fun hc => hNC hc, fun hc => hCR hc⟩
-  | close hClosed => exact ⟨hW, fun hc => hNC hc, fun hc => hCR hc⟩
+  | add hClosed hIdle =>
+      exact ⟨hW, by intro hc; simpa using hNC hc, by intro hc; simpa using hCR hc⟩
+  | flush hIdle hClosed =>
+      exact ⟨hW, by intro hc; simpa using hNC hc, by intro hc; simpa using hCR hc⟩
+  | close hClosed =>
+      exact ⟨hW, by intro hc; simp, by intro hc; simpa using hCR hc⟩
   | terminalOk hClosing => constructor <;> simp
-  | terminalFail hClosing => exact ⟨hW, fun hc => hNC hc, fun hc => hCR hc⟩
-  | retry hClosed hRegistered => exact ⟨hW, fun hc => hNC hc, fun hc => hCR hc⟩
+  | terminalFail hClosing =>
+      exact ⟨hW, by intro hc; simpa using hNC hc, by intro hc; simpa using hCR hc⟩
+  | retry hClosed hRegistered =>
+      exact ⟨hW, by intro hc; simp, by intro hc; simpa using hCR hc⟩
 
 /-- Executable projection and initial state. -/
 def run (s : State) (events : List Event) : State :=
