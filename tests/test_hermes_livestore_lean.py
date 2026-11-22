@@ -7,7 +7,7 @@ POSITIVE = "hermes-livestore-lifecycle"
 CANARIES = {
     "hermes-livestore-writer-ownership-canary": "writerCount .twoWriters ≤ 1",
     "hermes-livestore-pipeline-retry-canary": "pipelineOwnsStore .closeFailedOwnerDropped = true",
-    "hermes-livestore-close-window-witness": "(addDuringClose implAdd).pending = [7]",
+    "hermes-livestore-close-window-witness": "(addDuringClose preFixAdd).pending = [7]",
 }
 WORKFLOW = ".github/workflows/lean-livestore-model.yml"
 RUNNER = "tools/research/run_standalone_lean_probe.py"
