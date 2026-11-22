@@ -1,0 +1,16 @@
+{
+  "diagnostics": "/home/runner/work/theseus-math-research-lab/theseus-math-research-lab/lean-calculator/probes/hermes-livestore-pipeline-retry-canary.lean:20:2: error: Tactic `decide` proved that the proposition\n  pipelineOwnsStore PipelineState.closeFailedOwnerDropped = true\nis false\n",
+  "expected_observation": "LEAN_REJECTED",
+  "generated_at": "2026-11-22T02:44:01.335085+00:00",
+  "lean": "Lean (version 4.33.1, x86_64-unknown-linux-gnu, commit 819816b2e0a3bf405af45ae5c7af2491d8f5bee6, Release)",
+  "not_claimed": [
+    "This checks the abstract model, not the Python implementation.",
+    "No cache or lake project is involved; the probe is import Init only."
+  ],
+  "observation": "LEAN_REJECTED",
+  "probe_file": "/home/runner/work/theseus-math-research-lab/theseus-math-research-lab/lean-calculator/probes/hermes-livestore-pipeline-retry-canary.lean",
+  "probe_sha256": "e8dad8bd4b2b04a6da27a755eeda84441fa48d4b5098de55c0fcb4e1a3087eee",
+  "returncode": 1,
+  "schema": "theseus.lean-livestore-probe-receipt.v1",
+  "status": "PASS"
+}
