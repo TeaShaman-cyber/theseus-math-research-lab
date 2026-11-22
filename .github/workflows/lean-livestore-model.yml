@@ -10,6 +10,7 @@ on:
           - hermes-livestore-lifecycle
           - hermes-livestore-writer-ownership-canary
           - hermes-livestore-pipeline-retry-canary
+          - hermes-livestore-close-window-witness
 
 permissions:
   contents: read
@@ -37,7 +38,7 @@ jobs:
             hermes-livestore-lifecycle)
               printf 'expected=%s\n' 'ELABORATES' >> "$GITHUB_OUTPUT"
               ;;
-            hermes-livestore-writer-ownership-canary|hermes-livestore-pipeline-retry-canary)
+            hermes-livestore-writer-ownership-canary|hermes-livestore-pipeline-retry-canary|hermes-livestore-close-window-witness)
               printf 'expected=%s\n' 'LEAN_REJECTED' >> "$GITHUB_OUTPUT"
               ;;
             *)

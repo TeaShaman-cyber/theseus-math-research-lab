@@ -1,86 +1,157 @@
 import Init
 
 /-!
-A bounded abstraction of the LiveStore lifecycle investigated under
-TeaShaman-cyber/local-lab#281.
+LiveStore lifecycle, in the representation style of the Causal Past Logic
+mechanization (zippergen-io/zippergen-lean, `icfem/CPLMonitor`):
 
-This file does not prove the Python implementation. It kernel-checks the same
-finite-state obligations used by the independent Wolfram packet, while the
-Python regression and mutation tests bind the counterexamples back to code.
+- the state is a structure whose assumptions are carried as an `Invariant`
+  bundle rather than as axioms;
+- the semantics is an inductive relation `Step`;
+- an executable projection `step?`/`run` is checked against that semantics on a
+  concrete trace.
+
+Scope: the abstract lifecycle contract of the `hermes_otel` LiveStore/Pipeline
+(TeaShaman-cyber/local-lab#281). This file does not prove the Python
+implementation; the regression and mutation tests bind the obligations to code.
 -/
-namespace HermesLiveStoreLifecycle
+namespace LiveStoreLifecycle
 
-inductive StoreState where
-  | openClean
-  | openPending
-  | closing
-  | retryableFailure
-  | closed
-  deriving DecidableEq, Repr
+/-- Abstract lifecycle state. -/
+structure State where
+  pending : List Nat
+  closing : Bool
+  closed : Bool
+  registered : Bool
+  liveWriters : Nat
+  deriving Repr, DecidableEq
 
-def storeStep : StoreState → StoreState → Bool
-  | .openClean, .openPending => true
-  | .openPending, .openPending => true
-  | .openPending, .openClean => true
-  | .openPending, .closing => true
-  | .openClean, .closing => true
-  | .closing, .retryableFailure => true
-  | .closing, .closed => true
-  | .retryableFailure, .closing => true
-  | .closed, .closed => true
-  | _, _ => false
+/-- Representation assumptions carried explicitly. -/
+structure Invariant (s : State) where
+  singleWriter : s.liveWriters ≤ 1
+  closedNotClosing : s.closed = true → s.closing = false
+  closedReleased :
+    s.closed = true → s.pending = [] ∧ s.registered = false ∧ s.liveWriters = 0
 
-def hasPending : StoreState → Bool
-  | .openPending | .closing | .retryableFailure => true
-  | _ => false
+/-- Events visible at the lifecycle boundary. -/
+inductive Event where
+  | add (row : Nat)
+  | flush
+  | close
+  | terminalOk
+  | terminalFail
+  | retry
+  deriving Repr, DecidableEq
 
-def isRegistered : StoreState → Bool
-  | .closed => false
-  | _ => true
+/-- Denotational transition semantics. -/
+inductive Step : State → Event → State → Prop where
+  | add {s : State} {row : Nat}
+      (hClosed : s.closed = false) (hIdle : s.closing = false) :
+      Step s (.add row) { s with pending := s.pending ++ [row] }
+  | flush {s : State} (hIdle : s.closing = false) (hClosed : s.closed = false) :
+      Step s .flush { s with pending := [] }
+  | close {s : State} (hClosed : s.closed = false) :
+      Step s .close { s with closing := true }
+  | terminalOk {s : State} (hClosing : s.closing = true) :
+      Step s .terminalOk
+        { s with pending := [], closing := false, closed := true,
+                 registered := false, liveWriters := 0 }
+  | terminalFail {s : State} (hClosing : s.closing = true) :
+      Step s .terminalFail { s with closing := false }
+  | retry {s : State} (hClosed : s.closed = false) (hRegistered : s.registered = true) :
+      Step s .retry { s with closing := true }
 
-def connectionsMayBeOpen : StoreState → Bool
-  | .closed => false
-  | _ => true
+/-- Executable projection of `Step`; `none` means the event is not enabled. -/
+def step? (s : State) (e : Event) : Option State :=
+  match e with
+  | .add row => if s.closed || s.closing then none else some { s with pending := s.pending ++ [row] }
+  | .flush => if s.closed || s.closing then none else some { s with pending := [] }
+  | .close => if s.closed then none else some { s with closing := true }
+  | .terminalOk =>
+      if s.closing then
+        some { s with pending := [], closing := false, closed := true,
+                      registered := false, liveWriters := 0 }
+      else none
+  | .terminalFail => if s.closing then some { s with closing := false } else none
+  | .retry =>
+      if s.closed then none
+      else if s.registered then some { s with closing := true } else none
 
-theorem closed_is_absorbing (next : StoreState)
-    (h : storeStep .closed next = true) : next = .closed := by
-  cases next <;> simp [storeStep] at h ⊢
+/-- The closed state is absorbing. -/
+theorem closed_is_absorbing {s t : State} (hInv : Invariant s)
+    (hClosed : s.closed = true) : ¬ Step s t := by
+  intro hStep
+  have hNotClosing : s.closing = false := hInv.closedNotClosing hClosed
+  cases hStep <;> simp_all
 
-theorem closed_releases_resources :
-    hasPending .closed = false ∧
-    isRegistered .closed = false ∧
-    connectionsMayBeOpen .closed = false := by
+/-- Every transition preserves the representation assumptions. -/
+theorem step_preserves_invariant {s : State} {e : Event} {t : State}
+    (hInv : Invariant s) (hStep : Step s e t) : Invariant t := by
+  cases hStep with
+  | add hClosed hIdle => constructor <;> simp_all [Invariant]
+  | flush hIdle hClosed => constructor <;> simp_all [Invariant]
+  | close hClosed => constructor <;> simp_all [Invariant]
+  | terminalOk hClosing => constructor <;> simp_all [Invariant]
+  | terminalFail hClosing => constructor <;> simp_all [Invariant]
+  | retry hClosed hRegistered => constructor <;> simp_all [Invariant]
+
+/-- Executable projection and initial state. -/
+def run (s : State) (events : List Event) : State :=
+  match events with
+  | [] => s
+  | e :: rest =>
+      match step? s e with
+      | some t => run t rest
+      | none => s
+
+def initialState : State where
+  pending := []
+  closing := false
+  closed := false
+  registered := true
+  liveWriters := 1
+
+/-- Agreement on a concrete trace: one row, a successful flush, a close that
+succeeds. The projection lands on the semantically expected closed state. -/
+example : run initialState [.add 1, .flush, .close, .terminalOk] =
+    { pending := [], closing := false, closed := true,
+      registered := false, liveWriters := 0 } := by
   decide
 
-theorem failed_terminal_flush_is_retryable :
-    hasPending .retryableFailure = true ∧
-    isRegistered .retryableFailure = true ∧
-    connectionsMayBeOpen .retryableFailure = true ∧
-    storeStep .retryableFailure .closing = true ∧
-    storeStep .closing .closed = true := by
-  decide
+/-- A failed terminal flush leaves the store registered with its batch intact,
+so a later close can still retire it. -/
+theorem failed_terminal_flush_keeps_retryable :
+    ∃ s s' t u : State,
+      Invariant s ∧ Step s .terminalFail s' ∧
+      s'.registered = true ∧ s'.closed = false ∧
+      Step s' .retry t ∧ Step t .terminalOk u ∧ u.closed = true := by
+  refine ⟨{ pending := [1], closing := true, closed := false,
+            registered := true, liveWriters := 1 },
+          { pending := [1], closing := false, closed := false,
+            registered := true, liveWriters := 1 },
+          { pending := [1], closing := true, closed := false,
+            registered := true, liveWriters := 1 },
+          { pending := [], closing := false, closed := true,
+            registered := false, liveWriters := 0 }, ?_, ?_, rfl, rfl, ?_, ?_, rfl⟩
+  · constructor <;> simp [Invariant]
+  · exact Step.terminalFail rfl
+  · exact Step.retry rfl rfl
+  · exact Step.terminalOk rfl
 
+/-- Writer-thread ownership, as a separate small lattice: a timed-out join
+keeps the live writer tracked, so a retry cannot start a second one. -/
 inductive WriterState where
   | tracked
   | joinTimedOutTracked
-  | joinTimedOutUntracked
   | retryTracked
-  | retryUntracked
   | exited
-  | twoWriters
   | closed
   deriving DecidableEq, Repr
 
 def writerCount : WriterState → Nat
-  | .tracked | .joinTimedOutTracked | .joinTimedOutUntracked
-  | .retryTracked | .retryUntracked => 1
-  | .twoWriters => 2
+  | .tracked | .joinTimedOutTracked | .retryTracked => 1
   | .exited | .closed => 0
 
-def writerSafe (state : WriterState) : Prop := writerCount state ≤ 1
-
--- Corrected implementation: a timed-out join keeps the live writer tracked.
-def correctedWriterStep : WriterState → WriterState → Bool
+def writerStep : WriterState → WriterState → Bool
   | .tracked, .joinTimedOutTracked => true
   | .joinTimedOutTracked, .retryTracked => true
   | .joinTimedOutTracked, .closed => true
@@ -90,75 +161,8 @@ def correctedWriterStep : WriterState → WriterState → Bool
   | .closed, .closed => true
   | _, _ => false
 
-theorem corrected_writer_steps_preserve_single_writer
-    (before after : WriterState)
-    (h : correctedWriterStep before after = true) : writerSafe after := by
-  cases before <;> cases after <;>
-    simp [correctedWriterStep, writerSafe, writerCount] at h ⊢
+theorem writer_steps_preserve_single_writer (before after : WriterState)
+    (h : writerStep before after = true) : writerCount after ≤ 1 := by
+  cases before <;> cases after <;> simp [writerStep, writerCount] at h ⊢
 
--- Pre-fix schedule: timed join drops ownership, retry starts a replacement.
-def preFixWriterStep : WriterState → WriterState → Bool
-  | .tracked, .joinTimedOutUntracked => true
-  | .joinTimedOutUntracked, .retryUntracked => true
-  | .retryUntracked, .twoWriters => true
-  | .twoWriters, .tracked => true
-  | _, _ => false
-
-theorem pre_fix_writer_counterexample :
-    preFixWriterStep .tracked .joinTimedOutUntracked = true ∧
-    preFixWriterStep .joinTimedOutUntracked .retryUntracked = true ∧
-    preFixWriterStep .retryUntracked .twoWriters = true ∧
-    ¬ writerSafe .twoWriters := by
-  simp [preFixWriterStep, writerSafe, writerCount]
-
-inductive PipelineState where
-  | running
-  | tracerDown
-  | meterDown
-  | loggerDown
-  | releasing
-  | closeFailedOwnerRetained
-  | closeFailedOwnerDropped
-  | released
-  deriving DecidableEq, Repr
-
-def pipelineOwnsStore : PipelineState → Bool
-  | .closeFailedOwnerDropped | .released => false
-  | _ => true
-
-def correctedPipelineStep : PipelineState → PipelineState → Bool
-  | .running, .tracerDown => true
-  | .tracerDown, .meterDown => true
-  | .meterDown, .loggerDown => true
-  | .loggerDown, .releasing => true
-  | .releasing, .released => true
-  | .releasing, .closeFailedOwnerRetained => true
-  | .closeFailedOwnerRetained, .releasing => true
-  | .released, .released => true
-  | _, _ => false
-
-theorem corrected_close_failure_retains_retry_capability :
-    pipelineOwnsStore .closeFailedOwnerRetained = true ∧
-    correctedPipelineStep .closeFailedOwnerRetained .releasing = true ∧
-    correctedPipelineStep .releasing .released = true := by
-  decide
-
--- Pre-fix schedule: registry retention alone is insufficient after Pipeline
--- drops its own store reference; repeated shutdown only stutters.
-def preFixPipelineStep : PipelineState → PipelineState → Bool
-  | .releasing, .closeFailedOwnerDropped => true
-  | .closeFailedOwnerDropped, .closeFailedOwnerDropped => true
-  | _, _ => false
-
-theorem pre_fix_pipeline_counterexample :
-    preFixPipelineStep .releasing .closeFailedOwnerDropped = true ∧
-    pipelineOwnsStore .closeFailedOwnerDropped = false ∧
-    preFixPipelineStep .closeFailedOwnerDropped .closeFailedOwnerDropped = true := by
-  decide
-
-theorem pre_fix_dropped_owner_can_only_stutter (next : PipelineState)
-    (h : preFixPipelineStep .closeFailedOwnerDropped next = true) :
-    next = .closeFailedOwnerDropped := by
-  cases next <;> simp [preFixPipelineStep] at h ⊢
-
-end HermesLiveStoreLifecycle
+end LiveStoreLifecycle
